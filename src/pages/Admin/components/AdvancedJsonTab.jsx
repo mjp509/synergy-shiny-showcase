@@ -1,0 +1,225 @@
+import { useState, useMemo } from 'react'
+import ConfirmDialog from './ConfirmDialog'
+import styles from '../Admin.module.css'
+
+const REQUIRED_SHINY_FIELDS = [
+  'Pokemon', 'Month', 'Year', 'Secret Shiny', 'Egg', 'Alpha',
+  'Sold', 'Event', 'Reaction', 'MysteriousBall', 'Safari',
+  'Favourite', 'Honey Tree', 'Legendary', 'Reaction Link',
+]
+
+function validateDatabaseSchema(data) {
+  const errors = []
+  if (typeof data !== 'object' || data === null || Array.isArray(data)) {
+    errors.push('Root must be an object with player names as keys.')
+    return errors
+  }
+  for (const [player, playerData] of Object.entries(data)) {
+    if (typeof playerData !== 'object' || playerData === null) {
+      errors.push(`"${player}": must be an object.`)
+      continue
+    }
+    if (typeof playerData.shiny_count !== 'number') {
+      errors.push(`"${player}": missing or invalid "shiny_count" (must be a number).`)
+    }
+    if (typeof playerData.shinies !== 'object' || playerData.shinies === null) {
+      errors.push(`"${player}": missing or invalid "shinies" (must be an object).`)
+      continue
+    }
+    for (const [id, shiny] of Object.entries(playerData.shinies)) {
+      if (typeof shiny !== 'object' || shiny === null) {
+        errors.push(`"${player}" shiny #${id}: must be an object.`)
+        continue
+      }
+      for (const field of REQUIRED_SHINY_FIELDS) {
+        if (!(field in shiny)) {
+          errors.push(`"${player}" shiny #${id}: missing field "${field}".`)
+        }
+      }
+    }
+  }
+  return errors
+}
+
+function validateStreamersSchema(data) {
+  const errors = []
+  if (typeof data !== 'object' || data === null || Array.isArray(data)) {
+    errors.push('Root must be an object with streamer names as keys.')
+    return errors
+  }
+  for (const [name, entry] of Object.entries(data)) {
+    if (typeof entry !== 'object' || entry === null) {
+      errors.push(`"${name}": must be an object.`)
+      continue
+    }
+    if (typeof entry.twitch_username !== 'string') {
+      errors.push(`"${name}": missing or invalid "twitch_username".`)
+    }
+  }
+  return errors
+}
+
+function computeChangeSummary(oldData, newData, mode) {
+  const changes = []
+  if (mode === 'pokemon') {
+    const oldKeys = new Set(Object.keys(oldData))
+    const newKeys = new Set(Object.keys(newData))
+    for (const k of newKeys) {
+      if (!oldKeys.has(k)) changes.push(`+ Added player "${k}"`)
+    }
+    for (const k of oldKeys) {
+      if (!newKeys.has(k)) changes.push(`- Removed player "${k}"`)
+    }
+    for (const k of newKeys) {
+      if (oldKeys.has(k)) {
+        const oldCount = Object.keys(oldData[k]?.shinies || {}).length
+        const newCount = Object.keys(newData[k]?.shinies || {}).length
+        if (oldCount !== newCount) {
+          changes.push(`~ "${k}": shinies ${oldCount} -> ${newCount}`)
+        } else if (JSON.stringify(oldData[k]) !== JSON.stringify(newData[k])) {
+          changes.push(`~ "${k}": data modified`)
+        }
+      }
+    }
+  } else {
+    const oldKeys = new Set(Object.keys(oldData))
+    const newKeys = new Set(Object.keys(newData))
+    for (const k of newKeys) {
+      if (!oldKeys.has(k)) changes.push(`+ Added streamer "${k}"`)
+    }
+    for (const k of oldKeys) {
+      if (!newKeys.has(k)) changes.push(`- Removed streamer "${k}"`)
+    }
+    for (const k of newKeys) {
+      if (oldKeys.has(k) && JSON.stringify(oldData[k]) !== JSON.stringify(newData[k])) {
+        changes.push(`~ "${k}": data modified`)
+      }
+    }
+  }
+  return changes
+}
+
+export default function AdvancedJsonTab({
+  database, streamersDB, onUpdateDatabase, onUpdateStreamers, isMutating,
+}) {
+  const [mode, setMode] = useState('pokemon')
+  const [editingJson, setEditingJson] = useState('')
+  const [isEditing, setIsEditing] = useState(false)
+  const [validationErrors, setValidationErrors] = useState([])
+  const [changeSummary, setChangeSummary] = useState([])
+  const [showConfirm, setShowConfirm] = useState(false)
+  const [parsedData, setParsedData] = useState(null)
+
+  const currentData = mode === 'pokemon' ? database : streamersDB
+  const previewText = useMemo(() => JSON.stringify(currentData, null, 2), [currentData])
+
+  function openEditor() {
+    setEditingJson(previewText)
+    setIsEditing(true)
+    setValidationErrors([])
+    setChangeSummary([])
+  }
+
+  function handleValidateAndSave() {
+    let parsed
+    try {
+      parsed = JSON.parse(editingJson)
+    } catch (err) {
+      setValidationErrors([`Invalid JSON: ${err.message}`])
+      return
+    }
+
+    const errors = mode === 'pokemon'
+      ? validateDatabaseSchema(parsed)
+      : validateStreamersSchema(parsed)
+
+    if (errors.length > 0) {
+      setValidationErrors(errors)
+      return
+    }
+
+    setValidationErrors([])
+    const summary = computeChangeSummary(currentData, parsed, mode)
+    setChangeSummary(summary)
+    setParsedData(parsed)
+    setShowConfirm(true)
+  }
+
+  async function handleConfirmSave() {
+    if (!parsedData) return
+    const result = mode === 'pokemon'
+      ? await onUpdateDatabase(parsedData, `Manual JSON edit (pokemon)`)
+      : await onUpdateStreamers(parsedData, `Manual JSON edit (streamers)`)
+
+    if (result?.success) {
+      setIsEditing(false)
+      setShowConfirm(false)
+      setParsedData(null)
+      setChangeSummary([])
+    }
+    return result
+  }
+
+  return (
+    <div>
+      <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginBottom: 12 }}>
+        <label style={{ margin: 0 }}>Data Source:</label>
+        <select value={mode} onChange={e => { setMode(e.target.value); setIsEditing(false) }} style={{ width: 'auto' }}>
+          <option value="pokemon">Pokemon Database</option>
+          <option value="streamers">Streamers Database</option>
+        </select>
+      </div>
+
+      {!isEditing ? (
+        <>
+          <pre className={styles.preview} onClick={openEditor} style={{ cursor: 'pointer' }}>
+            {previewText}
+          </pre>
+          <p className={styles.hintText}>Click the JSON above to open the editor.</p>
+        </>
+      ) : (
+        <>
+          <textarea
+            className={styles.jsonEditor}
+            value={editingJson}
+            onChange={e => {
+              setEditingJson(e.target.value)
+              setValidationErrors([])
+            }}
+            spellCheck={false}
+          />
+
+          {validationErrors.length > 0 && (
+            <div className={styles.validationErrors}>
+              <strong>Validation Errors:</strong>
+              <ul>
+                {validationErrors.map((err, i) => <li key={i}>{err}</li>)}
+              </ul>
+            </div>
+          )}
+
+          <div className={styles.modalButtons} style={{ marginTop: 12 }}>
+            <button onClick={handleValidateAndSave} disabled={isMutating}>
+              {isMutating ? 'Saving...' : 'Validate & Save'}
+            </button>
+            <button onClick={() => setIsEditing(false)}>Cancel</button>
+          </div>
+        </>
+      )}
+
+      {showConfirm && (
+        <ConfirmDialog
+          title="Confirm JSON Update"
+          message={
+            changeSummary.length === 0
+              ? 'No structural changes detected. Save anyway?'
+              : `${changeSummary.length} change(s) detected:\n\n${changeSummary.join('\n')}`
+          }
+          confirmLabel="Save Changes"
+          onConfirm={handleConfirmSave}
+          onCancel={() => { setShowConfirm(false); setParsedData(null) }}
+        />
+      )}
+    </div>
+  )
+}

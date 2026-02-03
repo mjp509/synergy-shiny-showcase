@@ -1,508 +1,118 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAdmin } from '../../context/AdminContext'
-import { API } from '../../api/endpoints'
+import useAdminDatabase from './hooks/useAdminDatabase'
+import useToast from './hooks/useToast'
+import TabBar from './components/TabBar'
+import AddPokemonTab from './components/AddPokemonTab'
+import EditPlayerTab from './components/EditPlayerTab'
+import StreamersTab from './components/StreamersTab'
+import AdminLogTab from './components/AdminLogTab'
+import AdvancedJsonTab from './components/AdvancedJsonTab'
+import Toast from './components/Toast'
 import styles from './Admin.module.css'
-
-function Autocomplete({ id, value, onChange, getOptions, placeholder }) {
-  const [suggestions, setSuggestions] = useState([])
-  const [show, setShow] = useState(false)
-  const [focusIdx, setFocusIdx] = useState(-1)
-  const ref = useRef(null)
-
-  function handleInput(val) {
-    onChange(val)
-    const lower = val.toLowerCase()
-    if (!lower) { setSuggestions([]); setShow(false); return }
-    const opts = getOptions().filter(o => o.toLowerCase().includes(lower))
-    setSuggestions(opts)
-    setShow(opts.length > 0)
-    setFocusIdx(-1)
-  }
-
-  function handleKeyDown(e) {
-    if (e.key === 'ArrowDown') { setFocusIdx(i => Math.min(i + 1, suggestions.length - 1)) }
-    else if (e.key === 'ArrowUp') { setFocusIdx(i => Math.max(i - 1, 0)) }
-    else if (e.key === 'Tab' && focusIdx >= 0) {
-      e.preventDefault()
-      onChange(suggestions[focusIdx])
-      setShow(false)
-    }
-  }
-
-  return (
-    <div style={{ position: 'relative' }}>
-      <input
-        id={id}
-        type="text"
-        value={value}
-        onChange={e => handleInput(e.target.value)}
-        onKeyDown={handleKeyDown}
-        onFocus={() => suggestions.length && setShow(true)}
-        onBlur={() => setTimeout(() => setShow(false), 100)}
-        placeholder={placeholder}
-        autoComplete="off"
-      />
-      {show && (
-        <div className={styles.suggestions}>
-          {suggestions.map((s, i) => (
-            <div
-              key={s}
-              className={`${styles.suggestion} ${i === focusIdx ? styles.suggestionActive : ''}`}
-              onMouseDown={() => { onChange(s); setShow(false) }}
-            >
-              {s}
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  )
-}
 
 export default function AdminPanel() {
   const { auth } = useAdmin()
   const navigate = useNavigate()
+  const [activeTab, setActiveTab] = useState('add')
+  const { toast, show: showToast, dismiss: dismissToast } = useToast()
 
-  const [mode, setMode] = useState('pokemon')
-  const [database, setDatabase] = useState({})
-  const [streamersDB, setStreamersDB] = useState({})
-  const [logData, setLogData] = useState([])
-  const [message, setMessage] = useState('')
-  const [msgClass, setMsgClass] = useState('')
-  const [updateMessage, setUpdateMessage] = useState('')
-  const [deleteMessage, setDeleteMessage] = useState('')
-
-  // Pokemon form
-  const [player, setPlayer] = useState('')
-  const [pokemon, setPokemon] = useState('')
-  const [month, setMonth] = useState('February')
-  const [year, setYear] = useState('2026')
-  const [egg, setEgg] = useState('No')
-  const [favourite, setFavourite] = useState('No')
-  const [secretShiny, setSecretShiny] = useState('No')
-  const [alpha, setAlpha] = useState('No')
-  const [sold, setSold] = useState('No')
-  const [event, setEvent] = useState('No')
-  const [reaction, setReaction] = useState('No')
-  const [mysteriousBall, setMysteriousBall] = useState('No')
-  const [safari, setSafari] = useState('No')
-  const [honeyTree, setHoneyTree] = useState('No')
-  const [legendary, setLegendary] = useState('No')
-  const [reactionLink, setReactionLink] = useState('')
-  const [overrideDuplicate, setOverrideDuplicate] = useState(false)
-  const [showOverride, setShowOverride] = useState(false)
-
-  // Streamer form
-  const [pokeName, setPokeName] = useState('')
-  const [twitchName, setTwitchName] = useState('')
-
-  // Delete form
-  const [deletePlayer, setDeletePlayer] = useState('')
-  const [deleteId, setDeleteId] = useState('')
-
-  // Preview
-  const [previewText, setPreviewText] = useState('')
-  const [showJsonEditor, setShowJsonEditor] = useState(false)
-  const [editingJson, setEditingJson] = useState('')
+  const db = useAdminDatabase(auth)
 
   useEffect(() => {
     if (!auth) navigate('/admin')
-    else loadDatabase()
+    else db.loadDatabase().catch(err => showToast('Error loading database: ' + err.message, 'error'))
   }, [auth])
 
-  const postData = useCallback(async (endpoint, payload) => {
-    try {
-      const res = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      })
-      return await res.json()
-    } catch (err) {
-      return { success: false, error: err.message }
-    }
-  }, [])
-
-  async function loadDatabase() {
-    try {
-      const [dbRes, streamersRes, logRes] = await Promise.all([
-        fetch(API.database),
-        fetch(API.streamers),
-        fetch(API.adminLog),
-      ])
-      const db = await dbRes.json()
-      const str = await streamersRes.json()
-      const log = await logRes.json()
-
-      // Update shiny counts
-      Object.keys(db).forEach(p => {
-        const shinies = db[p]?.shinies
-        if (shinies) {
-          db[p].shiny_count = Object.values(shinies).filter(s => s.Sold !== 'Yes').length
-        }
-      })
-
-      setDatabase(db)
-      setStreamersDB(str)
-      setLogData(log.log || [])
-      setPreviewText(JSON.stringify(mode === 'pokemon' ? db : str, null, 2))
-    } catch (err) {
-      setMessage('Error loading database: ' + err.message)
-      setMsgClass('error')
+  function withToast(fn, successMsg) {
+    return async (...args) => {
+      const result = await fn(...args)
+      if (result?.success) {
+        showToast(successMsg || 'Done!', 'success', db.hasSnapshot ? () => handleUndo() : null)
+      } else if (result?.error) {
+        showToast(result.error, 'error')
+      }
+      return result
     }
   }
 
-  useEffect(() => {
-    setPreviewText(JSON.stringify(mode === 'pokemon' ? database : streamersDB, null, 2))
-  }, [mode, database, streamersDB])
-
-  async function handleAdd() {
-    if (!auth) return
-    const endpoint = mode === 'pokemon' ? API.updateDatabase : API.updateStreamers
-
-    if (mode === 'pokemon') {
-      if (!player.trim() || !pokemon.trim()) {
-        setMessage('Player and Pokemon are required.')
-        setMsgClass('error')
-        return
-      }
-
-      const db = { ...database }
-      if (!db[player]) db[player] = { shiny_count: 0, shinies: {} }
-      const playerShinies = db[player].shinies
-
-      const last5Ids = Object.keys(playerShinies).map(Number).sort((a, b) => b - a).slice(0, 5)
-      const duplicate = last5Ids.some(id => playerShinies[id].Pokemon.toLowerCase() === pokemon.toLowerCase())
-
-      if (duplicate && !overrideDuplicate) {
-        setShowOverride(true)
-        setMessage('Duplicate Pokemon Detected! Check "Override Duplicate" to force add.')
-        setMsgClass('error')
-        return
-      }
-
-      const nextId = Object.keys(playerShinies).length + 1
-      db[player].shinies[nextId] = {
-        Pokemon: pokemon, Month: month, Year: year,
-        'Secret Shiny': secretShiny, Egg: egg, Alpha: alpha,
-        Sold: sold, Event: event, Reaction: reaction,
-        MysteriousBall: mysteriousBall, Safari: safari,
-        Favourite: favourite, 'Honey Tree': honeyTree,
-        Legendary: legendary, 'Reaction Link': reactionLink,
-      }
-      db[player].shiny_count = Object.values(db[player].shinies).filter(s => s.Sold !== 'Yes').length
-
-      const result = await postData(endpoint, {
-        username: auth.name, password: auth.password, data: db,
-        action: `Added ${pokemon} for ${player}${duplicate && overrideDuplicate ? ' (Override)' : ''}`,
-      })
-
-      if (result.success) {
-        setMessage('Pokemon added successfully!')
-        setMsgClass('success')
-        setOverrideDuplicate(false)
-        setShowOverride(false)
-        setDatabase(db)
-        await loadDatabase()
-      } else {
-        setMessage('Failed to add Pokemon.')
-        setMsgClass('error')
-      }
-    } else {
-      if (!pokeName.trim() || !twitchName.trim()) {
-        setMessage('Both PokeMMO Name and Twitch Name are required.')
-        setMsgClass('error')
-        return
-      }
-      const str = { ...streamersDB }
-      str[pokeName] = { twitch_username: twitchName }
-      const result = await postData(endpoint, {
-        username: auth.name, password: auth.password, data: str,
-        action: `Added streamer ${pokeName}`,
-      })
-      if (result.success) {
-        setMessage('Streamer added successfully!')
-        setMsgClass('success')
-        setStreamersDB(str)
-        await loadDatabase()
-      } else {
-        setMessage('Failed to add streamer.')
-        setMsgClass('error')
-      }
-    }
+  async function handleUndo() {
+    const ok = await db.undo()
+    if (ok) showToast('Undo successful!', 'success')
+    else showToast('Undo failed.', 'error')
   }
 
-  function openJsonEditor() {
-    setEditingJson(previewText)
-    setShowJsonEditor(true)
-    setUpdateMessage('')
+  if (db.isLoading) {
+    return (
+      <div className={styles.panel}>
+        <h1>Admin Panel</h1>
+        <div className={styles.loadingOverlay}>
+          <div className={styles.spinner} />
+          <span>Loading database...</span>
+        </div>
+      </div>
+    )
   }
-
-  async function handleUpdateFromEditor() {
-    if (!auth) return
-    let updatedData
-    try {
-      updatedData = JSON.parse(editingJson)
-    } catch (err) {
-      setUpdateMessage('Invalid JSON: ' + err.message)
-      return
-    }
-    const endpoint = mode === 'pokemon' ? API.updateDatabase : API.updateStreamers
-    const result = await postData(endpoint, {
-      username: auth.name, password: auth.password, data: updatedData,
-      action: `Manual JSON edit (${mode})`,
-    })
-    if (result.success) {
-      if (mode === 'pokemon') setDatabase(updatedData)
-      else setStreamersDB(updatedData)
-      setUpdateMessage('Database successfully updated!')
-      setShowJsonEditor(false)
-      await loadDatabase()
-    } else {
-      setUpdateMessage('Failed to update.')
-    }
-  }
-
-  async function handleUpdate() {
-    if (!auth) return
-    let updatedData
-    try {
-      updatedData = JSON.parse(previewText)
-    } catch (err) {
-      setUpdateMessage('Invalid JSON: ' + err.message)
-      return
-    }
-    const endpoint = mode === 'pokemon' ? API.updateDatabase : API.updateStreamers
-    const result = await postData(endpoint, {
-      username: auth.name, password: auth.password, data: updatedData,
-      action: `Manual JSON edit (${mode})`,
-    })
-    if (result.success) {
-      if (mode === 'pokemon') setDatabase(updatedData)
-      else setStreamersDB(updatedData)
-      setUpdateMessage('Database successfully updated!')
-      await loadDatabase()
-    } else {
-      setUpdateMessage('Failed to update.')
-    }
-  }
-
-  async function handleDelete() {
-    if (!auth) { setDeleteMessage('Unauthorized'); return }
-    if (!deletePlayer.trim()) { setDeleteMessage('Player is required.'); return }
-    if (!database[deletePlayer]) { setDeleteMessage(`No data found for player ${deletePlayer}.`); return }
-
-    const db = { ...database }
-    if (!deleteId) {
-      delete db[deletePlayer]
-      const result = await postData(API.updateDatabase, {
-        username: auth.name, password: auth.password, data: db,
-        action: `Deleted all data for player ${deletePlayer}`,
-      })
-      if (result.success) {
-        setDeleteMessage(`All data for ${deletePlayer} deleted!`)
-        setDatabase(db)
-        await loadDatabase()
-      } else setDeleteMessage('Failed to delete player.')
-    } else {
-      if (!db[deletePlayer].shinies[deleteId]) {
-        setDeleteMessage(`No Pokemon found with ID ${deleteId} for ${deletePlayer}.`)
-        return
-      }
-      delete db[deletePlayer].shinies[deleteId]
-      const newShinies = {}
-      Object.keys(db[deletePlayer].shinies)
-        .sort((a, b) => parseInt(a) - parseInt(b))
-        .forEach((key, index) => { newShinies[index + 1] = db[deletePlayer].shinies[key] })
-      db[deletePlayer].shinies = newShinies
-      db[deletePlayer].shiny_count = Object.values(newShinies).filter(s => s.Sold !== 'Yes').length
-
-      const result = await postData(API.updateDatabase, {
-        username: auth.name, password: auth.password, data: db,
-        action: `Deleted Pokemon ID ${deleteId} for ${deletePlayer}`,
-      })
-      if (result.success) {
-        setDeleteMessage(`Pokemon ID ${deleteId} deleted!`)
-        setDatabase(db)
-        await loadDatabase()
-      } else setDeleteMessage('Failed to delete Pokemon.')
-    }
-  }
-
-  const sortedLog = [...logData].sort((a, b) => new Date(b.time) - new Date(a.time))
-
-  const SelectField = ({ label, id, value, onChange }) => (
-    <>
-      <label htmlFor={id}>{label}:</label>
-      <select id={id} value={value} onChange={e => onChange(e.target.value)}>
-        <option value="Yes">Yes</option>
-        <option value="No">No</option>
-      </select>
-    </>
-  )
 
   return (
     <div className={styles.panel}>
       <h1>Admin Panel</h1>
+      <TabBar activeTab={activeTab} onTabChange={setActiveTab} />
 
-      <label htmlFor="mode">Select Mode:</label>
-      <select id="mode" value={mode} onChange={e => setMode(e.target.value)}>
-        <option value="pokemon">Add Pokemon</option>
-        <option value="streamer">Add Streamer</option>
-      </select>
-
-      {mode === 'pokemon' && (
-        <div>
-          <label>Player Name:</label>
-          <Autocomplete
-            id="player"
-            value={player}
-            onChange={setPlayer}
-            getOptions={() => Object.keys(database)}
-            placeholder="hyper"
-          />
-
-          <label>Pokemon Name:</label>
-          <Autocomplete
-            id="pokemon"
-            value={pokemon}
-            onChange={setPokemon}
-            getOptions={() => {
-              const all = Object.values(database).flatMap(p =>
-                Object.values(p.shinies || {}).map(s => s.Pokemon)
-              )
-              return [...new Map(all.map(p => [p.toLowerCase(), p])).values()]
-                .map(p => p.charAt(0).toUpperCase() + p.slice(1).toLowerCase())
-            }}
-            placeholder="mew"
-          />
-
-          <label htmlFor="month">Month:</label>
-          <select id="month" value={month} onChange={e => setMonth(e.target.value)}>
-            <option value="January">January</option>
-            <option value="February">February</option>
-            <option value="March">March</option>
-            <option value="April">April</option>
-            <option value="May">May</option>
-            <option value="June">June</option>
-            <option value="July">July</option>
-            <option value="August">August</option>
-            <option value="September">September</option>
-            <option value="October">October</option>
-            <option value="November">November</option>
-            <option value="December">December</option>
-          </select>
-
-          <label htmlFor="year">Year:</label>
-          <select id="year" value={year} onChange={e => setYear(e.target.value)}>
-            <option value="2020">2020</option>
-            <option value="2021">2021</option>
-            <option value="2022">2022</option>
-            <option value="2023">2023</option>
-            <option value="2024">2024</option>
-            <option value="2025">2025</option>
-            <option value="2026">2026</option>
-            <option value="2027">2027</option>
-            <option value="2028">2028</option>
-            <option value="2029">2029</option>
-            <option value="2030">2030</option>
-          </select>
-
-          <SelectField label="Egg" id="egg" value={egg} onChange={setEgg} />
-          <SelectField label="Favourite" id="favourite" value={favourite} onChange={setFavourite} />
-          <SelectField label="Secret Shiny" id="secretShiny" value={secretShiny} onChange={setSecretShiny} />
-          <SelectField label="Alpha" id="alpha" value={alpha} onChange={setAlpha} />
-          <SelectField label="Sold" id="sold" value={sold} onChange={setSold} />
-          <SelectField label="Event" id="event" value={event} onChange={setEvent} />
-          <SelectField label="Reaction" id="reaction" value={reaction} onChange={setReaction} />
-          <SelectField label="Mysterious Ball" id="mysteriousBall" value={mysteriousBall} onChange={setMysteriousBall} />
-          <SelectField label="Safari" id="safari" value={safari} onChange={setSafari} />
-          <SelectField label="Honey Tree" id="honeyTree" value={honeyTree} onChange={setHoneyTree} />
-          <SelectField label="Legendary" id="legendary" value={legendary} onChange={setLegendary} />
-
-          <label>Reaction Link:</label>
-          <input type="text" value={reactionLink} onChange={e => setReactionLink(e.target.value)} placeholder="Optional URL" />
+      {db.isMutating && (
+        <div className={styles.loadingOverlay} style={{ padding: '12px 0' }}>
+          <div className={styles.spinner} />
+          <span>Saving...</span>
         </div>
       )}
 
-      {mode === 'streamer' && (
-        <div>
-          <label>PokeMMO Name:</label>
-          <input type="text" value={pokeName} onChange={e => setPokeName(e.target.value)} placeholder="MiroMMO" />
-          <label>Twitch Name:</label>
-          <input type="text" value={twitchName} onChange={e => setTwitchName(e.target.value)} placeholder="MiroMMO" />
-        </div>
-      )}
-
-      <button onClick={handleAdd}>Add</button>
-      {message && <div className={`${styles.msg} ${styles[msgClass]}`}>{message}</div>}
-
-      {showOverride && (
-        <div style={{ marginTop: '10px' }}>
-          <label>
-            <input type="checkbox" checked={overrideDuplicate} onChange={e => setOverrideDuplicate(e.target.checked)} />
-            Override Duplicate
-          </label>
-        </div>
-      )}
-
-      <div className={styles.deleteSection}>
-        <h3>Delete Data</h3>
-        <label>Player:</label>
-        <Autocomplete
-          id="deletePlayer"
-          value={deletePlayer}
-          onChange={setDeletePlayer}
-          getOptions={() => Object.keys(database)}
-          placeholder="Enter player name"
+      {activeTab === 'add' && (
+        <AddPokemonTab
+          db={db.database}
+          playerNames={db.playerNames}
+          allPokemonNames={db.allPokemonNames}
+          onAdd={withToast(db.addShiny, 'Pokemon added!')}
+          isMutating={db.isMutating}
         />
-        <label>Pokemon ID:</label>
-        <input type="number" value={deleteId} onChange={e => setDeleteId(e.target.value)} placeholder="Enter Pokemon ID (Optional)" />
-        <button onClick={handleDelete}>Delete Pokemon</button>
-        {deleteMessage && <p>{deleteMessage}</p>}
-      </div>
-
-      <h3>Preview JSON (Click to Edit):</h3>
-      <pre
-        className={styles.preview}
-        onClick={openJsonEditor}
-        style={{ cursor: 'pointer' }}
-      >
-        {previewText}
-      </pre>
-      {updateMessage && <div className={styles.msg}>{updateMessage}</div>}
-
-      {showJsonEditor && (
-        <div className={styles.modal}>
-          <div className={styles.modalContent}>
-            <h2>Edit JSON</h2>
-            <textarea
-              className={styles.jsonEditor}
-              value={editingJson}
-              onChange={e => setEditingJson(e.target.value)}
-              spellCheck={false}
-            />
-            <div className={styles.modalButtons}>
-              <button onClick={handleUpdateFromEditor}>Save Changes</button>
-              <button onClick={() => setShowJsonEditor(false)}>Cancel</button>
-            </div>
-            {updateMessage && <div className={styles.msg}>{updateMessage}</div>}
-          </div>
-        </div>
       )}
 
-      <h3>Admin Log:</h3>
-      <pre className={styles.logPreview}>
-        {sortedLog.map(entry => {
-          const date = new Date(entry.time)
-          const formattedTime = date.toLocaleString(undefined, {
-            year: 'numeric', month: '2-digit', day: '2-digit',
-            hour: '2-digit', minute: '2-digit', second: '2-digit',
-          })
-          return `Admin: ${entry.admin}\nAction:\n${entry.action}\nTime: ${formattedTime}\n-------------------------\n`
-        }).join('')}
-      </pre>
+      {activeTab === 'edit' && (
+        <EditPlayerTab
+          playerNames={db.playerNames}
+          getPlayerShinies={db.getPlayerShinies}
+          allPokemonNames={db.allPokemonNames}
+          onEditShiny={withToast(db.editShiny, 'Shiny updated!')}
+          onDeleteShiny={withToast(db.deleteShiny, 'Shiny deleted!')}
+          onDeletePlayer={withToast(db.deletePlayer, 'Player deleted!')}
+          isMutating={db.isMutating}
+        />
+      )}
+
+      {activeTab === 'streamers' && (
+        <StreamersTab
+          streamersDB={db.streamersDB}
+          onAdd={withToast(db.addStreamer, 'Streamer added!')}
+          onDelete={withToast(db.deleteStreamer, 'Streamer deleted!')}
+          isMutating={db.isMutating}
+        />
+      )}
+
+      {activeTab === 'log' && (
+        <AdminLogTab logData={db.logData} />
+      )}
+
+      {activeTab === 'json' && (
+        <AdvancedJsonTab
+          database={db.database}
+          streamersDB={db.streamersDB}
+          onUpdateDatabase={withToast(db.updateFullDatabase, 'Database updated!')}
+          onUpdateStreamers={withToast(db.updateFullStreamers, 'Streamers updated!')}
+          isMutating={db.isMutating}
+        />
+      )}
+
+      <Toast toast={toast} onDismiss={dismissToast} />
     </div>
   )
 }
