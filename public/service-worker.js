@@ -1,4 +1,4 @@
-const CACHE_NAME = 'synergy-showcase-v2'
+const CACHE_NAME = 'synergy-showcase-v3'
 const POKEMON_CACHE = 'pokemon-sprites-v1'
 const API_CACHE = 'api-data-v1'
 
@@ -94,21 +94,20 @@ self.addEventListener('fetch', (event) => {
     return
   }
 
-  // API calls - network first with cache fallback, store for 5 minutes
+  // API calls - network first with cache fallback (GET only, POST can't be cached)
   if (url.hostname.includes('hypersmmo.workers.dev')) {
+    if (request.method !== 'GET') return
     event.respondWith(
       caches.open(API_CACHE).then((cache) => {
         return fetch(request)
           .then((response) => {
             if (response.status === 200) {
-              // Store API response with timestamp
               const responseToCache = response.clone()
               cache.put(request, responseToCache)
             }
             return response
           })
           .catch(() => {
-            // If network fails, return cached version
             return cache.match(request).then((cachedResponse) => {
               return cachedResponse || new Response('Offline', { status: 503 })
             })
@@ -118,7 +117,8 @@ self.addEventListener('fetch', (event) => {
     return
   }
 
-  // HTML pages - network first with cache fallback
+  // HTML pages - network first with cache fallback (GET only)
+  if (request.method !== 'GET') return
   event.respondWith(
     fetch(request)
       .then((response) => {
