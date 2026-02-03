@@ -12,15 +12,19 @@
   margin: 20px 0;
 }
 
-.videoContainer a {
+.videoContainer h2 a {
   color: #fff;
   text-decoration: underline;
   text-decoration-color: #9b59b6;
   text-underline-offset: 4px;
 }
 
-.videoContainer a:hover {
+.videoContainer h2 a:hover {
   text-decoration-color: #b870d1;
+}
+
+.videoContainer a {
+  display: inline-block;
 }
 
 .showcaseVideo {
