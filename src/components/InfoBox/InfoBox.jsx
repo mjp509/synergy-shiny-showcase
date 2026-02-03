@@ -16,12 +16,12 @@ export default function InfoBox({ shiny, points }) {
     const handleMouseEnter = () => {
       const spanRect = span.getBoundingClientRect()
       const viewportWidth = window.innerWidth
-      const boxWidth = 160 // Match CSS width
+      const isMobile = window.innerWidth <= 900
+      const boxWidth = isMobile ? 100 : 160 // Match CSS width (mobile vs desktop)
 
       // Check if this is a favorite Pokemon (parent has bigShiny in class name)
       const parentDiv = span.parentElement
       const isFavorite = parentDiv && parentDiv.className && parentDiv.className.includes('bigShiny')
-      const isMobile = window.innerWidth <= 900
 
       let leftPos
 
