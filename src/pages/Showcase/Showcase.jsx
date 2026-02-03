@@ -11,9 +11,9 @@ export default function Showcase() {
   const [search, setSearch] = useState('')
   const [streamers, setStreamers] = useState(null)
   const [visibleCount, setVisibleCount] = useState(10)
-  const [isLoadingMore, setIsLoadingMore] = useState(false)
   const loadMoreRef = useRef(null)
   const timeoutRef = useRef(null)
+  const isLoadingRef = useRef(false)
 
   // Fetch streamers on first load
   useMemo(() => {
@@ -39,14 +39,17 @@ export default function Showcase() {
 
   // Infinite scroll observer with debouncing
   useEffect(() => {
-    if (!loadMoreRef.current || visibleCount >= filteredPlayers.length) {
+    const element = loadMoreRef.current
+
+    // Only set up observer if element exists and there are more items to load
+    if (!element || visibleCount >= filteredPlayers.length) {
       return
     }
 
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && !isLoadingMore) {
-          setIsLoadingMore(true)
+        if (entries[0].isIntersecting && !isLoadingRef.current) {
+          isLoadingRef.current = true
 
           // Debounce to prevent rapid loading
           if (timeoutRef.current) {
@@ -56,35 +59,29 @@ export default function Showcase() {
           timeoutRef.current = setTimeout(() => {
             setVisibleCount(prev => {
               const newCount = prev + 10
-              // Only update if we haven't reached the end
-              if (prev < filteredPlayers.length) {
-                return Math.min(newCount, filteredPlayers.length)
-              }
-              return prev
+              return Math.min(newCount, filteredPlayers.length)
             })
-            setIsLoadingMore(false)
+            isLoadingRef.current = false
           }, 100)
         }
       },
-      { threshold: 0, rootMargin: '200px' }
+      { threshold: 0.1, rootMargin: '100px' }
     )
 
-    observer.observe(loadMoreRef.current)
+    observer.observe(element)
 
     return () => {
-      if (loadMoreRef.current) {
-        observer.unobserve(loadMoreRef.current)
-      }
+      observer.disconnect()
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current)
       }
     }
-  }, [visibleCount, filteredPlayers.length, isLoadingMore])
+  }, [visibleCount, filteredPlayers.length])
 
   // Reset visible count when search changes
   useEffect(() => {
     setVisibleCount(10)
-    setIsLoadingMore(false)
+    isLoadingRef.current = false
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current)
     }

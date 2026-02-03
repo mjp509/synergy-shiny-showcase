@@ -16,10 +16,17 @@ export default function InfoBox({ shiny, points }) {
     const handleMouseEnter = () => {
       const spanRect = span.getBoundingClientRect()
       const viewportWidth = window.innerWidth
-      const boxWidth = 220
+      const boxWidth = 160 // Match CSS width
+
+      // Check if this is a favorite Pokemon (parent has bigShiny in class name)
+      const parentDiv = span.parentElement
+      const isFavorite = parentDiv && parentDiv.className && parentDiv.className.includes('bigShiny')
 
       let leftPos = span.offsetWidth + 8
-      if (spanRect.right + boxWidth + 8 > viewportWidth) {
+
+      // For favorites, always position to the right
+      // For others, check viewport and position accordingly
+      if (!isFavorite && spanRect.right + boxWidth + 8 > viewportWidth) {
         leftPos = -boxWidth - 8
       }
 

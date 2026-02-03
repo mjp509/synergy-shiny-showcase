@@ -224,3 +224,95 @@
 .suggestionActive {
   background-color: #e8bfff;
 }
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  backdrop-filter: blur(4px);
+}
+
+.modalContent {
+  background-color: #1e1e2f;
+  border-radius: 12px;
+  padding: 25px;
+  width: 90%;
+  max-width: 900px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+}
+
+.modalContent h2 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #f0f0f0;
+  font-size: 1.8rem;
+}
+
+.jsonEditor {
+  width: 100%;
+  min-height: 500px;
+  max-height: 60vh;
+  padding: 15px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.95rem;
+  background-color: #2b2b3b;
+  color: #f0f0f0;
+  border: 1px solid #555;
+  border-radius: 8px;
+  resize: vertical;
+  white-space: pre;
+  overflow: auto;
+  box-sizing: border-box;
+}
+
+.jsonEditor:focus {
+  outline: none;
+  border-color: #9b59b6;
+  box-shadow: 0 0 8px rgba(155, 89, 182, 0.5);
+}
+
+.modalButtons {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+  justify-content: flex-end;
+}
+
+.modalButtons button {
+  margin-top: 0;
+  padding: 12px 25px;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.modalButtons button:first-child {
+  background-color: #4caf50;
+  color: #fff;
+  border: none;
+}
+
+.modalButtons button:first-child:hover {
+  background-color: #45a049;
+}
+
+.modalButtons button:last-child {
+  background-color: #555;
+  color: #fff;
+  border: none;
+}
+
+.modalButtons button:last-child:hover {
+  background-color: #666;
+}

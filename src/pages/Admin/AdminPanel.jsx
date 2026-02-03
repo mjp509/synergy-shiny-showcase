@@ -103,6 +103,8 @@ export default function AdminPanel() {
 
   // Preview
   const [previewText, setPreviewText] = useState('')
+  const [showJsonEditor, setShowJsonEditor] = useState(false)
+  const [editingJson, setEditingJson] = useState('')
 
   useEffect(() => {
     if (!auth) navigate('/admin')
@@ -228,6 +230,37 @@ export default function AdminPanel() {
         setMessage('Failed to add streamer.')
         setMsgClass('error')
       }
+    }
+  }
+
+  function openJsonEditor() {
+    setEditingJson(previewText)
+    setShowJsonEditor(true)
+    setUpdateMessage('')
+  }
+
+  async function handleUpdateFromEditor() {
+    if (!auth) return
+    let updatedData
+    try {
+      updatedData = JSON.parse(editingJson)
+    } catch (err) {
+      setUpdateMessage('Invalid JSON: ' + err.message)
+      return
+    }
+    const endpoint = mode === 'pokemon' ? API.updateDatabase : API.updateStreamers
+    const result = await postData(endpoint, {
+      username: auth.name, password: auth.password, data: updatedData,
+      action: `Manual JSON edit (${mode})`,
+    })
+    if (result.success) {
+      if (mode === 'pokemon') setDatabase(updatedData)
+      else setStreamersDB(updatedData)
+      setUpdateMessage('Database successfully updated!')
+      setShowJsonEditor(false)
+      await loadDatabase()
+    } else {
+      setUpdateMessage('Failed to update.')
     }
   }
 
@@ -405,17 +438,34 @@ export default function AdminPanel() {
         {deleteMessage && <p>{deleteMessage}</p>}
       </div>
 
-      <h3>Preview JSON:</h3>
+      <h3>Preview JSON (Click to Edit):</h3>
       <pre
         className={styles.preview}
-        contentEditable
-        suppressContentEditableWarning
-        onBlur={e => setPreviewText(e.currentTarget.textContent)}
+        onClick={openJsonEditor}
+        style={{ cursor: 'pointer' }}
       >
         {previewText}
       </pre>
-      <button onClick={handleUpdate}>Update JSON</button>
       {updateMessage && <div className={styles.msg}>{updateMessage}</div>}
+
+      {showJsonEditor && (
+        <div className={styles.modal}>
+          <div className={styles.modalContent}>
+            <h2>Edit JSON</h2>
+            <textarea
+              className={styles.jsonEditor}
+              value={editingJson}
+              onChange={e => setEditingJson(e.target.value)}
+              spellCheck={false}
+            />
+            <div className={styles.modalButtons}>
+              <button onClick={handleUpdateFromEditor}>Save Changes</button>
+              <button onClick={() => setShowJsonEditor(false)}>Cancel</button>
+            </div>
+            {updateMessage && <div className={styles.msg}>{updateMessage}</div>}
+          </div>
+        </div>
+      )}
 
       <h3>Admin Log:</h3>
       <pre className={styles.logPreview}>
