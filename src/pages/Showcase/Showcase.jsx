@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useRef } from 'react'
+import { useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { useDatabase } from '../../hooks/useDatabase'
 import PlayerCard from '../../components/PlayerCard/PlayerCard'
@@ -10,10 +10,6 @@ export default function Showcase() {
   const { data, isLoading, error } = useDatabase()
   const [search, setSearch] = useState('')
   const [streamers, setStreamers] = useState(null)
-  const [visibleCount, setVisibleCount] = useState(30)
-  const loadMoreRef = useRef(null)
-  const timeoutRef = useRef(null)
-  const isLoadingRef = useRef(false)
 
   // Fetch streamers on first load
   useMemo(() => {
@@ -45,55 +41,6 @@ export default function Showcase() {
     })
     return map
   }, [sortedPlayers])
-
-  // Infinite scroll observer
-  useEffect(() => {
-    const element = loadMoreRef.current
-
-    // Only set up observer if element exists and there are more items to load
-    if (!element || visibleCount >= filteredPlayers.length) {
-      isLoadingRef.current = false
-      return
-    }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && !isLoadingRef.current) {
-          isLoadingRef.current = true
-
-          // Load more items immediately for smoother experience
-          setVisibleCount(prev => {
-            const newCount = prev + 30
-            return Math.min(newCount, filteredPlayers.length)
-          })
-
-          // Reset loading state after a short delay
-          setTimeout(() => {
-            isLoadingRef.current = false
-          }, 100)
-        }
-      },
-      { threshold: 0, rootMargin: '300px' }
-    )
-
-    observer.observe(element)
-
-    return () => {
-      observer.disconnect()
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current)
-      }
-    }
-  }, [visibleCount, filteredPlayers.length])
-
-  // Reset visible count when search changes
-  useEffect(() => {
-    setVisibleCount(30)
-    isLoadingRef.current = false
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current)
-    }
-  }, [search])
 
   if (isLoading) return <div className="message">Loading...</div>
   if (error) return <div className="message">Error loading data</div>
@@ -129,7 +76,7 @@ export default function Showcase() {
       <SearchBar value={search} onChange={setSearch} />
 
       <div className={styles.showcase}>
-        {filteredPlayers.slice(0, visibleCount).map(([player, playerData]) => (
+        {filteredPlayers.map(([player, playerData]) => (
           <PlayerCard
             key={player}
             player={player}
@@ -139,14 +86,6 @@ export default function Showcase() {
           />
         ))}
       </div>
-
-      {visibleCount < filteredPlayers.length && (
-        <div ref={loadMoreRef} style={{ textAlign: 'center', margin: '30px 0', padding: '20px' }}>
-          <p style={{ color: '#aaa', fontSize: '0.9rem' }}>
-            Loading more players...
-          </p>
-        </div>
-      )}
     </div>
   )
 }
