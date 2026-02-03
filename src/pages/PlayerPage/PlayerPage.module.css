@@ -55,6 +55,10 @@
   position: relative;
 }
 
+.bigShinyWrapper:hover {
+  z-index: 50;
+}
+
 .bigShinyWrapper span > div {
   transform: scale(1.3);
   transition: transform 0.2s;
