@@ -100,13 +100,13 @@ export default function ShinyForm({ initialData, onSubmit, submitLabel = 'Add', 
 
       <label htmlFor="shinyMonth">Month:</label>
       <select id="shinyMonth" value={form.Month} onChange={e => dispatch({ type: 'SET_FIELD', field: 'Month', value: e.target.value })}>
-        {isEditMode && <option value="">--</option>}
+        <option value="">--</option>
         {MONTHS.map(m => <option key={m} value={m}>{m}</option>)}
       </select>
 
       <label htmlFor="shinyYear">Year:</label>
       <select id="shinyYear" value={form.Year} onChange={e => dispatch({ type: 'SET_FIELD', field: 'Year', value: e.target.value })}>
-        {isEditMode && <option value="">--</option>}
+        <option value="">--</option>
         {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
       </select>
 
