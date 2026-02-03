@@ -36,7 +36,7 @@ queryClient.prefetchQuery({
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
+      <BrowserRouter basename="/synergy-shiny-showcase">
         <AdminProvider>
           <App />
         </AdminProvider>
