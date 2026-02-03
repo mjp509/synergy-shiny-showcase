@@ -10,6 +10,7 @@ export default function Showcase() {
   const { data, isLoading, error } = useDatabase()
   const [search, setSearch] = useState('')
   const [streamers, setStreamers] = useState(null)
+  const [visibleCount, setVisibleCount] = useState(10)
 
   // Fetch streamers on first load
   useMemo(() => {
@@ -67,7 +68,7 @@ export default function Showcase() {
       <SearchBar value={search} onChange={setSearch} />
 
       <div className={styles.showcase}>
-        {filteredPlayers.map(([player, playerData], index) => {
+        {filteredPlayers.slice(0, visibleCount).map(([player, playerData], index) => {
           const originalIndex = sortedPlayers.findIndex(([p]) => p === player)
           return (
             <PlayerCard
@@ -80,6 +81,36 @@ export default function Showcase() {
           )
         })}
       </div>
+
+      {visibleCount < filteredPlayers.length && (
+        <div style={{ textAlign: 'center', margin: '30px 0' }}>
+          <button
+            onClick={() => setVisibleCount(prev => prev + 10)}
+            style={{
+              padding: '12px 24px',
+              fontSize: '1rem',
+              fontWeight: 'bold',
+              color: '#fff',
+              background: 'linear-gradient(135deg, #9b59b6, #8e44ad)',
+              border: 'none',
+              borderRadius: '25px',
+              cursor: 'pointer',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+              transition: 'all 0.3s ease'
+            }}
+            onMouseOver={(e) => {
+              e.target.style.transform = 'scale(1.05)'
+              e.target.style.boxShadow = '0 6px 16px rgba(0,0,0,0.4)'
+            }}
+            onMouseOut={(e) => {
+              e.target.style.transform = 'scale(1)'
+              e.target.style.boxShadow = '0 4px 12px rgba(0,0,0,0.3)'
+            }}
+          >
+            Load More Players ({filteredPlayers.length - visibleCount} remaining)
+          </button>
+        </div>
+      )}
     </div>
   )
 }
