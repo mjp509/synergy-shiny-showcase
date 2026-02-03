@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { getAssetUrl } from '../../utils/assets'
 import styles from './Navbar.module.css'
@@ -13,8 +14,26 @@ const NAV_ITEMS = [
 ]
 
 export default function Navbar() {
+  const [menuOpen, setMenuOpen] = useState(false)
+
+  const handleLinkClick = () => {
+    setMenuOpen(false)
+  }
+
   return (
     <nav className={styles.nav}>
+      {/* Hamburger button for mobile */}
+      <button
+        className={styles.hamburger}
+        onClick={() => setMenuOpen(!menuOpen)}
+        aria-label="Toggle menu"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      {/* Desktop navigation */}
       <ul className={styles.list}>
         {NAV_ITEMS.map(item => (
           <li key={item.to}>
@@ -30,6 +49,8 @@ export default function Navbar() {
           </li>
         ))}
       </ul>
+
+      {/* Discord icon for desktop */}
       <a
         href="https://discord.gg/2BEUq6fWAj"
         target="_blank"
@@ -38,6 +59,38 @@ export default function Navbar() {
       >
         <img src={getAssetUrl('images/discord.png')} alt="Discord" />
       </a>
+
+      {/* Mobile menu overlay */}
+      {menuOpen && (
+        <>
+          <div className={styles.overlay} onClick={() => setMenuOpen(false)} />
+          <div className={styles.mobileMenu}>
+            {NAV_ITEMS.map(item => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                end={item.to === '/'}
+                className={({ isActive }) =>
+                  `${styles.mobileLink} ${isActive ? styles.mobileActive : ''}`
+                }
+                onClick={handleLinkClick}
+              >
+                {item.label}
+              </NavLink>
+            ))}
+            <a
+              href="https://discord.gg/2BEUq6fWAj"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.mobileDiscord}
+              onClick={handleLinkClick}
+            >
+              <img src={getAssetUrl('images/discord.png')} alt="Discord" />
+              Join Discord
+            </a>
+          </div>
+        </>
+      )}
     </nav>
   )
 }
