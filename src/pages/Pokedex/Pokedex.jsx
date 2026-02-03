@@ -42,7 +42,18 @@ export default function Pokedex() {
     const text = owners.length ? `Owned by: ${owners.join(', ')}` : ''
     setHoverInfo(text)
     const rect = target.getBoundingClientRect()
-    setHoverPos({ x: rect.right + 8, y: rect.top })
+    const viewportWidth = window.innerWidth
+    const infoBoxWidth = 250
+
+    // Position to the right by default
+    let xPos = rect.right + 8
+
+    // If it would go off-screen, position to the left instead
+    if (xPos + infoBoxWidth > viewportWidth) {
+      xPos = rect.left - infoBoxWidth - 8
+    }
+
+    setHoverPos({ x: xPos, y: rect.top })
   }, [ownerMap])
 
   const handleMouseOut = useCallback((e) => {

@@ -65,6 +65,13 @@
 
 .showcase {
   padding: 0 20px 60px 20px;
+  box-sizing: border-box;
+}
+
+@media (max-width: 900px) {
+  .showcase {
+    padding: 12px 12px 60px 12px;
+  }
 }
 
 .grid {
