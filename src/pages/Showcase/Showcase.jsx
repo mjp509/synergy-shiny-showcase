@@ -10,7 +10,7 @@ export default function Showcase() {
   const { data, isLoading, error } = useDatabase()
   const [search, setSearch] = useState('')
   const [streamers, setStreamers] = useState(null)
-  const [visibleCount, setVisibleCount] = useState(10)
+  const [visibleCount, setVisibleCount] = useState(30)
   const loadMoreRef = useRef(null)
   const timeoutRef = useRef(null)
   const isLoadingRef = useRef(false)
@@ -37,6 +37,15 @@ export default function Showcase() {
     return sortedPlayers.filter(([name]) => name.toLowerCase().includes(lower))
   }, [sortedPlayers, search])
 
+  // Create rank map for O(1) lookup instead of O(n) findIndex on every render
+  const rankMap = useMemo(() => {
+    const map = new Map()
+    sortedPlayers.forEach(([player], index) => {
+      map.set(player, index)
+    })
+    return map
+  }, [sortedPlayers])
+
   // Infinite scroll observer with debouncing
   useEffect(() => {
     const element = loadMoreRef.current
@@ -58,14 +67,14 @@ export default function Showcase() {
 
           timeoutRef.current = setTimeout(() => {
             setVisibleCount(prev => {
-              const newCount = prev + 10
+              const newCount = prev + 30
               return Math.min(newCount, filteredPlayers.length)
             })
             isLoadingRef.current = false
-          }, 100)
+          }, 200)
         }
       },
-      { threshold: 0.1, rootMargin: '100px' }
+      { threshold: 0.1, rootMargin: '50px' }
     )
 
     observer.observe(element)
@@ -80,7 +89,7 @@ export default function Showcase() {
 
   // Reset visible count when search changes
   useEffect(() => {
-    setVisibleCount(10)
+    setVisibleCount(30)
     isLoadingRef.current = false
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current)
@@ -121,18 +130,15 @@ export default function Showcase() {
       <SearchBar value={search} onChange={setSearch} />
 
       <div className={styles.showcase}>
-        {filteredPlayers.slice(0, visibleCount).map(([player, playerData], index) => {
-          const originalIndex = sortedPlayers.findIndex(([p]) => p === player)
-          return (
-            <PlayerCard
-              key={player}
-              player={player}
-              data={playerData}
-              rank={originalIndex}
-              streamers={streamers}
-            />
-          )
-        })}
+        {filteredPlayers.slice(0, visibleCount).map(([player, playerData]) => (
+          <PlayerCard
+            key={player}
+            player={player}
+            data={playerData}
+            rank={rankMap.get(player)}
+            streamers={streamers}
+          />
+        ))}
       </div>
 
       {visibleCount < filteredPlayers.length && (
