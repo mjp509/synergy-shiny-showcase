@@ -11,7 +11,9 @@ export default function Showcase() {
   const [search, setSearch] = useState('')
   const [streamers, setStreamers] = useState(null)
   const [visibleCount, setVisibleCount] = useState(10)
+  const [isLoadingMore, setIsLoadingMore] = useState(false)
   const loadMoreRef = useRef(null)
+  const timeoutRef = useRef(null)
 
   // Fetch streamers on first load
   useMemo(() => {
@@ -35,15 +37,25 @@ export default function Showcase() {
     return sortedPlayers.filter(([name]) => name.toLowerCase().includes(lower))
   }, [sortedPlayers, search])
 
-  // Infinite scroll observer
+  // Infinite scroll observer with debouncing
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && visibleCount < filteredPlayers.length) {
-          setVisibleCount(prev => prev + 10)
+        if (entries[0].isIntersecting && visibleCount < filteredPlayers.length && !isLoadingMore) {
+          setIsLoadingMore(true)
+
+          // Debounce to prevent rapid loading
+          if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current)
+          }
+
+          timeoutRef.current = setTimeout(() => {
+            setVisibleCount(prev => prev + 10)
+            setIsLoadingMore(false)
+          }, 300)
         }
       },
-      { threshold: 0.1 }
+      { threshold: 0.1, rootMargin: '100px' }
     )
 
     if (loadMoreRef.current) {
@@ -54,12 +66,19 @@ export default function Showcase() {
       if (loadMoreRef.current) {
         observer.unobserve(loadMoreRef.current)
       }
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
+      }
     }
-  }, [visibleCount, filteredPlayers.length])
+  }, [visibleCount, filteredPlayers.length, isLoadingMore])
 
   // Reset visible count when search changes
   useEffect(() => {
     setVisibleCount(10)
+    setIsLoadingMore(false)
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current)
+    }
   }, [search])
 
   if (isLoading) return <div className="message">Loading...</div>
