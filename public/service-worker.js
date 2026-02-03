@@ -1,4 +1,7 @@
-const CACHE_NAME = 'synergy-showcase-v1'
+const CACHE_NAME = 'synergy-showcase-v2'
+const POKEMON_CACHE = 'pokemon-sprites-v1'
+const API_CACHE = 'api-data-v1'
+
 const ASSETS_TO_CACHE = [
   '/synergy-shiny-showcase/',
   '/synergy-shiny-showcase/index.html',
@@ -17,11 +20,13 @@ self.addEventListener('install', (event) => {
 
 // Activate event - clean up old caches
 self.addEventListener('activate', (event) => {
+  const validCaches = [CACHE_NAME, POKEMON_CACHE, API_CACHE]
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME) {
+          if (!validCaches.includes(cacheName)) {
+            console.log('Deleting old cache:', cacheName)
             return caches.delete(cacheName)
           }
         })
@@ -36,7 +41,31 @@ self.addEventListener('fetch', (event) => {
   const { request } = event
   const url = new URL(request.url)
 
-  // Cache strategy for different asset types
+  // Aggressive caching for Pokemon sprites (cache-first, never expire)
+  if (url.hostname === 'img.pokemondb.net') {
+    event.respondWith(
+      caches.open(POKEMON_CACHE).then((cache) => {
+        return cache.match(request).then((cachedResponse) => {
+          if (cachedResponse) {
+            return cachedResponse
+          }
+          // Not in cache, fetch and store permanently
+          return fetch(request).then((response) => {
+            if (response.status === 200) {
+              cache.put(request, response.clone())
+            }
+            return response
+          }).catch(() => {
+            // Return a fallback or nothing if offline
+            return new Response('', { status: 404 })
+          })
+        })
+      })
+    )
+    return
+  }
+
+  // Cache strategy for local static assets (cache-first)
   if (
     request.destination === 'image' ||
     request.url.includes('/assets/') ||
@@ -46,14 +75,12 @@ self.addEventListener('fetch', (event) => {
     request.url.includes('.css') ||
     request.url.includes('.js')
   ) {
-    // Cache first strategy for static assets
     event.respondWith(
       caches.match(request).then((cachedResponse) => {
         if (cachedResponse) {
           return cachedResponse
         }
         return fetch(request).then((response) => {
-          // Only cache successful responses
           if (response.status === 200) {
             const responseToCache = response.clone()
             caches.open(CACHE_NAME).then((cache) => {
@@ -64,27 +91,45 @@ self.addEventListener('fetch', (event) => {
         })
       })
     )
-  } else if (url.hostname.includes('hypersmmo.workers.dev')) {
-    // Network first for API calls
+    return
+  }
+
+  // API calls - network first with cache fallback, store for 5 minutes
+  if (url.hostname.includes('hypersmmo.workers.dev')) {
     event.respondWith(
-      fetch(request).catch(() => {
-        return caches.match(request)
+      caches.open(API_CACHE).then((cache) => {
+        return fetch(request)
+          .then((response) => {
+            if (response.status === 200) {
+              // Store API response with timestamp
+              const responseToCache = response.clone()
+              cache.put(request, responseToCache)
+            }
+            return response
+          })
+          .catch(() => {
+            // If network fails, return cached version
+            return cache.match(request).then((cachedResponse) => {
+              return cachedResponse || new Response('Offline', { status: 503 })
+            })
+          })
       })
     )
-  } else {
-    // Network first for HTML pages
-    event.respondWith(
-      fetch(request)
-        .then((response) => {
-          const responseToCache = response.clone()
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(request, responseToCache)
-          })
-          return response
-        })
-        .catch(() => {
-          return caches.match(request)
-        })
-    )
+    return
   }
+
+  // HTML pages - network first with cache fallback
+  event.respondWith(
+    fetch(request)
+      .then((response) => {
+        const responseToCache = response.clone()
+        caches.open(CACHE_NAME).then((cache) => {
+          cache.put(request, responseToCache)
+        })
+        return response
+      })
+      .catch(() => {
+        return caches.match(request)
+      })
+  )
 })
