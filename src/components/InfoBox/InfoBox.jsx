@@ -21,13 +21,14 @@ export default function InfoBox({ shiny, points }) {
       // Check if this is a favorite Pokemon (parent has bigShiny in class name)
       const parentDiv = span.parentElement
       const isFavorite = parentDiv && parentDiv.className && parentDiv.className.includes('bigShiny')
+      const isMobile = window.innerWidth <= 900
 
       let leftPos
 
       if (isFavorite) {
-        // For favorites, position far to the right to avoid scaled/glowing item
-        // Favorites are scaled 1.3x with glow, so need extra clearance
-        leftPos = span.offsetWidth + 60
+        // For favorites, position to the right to avoid scaled/glowing item
+        // Use smaller offset on mobile since InfoBox is smaller
+        leftPos = isMobile ? span.offsetWidth + 25 : span.offsetWidth + 60
       } else {
         // For normal items, position to the right or left based on viewport
         leftPos = span.offsetWidth + 8

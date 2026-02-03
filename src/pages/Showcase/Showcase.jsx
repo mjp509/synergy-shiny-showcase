@@ -46,12 +46,13 @@ export default function Showcase() {
     return map
   }, [sortedPlayers])
 
-  // Infinite scroll observer with debouncing
+  // Infinite scroll observer
   useEffect(() => {
     const element = loadMoreRef.current
 
     // Only set up observer if element exists and there are more items to load
     if (!element || visibleCount >= filteredPlayers.length) {
+      isLoadingRef.current = false
       return
     }
 
@@ -60,21 +61,19 @@ export default function Showcase() {
         if (entries[0].isIntersecting && !isLoadingRef.current) {
           isLoadingRef.current = true
 
-          // Debounce to prevent rapid loading
-          if (timeoutRef.current) {
-            clearTimeout(timeoutRef.current)
-          }
+          // Load more items immediately for smoother experience
+          setVisibleCount(prev => {
+            const newCount = prev + 30
+            return Math.min(newCount, filteredPlayers.length)
+          })
 
-          timeoutRef.current = setTimeout(() => {
-            setVisibleCount(prev => {
-              const newCount = prev + 30
-              return Math.min(newCount, filteredPlayers.length)
-            })
+          // Reset loading state after a short delay
+          setTimeout(() => {
             isLoadingRef.current = false
-          }, 200)
+          }, 100)
         }
       },
-      { threshold: 0.1, rootMargin: '50px' }
+      { threshold: 0, rootMargin: '300px' }
     )
 
     observer.observe(element)

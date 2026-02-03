@@ -40,3 +40,20 @@ span:hover .infoBox {
   opacity: 1;
   pointer-events: none;
 }
+
+@media (max-width: 900px) {
+  .infoBox {
+    width: 100px;
+    padding: 6px 8px;
+    font-size: 0.7rem;
+  }
+
+  .infoBox strong {
+    font-size: 0.75rem;
+    margin-bottom: 2px;
+  }
+
+  .detail {
+    font-size: 0.65rem;
+  }
+}
