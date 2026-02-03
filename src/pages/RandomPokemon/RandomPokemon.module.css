@@ -28,6 +28,10 @@
   margin-bottom: 20px;
 }
 
+.usernameContainer > div:first-child {
+  margin-bottom: 12px;
+}
+
 .usernameInput {
   padding: 6px 12px;
   border-radius: 10px;
@@ -122,12 +126,13 @@
 
 /* Tier filters */
 .tierFilters {
-  margin-bottom: 20px;
+  margin: 0 auto 20px auto;
   text-align: left;
   display: inline-block;
   background: rgba(60, 40, 90, 0.85);
   padding: 12px 16px;
   border-radius: 12px;
+  center: center;
 }
 
 .tierFilters h3 {
@@ -259,7 +264,8 @@
 
 /* Generate button */
 .generateBtn {
-  margin: 18px 0;
+  display: block;
+  margin: 18px auto;
   padding: 14px 32px;
   font-size: 1.15rem;
   font-weight: 700;
