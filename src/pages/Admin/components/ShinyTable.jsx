@@ -23,16 +23,17 @@ export default function ShinyTable({ shinies, onEdit, onDelete }) {
         <tbody>
           {entries.map(([id, shiny]) => {
             const traits = []
-            if (shiny.Egg === 'Yes') traits.push('Egg')
-            if (shiny.Alpha === 'Yes') traits.push('Alpha')
-            if (shiny['Secret Shiny'] === 'Yes') traits.push('Secret')
-            if (shiny.Sold === 'Yes') traits.push('Sold')
-            if (shiny.Event === 'Yes') traits.push('Event')
-            if (shiny.Favourite === 'Yes') traits.push('Fav')
-            if (shiny.Legendary === 'Yes') traits.push('Legend')
-            if (shiny.MysteriousBall === 'Yes') traits.push('Mystery')
-            if (shiny.Safari === 'Yes') traits.push('Safari')
-            if (shiny['Honey Tree'] === 'Yes') traits.push('Honey')
+            if (shiny['Secret Shiny'] === 'Yes') traits.push({ label: 'Secret', cls: 'traitSecret' })
+            if (shiny.Alpha === 'Yes') traits.push({ label: 'Alpha', cls: 'traitAlpha' })
+            if (shiny.Egg === 'Yes') traits.push({ label: 'Egg', cls: 'traitEgg' })
+            if (shiny.Safari === 'Yes') traits.push({ label: 'Safari', cls: 'traitSafari' })
+            if (shiny['Honey Tree'] === 'Yes') traits.push({ label: 'Honey', cls: 'traitHoney' })
+            if (shiny.Sold === 'Yes') traits.push({ label: 'Sold', cls: 'traitSold' })
+            if (shiny.Event === 'Yes') traits.push({ label: 'Event', cls: 'traitEvent' })
+            if (shiny.Favourite === 'Yes') traits.push({ label: 'Fav', cls: 'traitFav' })
+            if (shiny.Legendary === 'Yes') traits.push({ label: 'Legend', cls: 'traitLegend' })
+            if (shiny.MysteriousBall === 'Yes') traits.push({ label: 'Mystery', cls: 'traitMystery' })
+            if (shiny.Reaction === 'Yes') traits.push({ label: 'Reaction', cls: 'traitReaction' })
 
             const spriteName = shiny.Pokemon.toLowerCase().replace(/[^a-z0-9-]/g, '')
 
@@ -51,7 +52,7 @@ export default function ShinyTable({ shinies, onEdit, onDelete }) {
                 <td>
                   <div className={styles.traitBadges}>
                     {traits.map(t => (
-                      <span key={t} className={styles.traitBadge}>{t}</span>
+                      <span key={t.label} className={`${styles.traitBadge} ${styles[t.cls]}`}>{t.label}</span>
                     ))}
                     {traits.length === 0 && <span className={styles.traitNone}>-</span>}
                   </div>
