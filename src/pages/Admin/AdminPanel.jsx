@@ -378,11 +378,36 @@ export default function AdminPanel() {
             placeholder="mew"
           />
 
-          <label>Month:</label>
-          <input type="text" value={month} onChange={e => setMonth(e.target.value)} placeholder="January" />
+          <label htmlFor="month">Month:</label>
+          <select id="month" value={month} onChange={e => setMonth(e.target.value)}>
+            <option value="January">January</option>
+            <option value="February">February</option>
+            <option value="March">March</option>
+            <option value="April">April</option>
+            <option value="May">May</option>
+            <option value="June">June</option>
+            <option value="July">July</option>
+            <option value="August">August</option>
+            <option value="September">September</option>
+            <option value="October">October</option>
+            <option value="November">November</option>
+            <option value="December">December</option>
+          </select>
 
-          <label>Year:</label>
-          <input type="text" value={year} onChange={e => setYear(e.target.value)} placeholder="2026" />
+          <label htmlFor="year">Year:</label>
+          <select id="year" value={year} onChange={e => setYear(e.target.value)}>
+            <option value="2020">2020</option>
+            <option value="2021">2021</option>
+            <option value="2022">2022</option>
+            <option value="2023">2023</option>
+            <option value="2024">2024</option>
+            <option value="2025">2025</option>
+            <option value="2026">2026</option>
+            <option value="2027">2027</option>
+            <option value="2028">2028</option>
+            <option value="2029">2029</option>
+            <option value="2030">2030</option>
+          </select>
 
           <SelectField label="Egg" id="egg" value={egg} onChange={setEgg} />
           <SelectField label="Favourite" id="favourite" value={favourite} onChange={setFavourite} />
