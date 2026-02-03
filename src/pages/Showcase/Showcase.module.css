@@ -32,6 +32,14 @@
   max-width: 100%;
   height: auto;
   display: inline-block;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+.showcaseVideo:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(155, 89, 182, 0.8), 0 0 40px rgba(155, 89, 182, 0.4);
 }
 
 @media (max-width: 900px) {
