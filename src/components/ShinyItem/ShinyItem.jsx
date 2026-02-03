@@ -1,5 +1,6 @@
 import { memo } from 'react'
 import InfoBox from '../InfoBox/InfoBox'
+import { getAssetUrl } from '../../utils/assets'
 import styles from './ShinyItem.module.css'
 
 const TRAIT_CLASSES = {
@@ -9,13 +10,13 @@ const TRAIT_CLASSES = {
 }
 
 const ICON_MAP = {
-  'Secret Shiny': ['/images/Shiny Showcase/secretshiny.png', 'secretIcon'],
-  'Honey Tree': ['/images/Shiny Showcase/honey.png', 'honeyIcon'],
-  Egg: ['/images/Shiny Showcase/egg.png', 'eggIcon'],
-  Safari: ['/images/Shiny Showcase/safari.png', 'safariIcon'],
-  Event: ['/images/Shiny Showcase/event.png', 'eventIcon'],
-  MysteriousBall: ['/images/Shiny Showcase/mysteriousball.gif', 'mysteriousballGif'],
-  Favourite: ['/images/Shiny Showcase/heart.png', 'favouriteHeart'],
+  'Secret Shiny': [getAssetUrl('images/Shiny Showcase/secretshiny.png'), 'secretIcon'],
+  'Honey Tree': [getAssetUrl('images/Shiny Showcase/honey.png'), 'honeyIcon'],
+  Egg: [getAssetUrl('images/Shiny Showcase/egg.png'), 'eggIcon'],
+  Safari: [getAssetUrl('images/Shiny Showcase/safari.png'), 'safariIcon'],
+  Event: [getAssetUrl('images/Shiny Showcase/event.png'), 'eventIcon'],
+  MysteriousBall: [getAssetUrl('images/Shiny Showcase/mysteriousball.gif'), 'mysteriousballGif'],
+  Favourite: [getAssetUrl('images/Shiny Showcase/heart.png'), 'favouriteHeart'],
 }
 
 function ShinyItem({ shiny, points }) {
@@ -42,7 +43,7 @@ function ShinyItem({ shiny, points }) {
     icons.push(
       <img
         key="reaction"
-        src="/images/Shiny Showcase/reaction.png"
+        src={getAssetUrl('images/Shiny Showcase/reaction.png')}
         className={styles.reactionIcon}
         alt="Reaction"
         onClick={e => {
@@ -66,7 +67,7 @@ function ShinyItem({ shiny, points }) {
           loading="lazy"
         />
         <img
-          src="/images/Shiny Showcase/sparkle.gif"
+          src={getAssetUrl('images/Shiny Showcase/sparkle.gif')}
           className={styles.particleGif}
           alt=""
         />

@@ -1,6 +1,7 @@
 import { memo } from 'react'
 import { Link } from 'react-router-dom'
 import ShinyItem from '../ShinyItem/ShinyItem'
+import { getAssetUrl } from '../../utils/assets'
 import styles from './PlayerCard.module.css'
 
 function PlayerCard({ player, data, rank, streamers }) {
@@ -13,11 +14,11 @@ function PlayerCard({ player, data, rank, streamers }) {
 
   const trophyImg =
     rank === 0
-      ? '/images/Shiny Showcase/gold.png'
+      ? getAssetUrl('images/Shiny Showcase/gold.png')
       : rank === 1
-        ? '/images/Shiny Showcase/silver.png'
+        ? getAssetUrl('images/Shiny Showcase/silver.png')
         : rank === 2
-          ? '/images/Shiny Showcase/bronze.png'
+          ? getAssetUrl('images/Shiny Showcase/bronze.png')
           : null
 
   const sparkle = rank >= 3
@@ -34,7 +35,7 @@ function PlayerCard({ player, data, rank, streamers }) {
             rel="noopener noreferrer"
             className={styles.twitchLink}
           >
-            <img src="/images/twitch.png" alt="Twitch" className={styles.twitchIcon} />
+            <img src={getAssetUrl('images/twitch.png')} alt="Twitch" className={styles.twitchIcon} />
           </a>
         )}
         <Link

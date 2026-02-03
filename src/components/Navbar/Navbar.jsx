@@ -1,4 +1,5 @@
 import { NavLink } from 'react-router-dom'
+import { getAssetUrl } from '../../utils/assets'
 import styles from './Navbar.module.css'
 
 const NAV_ITEMS = [
@@ -35,7 +36,7 @@ export default function Navbar() {
         rel="noopener noreferrer"
         className={styles.discordLink}
       >
-        <img src="/images/discord.png" alt="Discord" />
+        <img src={getAssetUrl('images/discord.png')} alt="Discord" />
       </a>
     </nav>
   )

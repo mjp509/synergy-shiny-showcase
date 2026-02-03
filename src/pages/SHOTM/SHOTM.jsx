@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { useDatabase } from '../../hooks/useDatabase'
 import { useTierData } from '../../hooks/useTierData'
 import ShinyItem from '../../components/ShinyItem/ShinyItem'
+import { getAssetUrl } from '../../utils/assets'
 import styles from './SHOTM.module.css'
 
 const TRAIT_POINTS = {
@@ -172,7 +173,7 @@ export default function SHOTM() {
         Team Synergy SHOTM
         <Link to="/admin" className="invisible-link">!</Link>
       </h1>
-      <img src="/images/pagebreak.png" alt="Page Break" className="pagebreak" />
+      <img src={getAssetUrl('images/pagebreak.png')} alt="Page Break" className="pagebreak" />
 
       {/* Collapsible sections */}
       <div className={styles.alltimeContainer}>
@@ -302,7 +303,7 @@ export default function SHOTM() {
               const isUp = currentRank < prevRank
               arrow = (
                 <img
-                  src={isUp ? '/images/up_arrow.png' : '/images/down_arrow.png'}
+                  src={isUp ? getAssetUrl('images/up_arrow.png') : getAssetUrl('images/down_arrow.png')}
                   alt={isUp ? 'Moved Up' : 'Moved Down'}
                   className={`${styles.rankArrow} ${isUp ? styles.rankArrowUp : styles.rankArrowDown}`}
                 />

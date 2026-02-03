@@ -1,6 +1,7 @@
 import { useState, useMemo, useRef, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { useDatabase } from '../../hooks/useDatabase'
+import { getAssetUrl } from '../../utils/assets'
 import generationData from '../../data/generation.json'
 import styles from './Pokedex.module.css'
 
@@ -58,7 +59,7 @@ export default function Pokedex() {
         Team Synergy PokeDex
         <Link to="/admin" className="invisible-link">!</Link>
       </h1>
-      <img src="/images/pagebreak.png" alt="Page Break" className="pagebreak" />
+      <img src={getAssetUrl('images/pagebreak.png')} alt="Page Break" className="pagebreak" />
 
       <div className={styles.toggleContainer}>
         <div className={styles.toggle}>

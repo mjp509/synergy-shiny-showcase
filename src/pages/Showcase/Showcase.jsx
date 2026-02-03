@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { useDatabase } from '../../hooks/useDatabase'
 import PlayerCard from '../../components/PlayerCard/PlayerCard'
 import SearchBar from '../../components/SearchBar/SearchBar'
+import { getAssetUrl } from '../../utils/assets'
 import styles from './Showcase.module.css'
 
 export default function Showcase() {
@@ -42,12 +43,12 @@ export default function Showcase() {
         <Link to="/admin" className="invisible-link">!</Link>
       </h1>
 
-      <img src="/images/pagebreak.png" alt="Page Break" className="pagebreak" />
+      <img src={getAssetUrl('images/pagebreak.png')} alt="Page Break" className="pagebreak" />
 
       <div className={styles.videoContainer}>
         <a href="https://www.youtube.com/watch?v=ngejc1FMWqg" target="_blank" rel="noopener noreferrer">
           <h2>Watch our Shiny Showcase Video!</h2>
-          <img src="/images/shinyshowcase.png" alt="Shiny Showcase Video" className={styles.showcaseVideo} />
+          <img src={getAssetUrl('images/shinyshowcase.png')} alt="Shiny Showcase Video" className={styles.showcaseVideo} />
         </a>
       </div>
 
