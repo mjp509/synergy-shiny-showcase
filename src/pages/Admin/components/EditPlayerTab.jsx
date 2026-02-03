@@ -90,6 +90,7 @@ export default function EditPlayerTab({
                 submitLabel="Save Changes"
                 allPokemonNames={allPokemonNames}
                 isMutating={isMutating}
+                isEditMode
               />
               <button onClick={handleCancelEdit} style={{ backgroundColor: '#555', marginTop: 10 }}>
                 Cancel Edit

@@ -6,7 +6,11 @@ const MONTHS = [
   'July', 'August', 'September', 'October', 'November', 'December',
 ]
 
-const YEARS = ['2020', '2021', '2022', '2023', '2024', '2025', '2026', '2027', '2028', '2029', '2030']
+const YEARS = [
+  '2013', '2014', '2015', '2016', '2017', '2018', '2019',
+  '2020', '2021', '2022', '2023', '2024', '2025', '2026',
+  '2027', '2028', '2029', '2030',
+]
 
 const YES_NO_FIELDS = [
   { key: 'Egg', label: 'Egg' },
@@ -46,6 +50,13 @@ function getDefaultState() {
   }
 }
 
+function getEditState(data) {
+  const base = getDefaultState()
+  base.Month = ''
+  base.Year = ''
+  return { ...base, ...data }
+}
+
 function reducer(state, action) {
   switch (action.type) {
     case 'SET_FIELD':
@@ -53,13 +64,13 @@ function reducer(state, action) {
     case 'RESET':
       return getDefaultState()
     case 'LOAD':
-      return { ...getDefaultState(), ...action.data }
+      return getEditState(action.data)
     default:
       return state
   }
 }
 
-export default function ShinyForm({ initialData, onSubmit, submitLabel = 'Add', allPokemonNames = [], isMutating = false }) {
+export default function ShinyForm({ initialData, onSubmit, submitLabel = 'Add', allPokemonNames = [], isMutating = false, isEditMode = false }) {
   const [form, dispatch] = useReducer(reducer, initialData || getDefaultState())
 
   useEffect(() => {
@@ -89,11 +100,13 @@ export default function ShinyForm({ initialData, onSubmit, submitLabel = 'Add', 
 
       <label htmlFor="shinyMonth">Month:</label>
       <select id="shinyMonth" value={form.Month} onChange={e => dispatch({ type: 'SET_FIELD', field: 'Month', value: e.target.value })}>
+        {isEditMode && <option value="">--</option>}
         {MONTHS.map(m => <option key={m} value={m}>{m}</option>)}
       </select>
 
       <label htmlFor="shinyYear">Year:</label>
       <select id="shinyYear" value={form.Year} onChange={e => dispatch({ type: 'SET_FIELD', field: 'Year', value: e.target.value })}>
+        {isEditMode && <option value="">--</option>}
         {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
       </select>
 

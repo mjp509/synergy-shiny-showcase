@@ -139,61 +139,78 @@
 
 .panel button {
   margin-top: 20px;
-  padding: 10px 15px;
+  padding: 10px 18px;
   font-size: 1rem;
-  background-color: #4caf50;
+  font-weight: 600;
+  background: linear-gradient(135deg, #9b59b6, #8e44ad);
   color: #fff;
   border: none;
-  border-radius: 7px;
+  border-radius: 14px;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.3s ease;
 }
 
 .panel button:hover {
-  background-color: #45a049;
+  transform: scale(1.05);
+  background: linear-gradient(135deg, #b870d1, #a64bc1);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.5);
+}
+
+.panel button:active {
+  transform: scale(0.97);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
 }
 
 .panel button:disabled {
-  background-color: #555;
+  background: #444;
+  box-shadow: none;
   cursor: not-allowed;
   opacity: 0.7;
+  transform: none;
 }
 
 /* ========== Tab Bar ========== */
 
 .tabBar {
   display: flex;
-  gap: 4px;
+  gap: 8px;
   margin-bottom: 24px;
-  border-bottom: 2px solid #333;
-  padding-bottom: 0;
+  padding: 6px;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 16px;
+  justify-content: space-between;
 }
 
 .tab {
-  padding: 10px 18px;
+  flex: 1;
+  padding: 10px 14px;
   margin: 0;
   background: transparent;
-  color: #999;
+  color: #777;
   border: none;
-  border-bottom: 3px solid transparent;
-  border-radius: 0;
+  border-radius: 12px;
   cursor: pointer;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: 600;
   white-space: nowrap;
-  transition: color 0.2s, border-color 0.2s;
+  text-align: center;
+  transition: all 0.3s ease;
+  box-shadow: none;
 }
 
 .tab:hover {
-  color: #ddd;
-  background: transparent;
+  color: #ccc;
+  background: rgba(155, 89, 182, 0.1);
 }
 
 .tabActive {
-  color: #d2b4de;
-  border-bottom-color: #9b59b6;
+  color: #fff;
+  background: linear-gradient(135deg, #9b59b6, #8e44ad);
+  box-shadow: 0 0 14px rgba(155, 89, 182, 0.7), 0 4px 10px rgba(0, 0, 0, 0.4);
+  transform: scale(1.03);
 }
 
 /* ========== Messages & Notices ========== */
@@ -323,37 +340,46 @@
 }
 
 .editBtn {
-  padding: 5px 12px !important;
+  padding: 5px 14px !important;
   margin: 0 !important;
   font-size: 0.85rem !important;
-  background-color: #1565c0 !important;
-  border-radius: 5px !important;
+  background: linear-gradient(135deg, #5e3c85, #7d4fa3) !important;
+  border-radius: 10px !important;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3) !important;
 }
 
 .editBtn:hover {
-  background-color: #1976d2 !important;
+  background: linear-gradient(135deg, #7e4ca5, #a66fcf) !important;
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.4) !important;
 }
 
 .deleteBtn {
-  padding: 5px 12px !important;
+  padding: 5px 14px !important;
   margin: 0 !important;
   font-size: 0.85rem !important;
-  background-color: #c62828 !important;
-  border-radius: 5px !important;
+  background: linear-gradient(135deg, #b71c1c, #c62828) !important;
+  border-radius: 10px !important;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3) !important;
 }
 
 .deleteBtn:hover {
-  background-color: #e53935 !important;
+  background: linear-gradient(135deg, #d32f2f, #e53935) !important;
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(198,40,40,0.4) !important;
 }
 
 .dangerBtn {
-  background-color: #c62828 !important;
+  background: linear-gradient(135deg, #b71c1c, #c62828) !important;
   font-size: 0.9rem !important;
-  padding: 8px 16px !important;
+  padding: 8px 18px !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 10px rgba(198,40,40,0.4) !important;
 }
 
 .dangerBtn:hover {
-  background-color: #e53935 !important;
+  background: linear-gradient(135deg, #d32f2f, #e53935) !important;
+  box-shadow: 0 0 14px rgba(229,57,53,0.6), 0 4px 10px rgba(0,0,0,0.4) !important;
 }
 
 /* ========== Edit Section ========== */
@@ -528,29 +554,35 @@
   margin-top: 0;
   padding: 12px 25px;
   font-size: 1rem;
-  border-radius: 8px;
+  font-weight: 600;
+  border-radius: 14px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.4);
 }
 
 .modalButtons button:first-child {
-  background-color: #4caf50;
+  background: linear-gradient(135deg, #9b59b6, #8e44ad);
   color: #fff;
   border: none;
 }
 
 .modalButtons button:first-child:hover {
-  background-color: #45a049;
+  background: linear-gradient(135deg, #b870d1, #a64bc1);
+  transform: scale(1.05);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.5);
 }
 
 .modalButtons button:last-child {
-  background-color: #555;
+  background: linear-gradient(135deg, #444, #555);
   color: #fff;
   border: none;
 }
 
 .modalButtons button:last-child:hover {
-  background-color: #666;
+  background: linear-gradient(135deg, #555, #666);
+  transform: scale(1.05);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.5);
 }
 
 /* ========== Responsive ========== */
@@ -562,12 +594,13 @@
   }
 
   .tabBar {
-    gap: 0;
+    gap: 4px;
+    padding: 4px;
   }
 
   .tab {
-    padding: 8px 10px;
-    font-size: 0.82rem;
+    padding: 8px 8px;
+    font-size: 0.78rem;
   }
 
   .shinyTable th,
