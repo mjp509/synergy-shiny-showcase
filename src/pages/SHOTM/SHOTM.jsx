@@ -195,14 +195,12 @@ export default function SHOTM() {
             {allTimeLeaderboard.map(e => {
               const medal = ['\uD83E\uDD47', '\uD83E\uDD48', '\uD83E\uDD49'][e.rank - 1] || ''
               return (
-                <div key={e.player}>
+                <Link key={e.player} to={`/player/${e.player.toLowerCase()}`} className={styles.allTimeItem}>
                   {medal && <span className={styles.medal}>{medal}</span>}
                   <span>#{e.rank}</span>
-                  <Link to={`/player/${e.player.toLowerCase()}`} className={styles.playerLink}>
-                    {e.player}
-                  </Link>
+                  <span className={styles.playerName}>{e.player}</span>
                   <span>({e.points} pts)</span>
-                </div>
+                </Link>
               )
             })}
           </div>

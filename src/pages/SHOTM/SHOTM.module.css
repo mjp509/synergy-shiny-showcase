@@ -50,7 +50,7 @@
   transform-origin: top;
 }
 
-.alltimeList > div {
+.allTimeItem {
   font-size: 1rem;
   color: #fff;
   background: #1f1f1f;
@@ -61,6 +61,14 @@
   justify-content: center;
   align-items: center;
   gap: 6px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.allTimeItem:hover {
+  background: #2a2a2a;
+  color: #4a90e2;
+  box-shadow: 0 0 12px rgba(74,144,226,0.5);
 }
 
 .medal {
@@ -68,12 +76,6 @@
   line-height: 1;
   display: inline-flex;
   align-items: center;
-}
-
-.alltimeList > div:hover {
-  background: #2a2a2a;
-  color: #4a90e2;
-  box-shadow: 0 0 12px rgba(74,144,226,0.5);
 }
 
 /* Points content — matches .points-content */
@@ -396,7 +398,7 @@
     padding: 10px 20px;
   }
 
-  .alltimeList > div {
+  .allTimeItem {
     font-size: 0.9rem;
     padding: 6px 10px;
   }
