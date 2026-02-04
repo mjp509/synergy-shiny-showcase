@@ -671,8 +671,9 @@
   }
 
   .tab {
-    padding: 8px 8px;
-    font-size: 0.78rem;
+    padding: 6px 8px;
+    font-size: 0.7rem;
+    min-width: 90px;
   }
 
   .shinyTable th,
