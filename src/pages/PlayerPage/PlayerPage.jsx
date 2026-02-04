@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useLocation } from 'react-router-dom'
 import { useDatabase } from '../../hooks/useDatabase'
 import { useTrophies } from '../../hooks/useTrophies'
 import ShinyItem from '../../components/ShinyItem/ShinyItem'
@@ -9,6 +9,7 @@ import styles from './PlayerPage.module.css'
 
 export default function PlayerPage() {
   const { playerName } = useParams()
+  const location = useLocation()
   const { data, isLoading } = useDatabase()
   const { data: trophiesData } = useTrophies()
 
@@ -34,9 +35,13 @@ export default function PlayerPage() {
   const favourites = shinies.filter(s => s.Favourite?.toLowerCase() === 'yes')
   const normalShinies = shinies.filter(s => s.Favourite?.toLowerCase() !== 'yes')
 
+  const fromSHOTM = location.state?.from === 'shotm'
+  const backTo = fromSHOTM ? '/shotm' : '/'
+  const backLabel = fromSHOTM ? '\u2190 Back to SHOTM' : '\u2190 Back to Showcase'
+
   return (
     <div className={styles.playerPage}>
-      <BackButton to="/" label="&larr; Back to Showcase" />
+      <BackButton to={backTo} label={backLabel} />
       <h1>{realKey}'s Shiny Collection &#10024;</h1>
       <p>Total Shinies: {playerData.shiny_count}</p>
 
