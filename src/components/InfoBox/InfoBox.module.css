@@ -20,9 +20,17 @@
   position: absolute;
   top: 0;
   left: -12px;
-  right: -12px;
+  width: 12px;
   height: 100%;
-  pointer-events: none;
+}
+
+.infoBox::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: -12px;
+  width: 12px;
+  height: 100%;
 }
 
 .infoBox strong {
