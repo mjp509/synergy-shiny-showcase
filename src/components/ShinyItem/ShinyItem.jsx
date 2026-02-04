@@ -38,7 +38,10 @@ function ShinyItem({ shiny, points }) {
     }
   })
 
-  const reactionUrl = shiny['Reaction Link']?.trim()
+  let reactionUrl = shiny['Reaction Link']?.trim()
+  if (reactionUrl && !/^https?:\/\//i.test(reactionUrl)) {
+    reactionUrl = 'https://' + reactionUrl
+  }
   if (reactionUrl) {
     icons.push(
       <img

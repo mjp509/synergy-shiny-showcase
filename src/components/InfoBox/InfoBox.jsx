@@ -66,7 +66,10 @@ export default function InfoBox({ shiny, points }) {
   const activeTraits = TRAIT_CHECKS.filter(
     t => shiny[t.key]?.toLowerCase() === 'yes'
   )
-  const reactionUrl = shiny['Reaction Link']?.trim()
+  let reactionUrl = shiny['Reaction Link']?.trim()
+  if (reactionUrl && !/^https?:\/\//i.test(reactionUrl)) {
+    reactionUrl = 'https://' + reactionUrl
+  }
 
   return (
     <div className={styles.infoBox} ref={boxRef}>
