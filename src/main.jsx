@@ -50,7 +50,7 @@ if ('serviceWorker' in navigator) {
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter basename="/synergy-shiny-showcase">
+      <BrowserRouter basename="/synergy-shiny-showcase" future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <AdminProvider>
           <App />
         </AdminProvider>

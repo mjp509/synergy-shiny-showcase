@@ -110,19 +110,17 @@ export default function SHOTM() {
 
   // Previous ranks from localStorage - use ref to store snapshot that won't be overwritten
   const previousRanksRef = useRef({})
-  const lastMonthKeyRef = useRef('')
 
-  // Load previous ranks from localStorage when month changes (synchronously via ref)
-  const monthKey = `shotm-ranks-${currentMonth}-${currentYear}`
-  if (monthKey !== lastMonthKeyRef.current) {
-    lastMonthKeyRef.current = monthKey
+  // Load previous ranks from localStorage when month changes
+  useEffect(() => {
+    const monthKey = `shotm-ranks-${currentMonth}-${currentYear}`
     const saved = localStorage.getItem(monthKey)
     if (saved) {
       try { previousRanksRef.current = JSON.parse(saved) } catch { previousRanksRef.current = {} }
     } else {
       previousRanksRef.current = {}
     }
-  }
+  }, [currentMonth, currentYear])
 
   // Save current ranks to localStorage after rankings are computed
   useEffect(() => {
