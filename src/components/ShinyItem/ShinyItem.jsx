@@ -69,8 +69,6 @@ function ShinyItem({ shiny, points }) {
           className={`${styles.shinyGif} ${isSold ? styles.soldPokemon : ''}`}
           width="80"
           height="80"
-          loading="lazy"
-          decoding="async"
         />
         <img
           src={getAssetUrl('images/Shiny Showcase/sparkle.gif')}

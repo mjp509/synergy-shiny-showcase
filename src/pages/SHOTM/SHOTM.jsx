@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { useDatabase } from '../../hooks/useDatabase'
 import { useTierData } from '../../hooks/useTierData'
@@ -108,18 +108,23 @@ export default function SHOTM() {
     )
   }
 
-  // Previous ranks from localStorage
-  const [previousRanks, setPreviousRanks] = useState({})
-  useEffect(() => {
-    const key = `shotm-ranks-${currentMonth}-${currentYear}`
-    const saved = localStorage.getItem(key)
-    if (saved) {
-      try { setPreviousRanks(JSON.parse(saved)) } catch { setPreviousRanks({}) }
-    } else {
-      setPreviousRanks({})
-    }
-  }, [currentMonth, currentYear])
+  // Previous ranks from localStorage - use ref to store snapshot that won't be overwritten
+  const previousRanksRef = useRef({})
+  const lastMonthKeyRef = useRef('')
 
+  // Load previous ranks from localStorage when month changes (synchronously via ref)
+  const monthKey = `shotm-ranks-${currentMonth}-${currentYear}`
+  if (monthKey !== lastMonthKeyRef.current) {
+    lastMonthKeyRef.current = monthKey
+    const saved = localStorage.getItem(monthKey)
+    if (saved) {
+      try { previousRanksRef.current = JSON.parse(saved) } catch { previousRanksRef.current = {} }
+    } else {
+      previousRanksRef.current = {}
+    }
+  }
+
+  // Save current ranks to localStorage after rankings are computed
   useEffect(() => {
     if (rankings.length === 0) return
     const currentRanks = {}
@@ -129,6 +134,8 @@ export default function SHOTM() {
       JSON.stringify(currentRanks)
     )
   }, [rankings, currentMonth, currentYear])
+
+  const previousRanks = previousRanksRef.current
 
   const goPrev = () => {
     const p = shiftMonth(currentMonth, currentYear, -1)

@@ -38,8 +38,6 @@ function PlayerCard({ player, data, rank, streamers }) {
               className={styles.twitchIcon}
               width="24"
               height="24"
-              loading="lazy"
-              decoding="async"
             />
           </a>
         )}
