@@ -148,11 +148,11 @@
   .pokemon { width: 60px; height: 60px; }
 }
 @media (max-width: 900px) {
-  .pokemon { width: 50px; height: 50px; }
+  .pokemon { width: 70px; height: 70px; }
   .showcase {
     padding: 12px 12px 60px 12px;
   }
 }
 @media (max-width: 600px) {
-  .pokemon { width: 40px; height: 40px; }
+  .pokemon { width: 60px; height: 60px; }
 }
