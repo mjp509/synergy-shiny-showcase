@@ -317,6 +317,8 @@ const tieredHighlights = useMemo(() => {
                   src={isUp ? getAssetUrl('images/up_arrow.png') : getAssetUrl('images/down_arrow.png')}
                   alt={isUp ? 'Moved Up' : 'Moved Down'}
                   className={`${styles.rankArrow} ${isUp ? styles.rankArrowUp : styles.rankArrowDown}`}
+                  width="20"
+                  height="20"
                 />
               )
             }

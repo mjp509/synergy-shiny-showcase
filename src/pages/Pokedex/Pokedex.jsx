@@ -150,6 +150,8 @@ export default function Pokedex() {
                     className={`${styles.pokemon} ${
                       isComplete ? styles.complete : styles.incomplete
                     }`}
+                    width="50"
+                    height="50"
                     loading="lazy"
                     onError={onGifError(normalized)}
                   />

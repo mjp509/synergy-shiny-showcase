@@ -35,6 +35,9 @@ export default function TrophyShelf({ playerName, trophies, trophyAssignments })
                   src={imgSrc}
                   alt={awardName}
                   className={styles.trophyItem}
+                  width="60"
+                  height="60"
+                  loading="lazy"
                   onClick={() => navigate(`/trophy/${encodeURIComponent(awardName.toLowerCase())}`)}
                 />
                 <div className={styles.tooltip}>

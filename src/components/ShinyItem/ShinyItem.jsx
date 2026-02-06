@@ -48,6 +48,8 @@ function ShinyItem({ shiny, points }) {
             src={src}
             className={styles[cls]}
             alt={key}
+            width="20"
+            height="20"
             loading="lazy"
           />
         )
@@ -66,6 +68,8 @@ function ShinyItem({ shiny, points }) {
           src={`${BASE}images/Shiny Showcase/reaction.png`}
           className={styles.reactionIcon}
           alt="Reaction"
+          width="18"
+          height="18"
           loading="lazy"
           onClick={e => {
             e.stopPropagation()

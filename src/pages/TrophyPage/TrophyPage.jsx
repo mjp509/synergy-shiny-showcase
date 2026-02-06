@@ -32,7 +32,7 @@ export default function TrophyPage() {
     <div className={styles.trophyPage}>
       <BackButton to="/trophy-board" label="&larr; Return to Trophy Board" />
       <div className={styles.header}>
-        <img src={trophyImg} alt={trophyKey} className={styles.largeTrophy} />
+        <img src={trophyImg} alt={trophyKey} className={styles.largeTrophy} width="220" height="220" />
         <h1>{trophyKey}</h1>
       </div>
       <h2 className={styles.playersHeading}>Players who have this trophy:</h2>

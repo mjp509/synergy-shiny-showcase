@@ -57,7 +57,7 @@ export default function Navbar() {
         rel="noopener noreferrer"
         className={styles.discordLink}
       >
-        <img src={getAssetUrl('images/discord.png')} alt="Discord" />
+        <img src={getAssetUrl('images/discord.png')} alt="Discord" width="42" height="42" />
       </a>
 
       {/* Mobile menu overlay */}
@@ -86,7 +86,7 @@ export default function Navbar() {
           className={styles.mobileDiscord}
           onClick={handleLinkClick}
         >
-          <img src={getAssetUrl('images/discord.png')} alt="Discord" />
+          <img src={getAssetUrl('images/discord.png')} alt="Discord" width="32" height="32" />
           Join Discord
         </a>
       </div>

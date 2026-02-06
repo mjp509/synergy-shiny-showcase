@@ -561,6 +561,8 @@ export default function RandomPokemon() {
                   src={getPokemonImageUrl(singlePokemon.name)}
                   alt={singlePokemon.name}
                   className={styles.pokemonImg}
+                  width="60"
+                  height="60"
                   onError={onGifError(singlePokemon.name, singlePokemon.mode === 'shiny')}
                 />
               </>
@@ -623,6 +625,8 @@ export default function RandomPokemon() {
                 src={getPokemonImageUrl(entry.name)}
                 alt={entry.name}
                 className={styles.bingoImg}
+                width="80"
+                height="80"
                 onError={onGifError(entry.name, entry.type === 'shiny')}
               />
 
@@ -685,6 +689,8 @@ export default function RandomPokemon() {
                   src={getPokemonImageUrl(committed.name)}
                   alt={committed.name}
                   className={styles.bingoImg}
+                  width="80"
+                  height="80"
                   onError={onGifError(committed.name, committed.type === 'shiny')}
                   style={{
                     position: 'absolute',

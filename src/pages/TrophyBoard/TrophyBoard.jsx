@@ -24,6 +24,8 @@ export default function TrophyBoard() {
               src={imgSrc}
               alt={name}
               className={styles.img}
+              width="110"
+              height="110"
               loading="lazy"
             />
             <div className={styles.label}>{name}</div>
