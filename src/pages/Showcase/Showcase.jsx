@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect, useRef, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { useDatabase } from '../../hooks/useDatabase'
@@ -8,9 +8,14 @@ import { getAssetUrl } from '../../utils/assets'
 import { API } from '../../api/endpoints'
 import styles from './Showcase.module.css'
 
+const INITIAL_COUNT = 5
+const BATCH_SIZE = 5
+
 export default function Showcase() {
   const { data, isLoading, error } = useDatabase()
   const [search, setSearch] = useState('')
+  const [visibleCount, setVisibleCount] = useState(INITIAL_COUNT)
+  const sentinelRef = useRef(null)
   const { data: streamers } = useQuery({
     queryKey: ['streamersList'],
     queryFn: () => fetch(API.streamers).then(r => r.json()),
@@ -28,6 +33,11 @@ export default function Showcase() {
     return sortedPlayers.filter(([name]) => name.toLowerCase().includes(lower))
   }, [sortedPlayers, search])
 
+  // Reset visible count when search changes
+  useEffect(() => {
+    setVisibleCount(INITIAL_COUNT)
+  }, [search])
+
   // Create rank map for O(1) lookup instead of O(n) findIndex on every render
   const rankMap = useMemo(() => {
     const map = new Map()
@@ -37,8 +47,31 @@ export default function Showcase() {
     return map
   }, [sortedPlayers])
 
+  const loadMore = useCallback(() => {
+    setVisibleCount(prev => Math.min(prev + BATCH_SIZE, filteredPlayers.length))
+  }, [filteredPlayers.length])
+
+  // IntersectionObserver to load more as user scrolls
+  useEffect(() => {
+    const sentinel = sentinelRef.current
+    if (!sentinel) return
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) loadMore()
+      },
+      { rootMargin: '400px' }
+    )
+
+    observer.observe(sentinel)
+    return () => observer.disconnect()
+  }, [loadMore])
+
   if (isLoading) return <div className="message">Loading...</div>
   if (error) return <div className="message">Error loading data</div>
+
+  const playersToShow = filteredPlayers.slice(0, visibleCount)
+  const hasMore = visibleCount < filteredPlayers.length
 
   return (
     <div>
@@ -71,7 +104,7 @@ export default function Showcase() {
       <SearchBar value={search} onChange={setSearch} />
 
       <div className={styles.showcase}>
-        {filteredPlayers.map(([player, playerData]) => (
+        {playersToShow.map(([player, playerData]) => (
           <PlayerCard
             key={player}
             player={player}
@@ -81,6 +114,8 @@ export default function Showcase() {
           />
         ))}
       </div>
+
+      {hasMore && <div ref={sentinelRef} style={{ height: 1 }} />}
     </div>
   )
 }
