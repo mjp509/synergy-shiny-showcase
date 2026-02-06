@@ -1,11 +1,11 @@
 import styles from '../Admin.module.css'
 
 const TABS = [
-  { key: 'add', label: 'Add Pokemon' },
-  { key: 'edit', label: 'Edit Player' },
+  { key: 'add', label: 'Add Pokemon', shortLabel: 'Add' },
+  { key: 'edit', label: 'Edit Player', shortLabel: 'Edit' },
   { key: 'streamers', label: 'Streamers' },
-  { key: 'log', label: 'Admin Log' },
-  { key: 'json', label: 'Advanced (JSON)' },
+  { key: 'log', label: 'Admin Log', shortLabel: 'Log' },
+  { key: 'json', label: 'Advanced (JSON)', shortLabel: 'Advanced' },
 ]
 
 export default function TabBar({ activeTab, onTabChange }) {
@@ -17,7 +17,8 @@ export default function TabBar({ activeTab, onTabChange }) {
           className={`${styles.tab} ${activeTab === tab.key ? styles.tabActive : ''}`}
           onClick={() => onTabChange(tab.key)}
         >
-          {tab.label}
+          <span className={styles.tabLabelFull}>{tab.label}</span>
+          <span className={styles.tabLabelShort}>{tab.shortLabel || tab.label}</span>
         </button>
       ))}
     </div>

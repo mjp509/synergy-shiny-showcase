@@ -202,6 +202,10 @@
   box-shadow: none;
 }
 
+.tabLabelShort {
+  display: none;
+}
+
 .tab:hover {
   color: #ccc;
   background: rgba(155, 89, 182, 0.1);
@@ -673,7 +677,15 @@
   .tab {
     padding: 6px 8px;
     font-size: 0.7rem;
-    min-width: 90px;
+    min-width: 50px;
+  }
+
+  .tabLabelFull {
+    display: none;
+  }
+
+  .tabLabelShort {
+    display: inline;
   }
 
   .shinyTable th,
