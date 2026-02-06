@@ -48,6 +48,9 @@ export default function ShinyTable({ shinies, onEdit, onDelete }) {
                     src={API.pokemonSprite(spriteName)}
                     alt={shiny.Pokemon}
                     className={styles.spriteImg}
+                    width="80"
+                    height="80"
+                    loading="lazy"
                     onError={onGifError(spriteName)}
                   />
                 </td>
