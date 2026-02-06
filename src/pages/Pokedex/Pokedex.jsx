@@ -171,54 +171,45 @@ export default function Pokedex() {
 
 
           return (
-            <div key={gen}>
-              <h2 style={{ textAlign: 'center' }}>{gen}</h2>
-              <div className={styles.grid}>
-                <motion.div
-                  layout
-                  className={styles.grid}
-                  variants={gridVariants}
-                  initial="initial"
-                  animate="show"
-                >
-                  <AnimatePresence mode="wait">
-                    {visiblePokemon.map((pokemon, idx) => {
-                      const normalized = normalizePokemonName(pokemon)
-                      const lowerName = pokemon.toLowerCase()
+          <div key={gen}>
+          <h2 style={{ textAlign: 'center' }}>{gen}</h2>
+          <div className={styles.grid}>
+            <AnimatePresence>
+              {visiblePokemon.map((pokemon, idx) => {
+                const normalized = normalizePokemonName(pokemon)
+                const lowerName = pokemon.toLowerCase()
 
-                      const isComplete =
-                        mode === 'shiny'
-                          ? speciesCompleteSet.has(lowerName)
-                          : globalShinies.has(lowerName)
+                const isComplete =
+                  mode === 'shiny'
+                    ? speciesCompleteSet.has(lowerName)
+                    : globalShinies.has(lowerName)
 
-                      return (
-                        <motion.img
-                          key={`${gen}-${pokemon}-${idx}`}
-                          layout
-                          variants={itemVariants}
-                          initial="initial"
-                          animate="show"
-                          exit="exit"
-                          transition={{
-                            layout: {
-                              type: 'spring',
-                              stiffness: 500,
-                              damping: 40
-                            }
-                          }}
-                          src={API.pokemonSprite(normalized)}
-                          alt={pokemon}
-                          className={`${styles.pokemon} ${
-                            isComplete ? styles.complete : styles.incomplete
-                          }`}
-                          loading="lazy"
-                        />
-                      )
-                    })}
-                  </AnimatePresence>
-                </motion.div>
-              </div>
-            </div>
+                return (
+                  <motion.img
+                    key={`${gen}-${pokemon}-${idx}`}
+                    layout
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    transition={{
+                      layout: { type: 'spring', stiffness: 500, damping: 40 },
+                      default: { duration: 0.3 },
+                      delay: idx * 0.03, // smooth stagger
+                    }}
+                    src={API.pokemonSprite(normalized)}
+                    alt={pokemon}
+                    className={`${styles.pokemon} ${
+                      isComplete ? styles.complete : styles.incomplete
+                    }`}
+                    loading="lazy"
+                  />
+                )
+              })}
+            </AnimatePresence>
+          </div>
+        </div>
+
+
           )
         })}
       </div>
