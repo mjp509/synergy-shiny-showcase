@@ -1,11 +1,10 @@
-import { useState, useMemo, useRef, useCallback, createRef } from 'react'
+import { useState, useMemo, useRef, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { useDatabase } from '../../hooks/useDatabase'
 import { getAssetUrl } from '../../utils/assets'
 import { normalizePokemonName, onGifError } from '../../utils/pokemon'
 import { API } from '../../api/endpoints'
 import generationData from '../../data/generation.json'
-import { motion, AnimatePresence } from 'framer-motion'
 import styles from './Pokedex.module.css'
 
 export default function Pokedex() {
@@ -15,16 +14,6 @@ export default function Pokedex() {
   const [hoverInfo, setHoverInfo] = useState(null)
   const [hoverPos, setHoverPos] = useState({ x: 0, y: 0 })
   const infoBoxRef = useRef(null)
-  const nodeRefs = useRef(new Map())
-
-    const getNodeRef = (key) => {
-      if (!nodeRefs.current.has(key)) {
-        nodeRefs.current.set(key, createRef()) 
-      }
-      return nodeRefs.current.get(key)
-    }
-
-
   const { globalShinies, ownerMap } = useMemo(() => {
     if (!data) return { globalShinies: new Set(), ownerMap: new Map() }
     const gs = new Set()
@@ -140,41 +129,10 @@ export default function Pokedex() {
 
           if (visiblePokemon.length === 0) return null
 
-          const gridVariants = {
-            show: {
-              transition: {
-                staggerChildren: 0.03,     // ⭐ ripple instead of flash
-                delayChildren: 0.15        // ⭐ wait for layout motion first
-              }
-            }
-          }
-          const itemVariants = {
-            initial: { opacity: 0, scale: 0.8 },
-            show: {
-              opacity: 1,
-              scale: 1,
-              transition: {
-                duration: 0.25,
-                ease: 'easeOut'
-              }
-            },
-            exit: {
-              opacity: 0,
-              scale: 0.8,
-              transition: {
-                duration: 0.2,
-                ease: 'easeIn'
-              }
-            }
-          }
-
-
-
           return (
           <div key={gen}>
           <h2 style={{ textAlign: 'center' }}>{gen}</h2>
           <div className={styles.grid}>
-            <AnimatePresence>
               {visiblePokemon.map((pokemon, idx) => {
                 const normalized = normalizePokemonName(pokemon)
                 const lowerName = pokemon.toLowerCase()
@@ -185,17 +143,8 @@ export default function Pokedex() {
                     : globalShinies.has(lowerName)
 
                 return (
-                  <motion.img
+                  <img
                     key={`${gen}-${pokemon}-${idx}`}
-                    layout
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.8 }}
-                    transition={{
-                      layout: { type: 'spring', stiffness: 500, damping: 40 },
-                      default: { duration: 0.3 },
-                      delay: idx * 0.03, // smooth stagger
-                    }}
                     src={API.pokemonSprite(normalized)}
                     alt={pokemon}
                     className={`${styles.pokemon} ${
@@ -206,11 +155,8 @@ export default function Pokedex() {
                   />
                 )
               })}
-            </AnimatePresence>
           </div>
         </div>
-
-
           )
         })}
       </div>
