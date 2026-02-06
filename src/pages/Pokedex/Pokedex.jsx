@@ -37,27 +37,46 @@ export default function Pokedex() {
     return { globalShinies: gs, ownerMap: om }
   }, [data])
 
-  const handleMouseOver = useCallback((e) => {
-    const target = e.target
-    if (target.tagName !== 'IMG' || !target.classList.contains(styles.complete)) return
-    const pokemonName = target.alt.toLowerCase()
-    const owners = ownerMap.get(pokemonName) || []
-    const text = owners.length ? `Owned by: ${owners.join(', ')}` : ''
-    setHoverInfo(text)
-    const rect = target.getBoundingClientRect()
-    const viewportWidth = window.innerWidth
-    const infoBoxWidth = 250
+    const handleMouseOver = useCallback((e) => {
+      const target = e.target
+      if (target.tagName !== 'IMG' || !target.classList.contains(styles.complete)) return
 
-    // Position to the right by default
-    let xPos = rect.right + 8
+      const pokemonName = target.alt.toLowerCase()
+      const owners = ownerMap.get(pokemonName) || []
+      const text = owners.length ? `Owned by: ${owners.join(', ')}` : ''
+      setHoverInfo(text)
 
-    // If it would go off-screen, position to the left instead
-    if (xPos + infoBoxWidth > viewportWidth) {
-      xPos = rect.left - infoBoxWidth - 8
-    }
+      const rect = target.getBoundingClientRect()
+      const viewportWidth = window.innerWidth
+      const viewportHeight = window.innerHeight
+      const infoBoxWidth = 250
 
-    setHoverPos({ x: xPos, y: rect.top })
-  }, [ownerMap])
+      let xPos = rect.right + 8
+      if (xPos + infoBoxWidth > viewportWidth) {
+        xPos = rect.left - infoBoxWidth - 8
+      }
+
+      xPos = Math.max(8, Math.min(xPos, viewportWidth - infoBoxWidth - 8))
+
+      let yPos = rect.top
+
+      requestAnimationFrame(() => {
+        if (!infoBoxRef.current) return
+
+        const realHeight = infoBoxRef.current.offsetHeight
+
+        const clampedY = Math.max(
+          8,
+          Math.min(yPos, viewportHeight - realHeight - 8)
+        )
+
+        setHoverPos({ x: xPos, y: clampedY })
+      })
+
+      setHoverPos({ x: xPos, y: yPos })
+    }, [ownerMap])
+
+
 
   const handleMouseOut = useCallback((e) => {
     if (e.target.tagName === 'IMG') setHoverInfo(null)
