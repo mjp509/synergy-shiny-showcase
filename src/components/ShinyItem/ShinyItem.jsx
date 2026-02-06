@@ -1,6 +1,5 @@
-import { memo, useMemo } from 'react'
+import { memo, useMemo, useState } from 'react'
 import InfoBox from '../InfoBox/InfoBox'
-import { getAssetUrl } from '../../utils/assets'
 import { getLocalPokemonGif, onGifError } from '../../utils/pokemon'
 import styles from './ShinyItem.module.css'
 
@@ -11,18 +10,20 @@ const TRAIT_CLASSES = {
   Favourite: ['favouritePokemon'],
 }
 
-// Mapping of icons
+// Mapping of icons — use base URL prefix for public asset paths
+const BASE = import.meta.env.BASE_URL || '/'
 const ICON_MAP = {
-  'Secret Shiny': [getAssetUrl('images/Shiny Showcase/secretshiny.png'), 'secretIcon'],
-  'Honey Tree': [getAssetUrl('images/Shiny Showcase/honey.png'), 'honeyIcon'],
-  Egg: [getAssetUrl('images/Shiny Showcase/egg.png'), 'eggIcon'],
-  Safari: [getAssetUrl('images/Shiny Showcase/safari.png'), 'safariIcon'],
-  Event: [getAssetUrl('images/Shiny Showcase/event.png'), 'eventIcon'],
-  MysteriousBall: [getAssetUrl('images/Shiny Showcase/mysteriousball.gif'), 'mysteriousballGif'],
-  Favourite: [getAssetUrl('images/Shiny Showcase/heart.png'), 'favouriteHeart'],
+  'Secret Shiny': [`${BASE}images/Shiny Showcase/secretshiny.png`, 'secretIcon'],
+  'Honey Tree': [`${BASE}images/Shiny Showcase/honey.png`, 'honeyIcon'],
+  Egg: [`${BASE}images/Shiny Showcase/egg.png`, 'eggIcon'],
+  Safari: [`${BASE}images/Shiny Showcase/safari.png`, 'safariIcon'],
+  Event: [`${BASE}images/Shiny Showcase/event.png`, 'eventIcon'],
+  MysteriousBall: [`${BASE}images/Shiny Showcase/mysteriousball.gif`, 'mysteriousballGif'],
+  Favourite: [`${BASE}images/Shiny Showcase/heart.png`, 'favouriteHeart'],
 }
 
 function ShinyItem({ shiny, points }) {
+  const [hovered, setHovered] = useState(false)
   const shinyGifPath = useMemo(() => getLocalPokemonGif(shiny.Pokemon), [shiny.Pokemon])
 
   // Container CSS classes based on traits
@@ -63,7 +64,7 @@ function ShinyItem({ shiny, points }) {
       iconList.push(
         <img
           key="reaction"
-          src={getAssetUrl('images/Shiny Showcase/reaction.png')}
+          src={`${BASE}images/Shiny Showcase/reaction.png`}
           className={styles.reactionIcon}
           alt="Reaction"
           loading="lazy"
@@ -81,7 +82,11 @@ function ShinyItem({ shiny, points }) {
   const isSold = shiny.Sold?.toLowerCase() === 'yes'
 
   return (
-    <span className={styles.wrapper}>
+    <span
+      className={styles.wrapper}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
       <div className={containerClasses}>
         {icons}
         <img
@@ -93,14 +98,8 @@ function ShinyItem({ shiny, points }) {
           loading="lazy"
           onError={onGifError(shiny.Pokemon)}
         />
-        <img
-          src={getAssetUrl('images/Shiny Showcase/sparkle.gif')}
-          className={styles.particleGif}
-          alt=""
-          loading="lazy"
-        />
       </div>
-      <InfoBox shiny={shiny} points={points} />
+      {hovered && <InfoBox shiny={shiny} points={points} />}
     </span>
   )
 }

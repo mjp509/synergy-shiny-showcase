@@ -43,18 +43,20 @@
   opacity: 80%;
 }
 
-.particleGif {
+.gifContainer::after {
+  content: '';
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   pointer-events: none;
-  display: none;
+  background: url('/images/Shiny Showcase/sparkle.gif') center/cover no-repeat;
+  opacity: 0;
 }
 
-.gifContainer:hover .particleGif {
-  display: block;
+.gifContainer:hover::after {
+  opacity: 1;
 }
 
 .alphaPokemon {
