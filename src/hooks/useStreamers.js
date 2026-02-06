@@ -2,34 +2,34 @@ import { useQuery } from '@tanstack/react-query'
 import { API } from '../api/endpoints'
 
 async function fetchStreamers() {
+  console.log("Fetching streamers...")
+
   const res = await fetch(API.streamers)
-  if (!res.ok) throw new Error('Failed to load streamer list')
+  console.log("Raw response:", res)
+
+  if (!res.ok) {
+    console.error("Failed to load streamer list:", res.status, res.statusText)
+    throw new Error('Failed to load streamer list')
+  }
+
   const data = await res.json()
-  const usernames = Object.values(data).map(s => s.twitch_username)
+  console.log("JSON data:", data)
 
-  const results = await Promise.all(
-    usernames.map(username =>
-      fetch(`${API.twitchStreamers}?user_login=${username}`)
-        .then(r => (r.ok ? r.json() : null))
-        .catch(() => null)
-    )
-  )
+  const allStreamers = Object.values(data)
+  const live = allStreamers.filter(s => s.live)
+  const offline = allStreamers.filter(s => !s.live)
 
-  const live = []
-  const offline = []
-  results.forEach(res => {
-    if (!res) return
-    if (res.live && res.live.length) live.push(...res.live)
-    if (res.offline && res.offline.length) offline.push(...res.offline)
-  })
+  console.log("Live streamers:", live)
+  console.log("Offline streamers:", offline)
 
   return { live, offline }
 }
+
 
 export function useStreamers() {
   return useQuery({
     queryKey: ['streamers'],
     queryFn: fetchStreamers,
-    staleTime: 2 * 60 * 1000,
+    staleTime: 2 * 60 * 1000, // 2 min
   })
 }

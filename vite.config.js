@@ -7,6 +7,16 @@ export default defineConfig(({ mode }) => ({
   resolve: {
     dedupe: ['react', 'react-dom'],
   },
+  server: {
+    proxy: {
+      // proxy exactly /api/streamers
+      '/api/streamers': {
+        target: 'https://twitch-api.hypersmmo.workers.dev',
+        changeOrigin: true,
+        rewrite: (path) => path, // keep /api/streamers path
+      },
+    },
+  },
   optimizeDeps: {
     include: ['react', 'react-dom', 'react-router-dom', '@tanstack/react-query'],
   },

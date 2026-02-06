@@ -23,7 +23,11 @@ export default function Streamers() {
     )
   }
 
-  if (error) return <div className="message">Error loading streamers</div>
+  if (error) {
+  console.error("Error loading streamers:", error)
+  return <div className="message">Error loading streamers: {error.message}</div>
+}
+
 
   const { live, offline } = data
 
@@ -40,23 +44,23 @@ export default function Streamers() {
           <div className={styles.wrapper}>
             {live.map(stream => (
               <a
-                key={stream.user_name}
-                href={`https://www.twitch.tv/${stream.user_name.toLowerCase()}`}
+                key={stream.twitch_username}
+                href={`https://www.twitch.tv/${stream.twitch_username.toLowerCase()}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={styles.cardLink}
               >
                 <div className={`${styles.card} ${styles.live}`}>
                   <img
-                    src={stream.thumbnail_url}
-                    alt={`${stream.user_name} thumbnail`}
+                    src={stream.profile_image_url} // use merged JSON profile_image_url
+                    alt={`${stream.twitch_username} thumbnail`}
                     width="256"
                     height="144"
                     loading="lazy"
                   />
-                  <p className={styles.playerName}>{stream.user_name}</p>
-                  <p className={styles.streamTitle}>{stream.title}</p>
-                  <p className={styles.viewerCount}>{stream.viewer_count} viewers</p>
+                  <p className={styles.playerName}>{stream.twitch_username}</p>
+                  <p className={styles.streamTitle}>{stream.last_stream_title}</p>
+                  <p className={styles.viewerCount}>{stream.last_viewer_count} viewers</p>
                 </div>
               </a>
             ))}
@@ -69,8 +73,8 @@ export default function Streamers() {
         <div className={styles.wrapper}>
           {offline.map(user => (
             <a
-              key={user.user_name}
-              href={`https://www.twitch.tv/${user.user_name.toLowerCase()}`}
+              key={user.twitch_username}
+              href={`https://www.twitch.tv/${user.twitch_username.toLowerCase()}`}
               target="_blank"
               rel="noopener noreferrer"
               className={styles.cardLink}
@@ -78,13 +82,13 @@ export default function Streamers() {
               <div className={styles.card}>
                 <img
                   src={user.profile_image_url}
-                  alt={`${user.user_name} profile`}
+                  alt={`${user.twitch_username} profile`}
                   className={styles.offlineProfile}
                   width="120"
                   height="120"
                   loading="lazy"
                 />
-                <p className={styles.playerName}>{user.user_name}</p>
+                <p className={styles.playerName}>{user.twitch_username}</p>
               </div>
             </a>
           ))}
