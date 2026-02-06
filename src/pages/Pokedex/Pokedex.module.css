@@ -85,8 +85,8 @@
 
 .pokemon {
   flex: 0 0 auto;
-  width: 48px;
-  height: 48px;
+  width: 50px;
+  height: 50px;
   object-fit: contain;
   box-sizing: border-box;
   transition: filter 0.3s, opacity 0.3s;
@@ -145,14 +145,14 @@
 
 
 @media (max-width: 1200px) {
-  .pokemon { width: 40px; height: 40px; }
+  .pokemon { width: 60px; height: 60px; }
 }
 @media (max-width: 900px) {
-  .pokemon { width: 32px; height: 32px; }
+  .pokemon { width: 50px; height: 50px; }
   .showcase {
     padding: 12px 12px 60px 12px;
   }
 }
 @media (max-width: 600px) {
-  .pokemon { width: 24px; height: 24px; }
+  .pokemon { width: 40px; height: 40px; }
 }
