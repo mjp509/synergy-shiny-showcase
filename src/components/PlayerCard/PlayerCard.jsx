@@ -52,8 +52,8 @@ function PlayerCard({ player, data, rank, streamers }) {
         {sparkle && <span className={styles.sparkle}>&#10024;</span>}
       </div>
       <div className={styles.shinyList}>
-        {Object.values(data.shinies).map((s, i) => (
-          <ShinyItem key={i} shiny={s} />
+        {Object.entries(data.shinies).map(([id, s]) => (
+          <ShinyItem key={id} shiny={s} />
         ))}
       </div>
     </div>

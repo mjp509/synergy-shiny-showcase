@@ -44,13 +44,13 @@ export default function SHOTM() {
     if (!data) return {}
     const result = {}
     Object.entries(data).forEach(([player, playerData]) => {
-      const monthShinies = Object.values(playerData.shinies).filter(s => {
+      const monthShinies = Object.entries(playerData.shinies).filter(([, s]) => {
         const m = s.Month?.toLowerCase()?.trim()
         const y = String(s.Year || '').trim()
         return m === currentMonth && y === String(currentYear)
       })
       if (!monthShinies.length) return
-      const totalPoints = monthShinies.reduce((acc, s) => acc + calculateShinyPoints(s, tierPoints, tierLookup), 0)
+      const totalPoints = monthShinies.reduce((acc, [, s]) => acc + calculateShinyPoints(s, tierPoints, tierLookup), 0)
       result[player] = { shinies: monthShinies, points: totalPoints }
     })
     return result
@@ -82,7 +82,7 @@ const tieredHighlights = useMemo(() => {
   const tiers = {}
 
   Object.entries(shotmData).forEach(([player, info]) => {
-    info.shinies.forEach(s => {
+    info.shinies.forEach(([, s]) => {
       if (s.Sold?.toLowerCase() === 'yes' || s.Flee?.toLowerCase() === 'yes') return
 
       const tier = tierLookup[s.Pokemon.toLowerCase()]
@@ -337,9 +337,9 @@ const tieredHighlights = useMemo(() => {
                   ({info.points} pts) {arrow}
                 </h2>
                 <div className={styles.shinyList}>
-                  {info.shinies.map((s, i) => {
+                  {info.shinies.map(([id, s]) => {
                     const pts = calculateShinyPoints(s, tierPoints, tierLookup)
-                    return pts > 0 ? <ShinyItem key={i} shiny={s} points={pts} /> : null
+                    return pts > 0 ? <ShinyItem key={id} shiny={s} points={pts} /> : null
                   })}
                 </div>
               </div>

@@ -31,9 +31,9 @@ export default function PlayerPage() {
     return <h2 style={{ color: 'white', textAlign: 'center' }}>Player "{playerName}" not found</h2>
   }
 
-  const shinies = Object.values(playerData.shinies)
-  const favourites = shinies.filter(s => s.Favourite?.toLowerCase() === 'yes')
-  const normalShinies = shinies.filter(s => s.Favourite?.toLowerCase() !== 'yes')
+  const shinies = Object.entries(playerData.shinies)
+  const favourites = shinies.filter(([, s]) => s.Favourite?.toLowerCase() === 'yes')
+  const normalShinies = shinies.filter(([, s]) => s.Favourite?.toLowerCase() !== 'yes')
 
   const fromSHOTM = location.state?.from === 'shotm'
   const backTo = fromSHOTM ? '/shotm' : '/'
@@ -48,8 +48,8 @@ export default function PlayerPage() {
       {favourites.length > 0 && (
         <div className={styles.favouriteList}>
           <h2 className={styles.favouritesHeader}>My Follower</h2>
-          {favourites.map((s, i) => (
-            <span key={i} className={styles.bigShinyWrapper}>
+          {favourites.map(([id, s]) => (
+            <span key={id} className={styles.bigShinyWrapper}>
               <ShinyItem shiny={s} />
             </span>
           ))}
@@ -57,8 +57,8 @@ export default function PlayerPage() {
       )}
 
       <div className={styles.shinyList}>
-        {normalShinies.map((s, i) => (
-          <ShinyItem key={i} shiny={s} />
+        {normalShinies.map(([id, s]) => (
+          <ShinyItem key={id} shiny={s} />
         ))}
       </div>
 
