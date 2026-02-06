@@ -1,8 +1,8 @@
 import { memo, useMemo } from 'react'
 import InfoBox from '../InfoBox/InfoBox'
 import { getAssetUrl } from '../../utils/assets'
+import { getLocalPokemonGif, onGifError } from '../../utils/pokemon'
 import styles from './ShinyItem.module.css'
-import { useTierData } from '../../hooks/useTierData'
 
 // Mapping of traits to CSS classes
 const TRAIT_CLASSES = {
@@ -23,16 +23,7 @@ const ICON_MAP = {
 }
 
 function ShinyItem({ shiny, points }) {
-  const { tierLookup } = useTierData()
-
-  // Memoize Pokémon name and tier folder
-  const { tierFolder, urlName } = useMemo(() => {
-    const pokemonKey = shiny.Pokemon.toLowerCase()
-    const tier = tierLookup[pokemonKey] ?? '0'
-    const folder = `tier_${tier.replace(/\D/g, '')}` // "Tier 7" -> "tier_7"
-    const name = pokemonKey.replace(/[^a-z0-9-]/g, '-')
-    return { tierFolder: folder, urlName: name }
-  }, [shiny.Pokemon, tierLookup])
+  const shinyGifPath = useMemo(() => getLocalPokemonGif(shiny.Pokemon), [shiny.Pokemon])
 
   // Container CSS classes based on traits
   const containerClasses = useMemo(() => {
@@ -89,9 +80,6 @@ function ShinyItem({ shiny, points }) {
 
   const isSold = shiny.Sold?.toLowerCase() === 'yes'
 
-  // Local GIF path (hashed filename if imported via Webpack, otherwise public folder)
-  const shinyGifPath = `/images/pokemon_gifs/${tierFolder}/${urlName}.gif`
-
   return (
     <span className={styles.wrapper}>
       <div className={containerClasses}>
@@ -103,6 +91,7 @@ function ShinyItem({ shiny, points }) {
           width="80"
           height="80"
           loading="lazy"
+          onError={onGifError(shiny.Pokemon)}
         />
         <img
           src={getAssetUrl('images/Shiny Showcase/sparkle.gif')}

@@ -1,4 +1,5 @@
 import { API } from '../../../api/endpoints'
+import { onGifError } from '../../../utils/pokemon'
 import styles from '../Admin.module.css'
 
 export default function ShinyTable({ shinies, onEdit, onDelete }) {
@@ -47,7 +48,7 @@ export default function ShinyTable({ shinies, onEdit, onDelete }) {
                     src={API.pokemonSprite(spriteName)}
                     alt={shiny.Pokemon}
                     className={styles.spriteImg}
-                    onError={e => { e.target.style.display = 'none' }}
+                    onError={onGifError(spriteName)}
                   />
                 </td>
                 <td>{shiny.Pokemon}</td>

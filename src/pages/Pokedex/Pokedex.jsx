@@ -2,7 +2,7 @@ import { useState, useMemo, useRef, useCallback, createRef } from 'react'
 import { Link } from 'react-router-dom'
 import { useDatabase } from '../../hooks/useDatabase'
 import { getAssetUrl } from '../../utils/assets'
-import { normalizePokemonName } from '../../utils/pokemon'
+import { normalizePokemonName, onGifError } from '../../utils/pokemon'
 import { API } from '../../api/endpoints'
 import generationData from '../../data/generation.json'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -202,6 +202,7 @@ export default function Pokedex() {
                       isComplete ? styles.complete : styles.incomplete
                     }`}
                     loading="lazy"
+                    onError={onGifError(normalized)}
                   />
                 )
               })}

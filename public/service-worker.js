@@ -41,22 +41,20 @@ self.addEventListener('fetch', (event) => {
   const { request } = event
   const url = new URL(request.url)
 
-  // Aggressive caching for Pokemon sprites (cache-first, never expire)
-  if (url.hostname === 'img.pokemondb.net') {
+  // Aggressive caching for Pokemon sprites — local gifs + remote fallbacks (cache-first, never expire)
+  if (url.pathname.startsWith('/images/pokemon_gifs/') || url.hostname === 'img.pokemondb.net') {
     event.respondWith(
       caches.open(POKEMON_CACHE).then((cache) => {
         return cache.match(request).then((cachedResponse) => {
           if (cachedResponse) {
             return cachedResponse
           }
-          // Not in cache, fetch and store permanently
           return fetch(request).then((response) => {
             if (response.status === 200) {
               cache.put(request, response.clone())
             }
             return response
           }).catch(() => {
-            // Return a fallback or nothing if offline
             return new Response('', { status: 404 })
           })
         })

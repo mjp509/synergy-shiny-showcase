@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useDatabase } from '../../hooks/useDatabase'
-import { getPokemonImageUrl, formatPokemonName } from '../../utils/pokemon'
+import { getPokemonImageUrl, formatPokemonName, onGifError } from '../../utils/pokemon'
 import { checkBingo, saveBingo, loadBingo } from '../../utils/bingo'
 import randomizerTiers from '../../data/randomizer_tiers.json'
 import generationData from '../../data/generation.json'
@@ -558,9 +558,10 @@ export default function RandomPokemon() {
                 <strong>{formatPokemonName(singlePokemon.name)}</strong>
                 <br />
                 <img
-                  src={getPokemonImageUrl(singlePokemon.name, singlePokemon.mode === 'shiny')}
+                  src={getPokemonImageUrl(singlePokemon.name)}
                   alt={singlePokemon.name}
                   className={styles.pokemonImg}
+                  onError={onGifError(singlePokemon.name, singlePokemon.mode === 'shiny')}
                 />
               </>
             ) : '---'}</p>
@@ -619,9 +620,10 @@ export default function RandomPokemon() {
               }}
             >
               <img
-                src={getPokemonImageUrl(entry.name, entry.type === 'shiny')}
+                src={getPokemonImageUrl(entry.name)}
                 alt={entry.name}
                 className={styles.bingoImg}
+                onError={onGifError(entry.name, entry.type === 'shiny')}
               />
 
               {entry.type === 'nature' && <div className={styles.bingoText}>Nature: {entry.nature}</div>}
@@ -680,9 +682,10 @@ export default function RandomPokemon() {
             {committed && committed.name && (
               <>
                 <img
-                  src={getPokemonImageUrl(committed.name, committed.type === 'shiny')}
+                  src={getPokemonImageUrl(committed.name)}
                   alt={committed.name}
                   className={styles.bingoImg}
+                  onError={onGifError(committed.name, committed.type === 'shiny')}
                   style={{
                     position: 'absolute',
                     top: '8px',
