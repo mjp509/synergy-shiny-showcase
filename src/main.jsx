@@ -32,7 +32,7 @@ const queryClient = new QueryClient({
 // Register service worker for caching (production only)
 if (!import.meta.env.DEV && 'serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/synergy-shiny-showcase/service-worker.js')
+    navigator.serviceWorker.register('/service-worker.js')
       .catch((error) => {
         console.error('Service Worker registration failed:', error)
       })
@@ -42,7 +42,7 @@ if (!import.meta.env.DEV && 'serviceWorker' in navigator) {
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter basename={import.meta.env.DEV ? '' : '/synergy-shiny-showcase'} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <AdminProvider>
           <App />
         </AdminProvider>

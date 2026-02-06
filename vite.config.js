@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig(({ mode }) => ({
   plugins: [react()],
-  base: mode === 'production' ? '/synergy-shiny-showcase/' : '/',
+  base: '/',
   resolve: {
     dedupe: ['react', 'react-dom'],
   },

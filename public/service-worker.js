@@ -3,10 +3,10 @@ const POKEMON_CACHE = 'pokemon-sprites-v1'
 const API_CACHE = 'api-data-v1'
 
 const ASSETS_TO_CACHE = [
-  '/synergy-shiny-showcase/',
-  '/synergy-shiny-showcase/index.html',
-  '/synergy-shiny-showcase/favicon.png',
-]
+    '/',
+    '/index.html',
+    '/favicon.png',
+  ]
 
 // Install event - cache essential assets
 self.addEventListener('install', (event) => {
