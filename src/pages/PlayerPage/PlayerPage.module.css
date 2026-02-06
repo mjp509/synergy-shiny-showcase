@@ -49,11 +49,10 @@
 }
 
 .bigShinyWrapper {
-  display: inline-block;
-  margin: 8px;
-  z-index: 1;
-  position: relative;
+  display: inline-block; 
+  margin: 0.5rem;       
 }
+
 
 .bigShinyWrapper:hover {
   z-index: 50;

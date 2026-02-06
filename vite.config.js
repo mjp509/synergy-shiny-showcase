@@ -7,18 +7,22 @@ export default defineConfig(({ mode }) => ({
   resolve: {
     dedupe: ['react', 'react-dom'],
   },
+  optimizeDeps: {
+    include: ['react', 'react-dom', 'react-router-dom', '@tanstack/react-query'],
+  },
   server: {
     proxy: {
-      // proxy exactly /api/streamers
+      '/database': {
+        target: 'https://adminpage.hypersmmo.workers.dev/admin',
+        changeOrigin: true,
+        rewrite: path => path.replace(/^\/database/, '/database'),
+      },
       '/api/streamers': {
         target: 'https://twitch-api.hypersmmo.workers.dev',
         changeOrigin: true,
-        rewrite: (path) => path, // keep /api/streamers path
+        rewrite: path => path.replace(/^\/api\/streamers/, '/api/streamers'),
       },
     },
-  },
-  optimizeDeps: {
-    include: ['react', 'react-dom', 'react-router-dom', '@tanstack/react-query'],
   },
   build: {
     target: 'esnext',

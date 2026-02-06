@@ -56,11 +56,11 @@ export default function PlayerPage() {
 
       {favourites.length > 0 && (
         <div className={styles.favouriteList}>
-          <h2 className={styles.favouritesHeader}>My Follower</h2>
+          <h2 className={styles.favouritesHeader}>My Followers</h2>
           {favourites.map(([id, s]) => (
-            <span key={id} className={styles.bigShinyWrapper}>
+            <div key={id} className={styles.bigShinyWrapper}>
               <ShinyItem shiny={s} />
-            </span>
+            </div>
           ))}
         </div>
       )}

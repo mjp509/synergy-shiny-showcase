@@ -205,21 +205,33 @@ export default function useAdminDatabase(auth) {
     setIsMutating(true)
     try {
       const str = deepClone(streamersDB)
-      str[pokeName] = { twitch_username: twitchName }
+
+      str[pokeName] = {
+        twitch_username: twitchName,
+        profile_image_url: '',   
+        last_stream_title: null,
+        last_viewer_count: 0,
+        live: false
+      }
 
       const result = await postData(API.updateStreamers, {
-        username: auth.name, password: auth.password, data: str,
+        username: auth.name,
+        password: auth.password,
+        data: str,
         action: `Added streamer ${pokeName}`,
       })
+
       if (result.success) {
         setStreamersDB(str)
         return { success: true }
       }
+
       return { success: false, error: 'Server rejected update' }
     } finally {
       setIsMutating(false)
     }
   }, [auth, streamersDB, postData, saveSnapshot])
+
 
   const deleteStreamer = useCallback(async (pokeName) => {
     if (!auth) return { success: false, error: 'Unauthorized' }
