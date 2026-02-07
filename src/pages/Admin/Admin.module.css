@@ -185,8 +185,7 @@
 }
 
 .tab {
-  flex: 1;
-  min-width: 0;
+  flex: 0 1 auto;
   padding: 10px 14px;
   margin: 0 !important;
   background: transparent;
@@ -196,10 +195,10 @@
   cursor: pointer;
   font-size: 0.9rem;
   font-weight: 600;
+  white-space: nowrap;
   text-align: center;
   transition: all 0.3s ease;
   box-shadow: none;
-  overflow-wrap: break-word;
 }
 
 .tabLabelShort {
