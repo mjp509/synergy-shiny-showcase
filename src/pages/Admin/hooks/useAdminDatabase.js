@@ -53,8 +53,21 @@ export default function useAdminDatabase(auth) {
         db[p].shiny_count = recalcShinyCount(db[p])
       })
 
+      // Reconstruct raw KV format from processed API response
+      const rawStreamers = {}
+      Object.entries(str).forEach(([key, val]) => {
+        if (key !== 'live' && key !== 'offline') {
+          rawStreamers[key] = val
+        }
+      })
+      ;[...(str.live || []), ...(str.offline || [])].forEach(s => {
+        if (s.twitch_username) {
+          rawStreamers[s.twitch_username] = s
+        }
+      })
+
       setDatabase(db)
-      setStreamersDB(str)
+      setStreamersDB(rawStreamers)
       setLogData(log.log || [])
       return { db, str, log: log.log || [] }
     } finally {
