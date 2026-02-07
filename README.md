@@ -61,9 +61,10 @@ npm run dev
 
 | Command | Description |
 |---------|-------------|
-| `npm run dev` | Start Vite dev server with HMR (http://localhost:5173/synergy-shiny-showcase) |
+| `npm run dev` | Start Vite dev server with HMR (http://localhost:5173/) |
 | `npm run build` | Build for production (outputs to `/dist/`) |
 | `npm run preview` | Preview production build locally |
+| `npm run sitemap` | Generate sitemap via `src/utils/sitemap-builder.js` |
 
 ---
 
@@ -97,8 +98,11 @@ src/
 │
 ├── hooks/                  # Custom React hooks
 │   ├── useDatabase.js      # Query main shiny database
+│   ├── useDocumentHead.js  # Dynamic page title, meta tags & canonical URLs
+│   ├── useShinyData.js     # Fetch user shiny data from Shinyboard.net
 │   ├── useStreamers.js     # Query live/offline streamer status
 │   ├── useTierData.js      # Load Pokemon tier classifications
+│   ├── useTieredShinies.js # Group shinies by tier for SHOTM display
 │   └── useTrophies.js      # Load trophy data
 │
 ├── pages/                  # Route-level page components
@@ -120,7 +124,8 @@ src/
 │   ├── assets.js           # Asset URL helper (handles base path)
 │   ├── bingo.js            # Bingo card game logic
 │   ├── points.js           # Shiny point calculation logic
-│   └── pokemon.js          # Pokemon name normalization & image URLs
+│   ├── pokemon.js          # Pokemon name normalization & image URLs
+│   └── sitemap-builder.js  # Generates sitemap.xml for SEO
 │
 ├── App.jsx                 # Main routing & layout
 ├── main.jsx                # App entry point with providers
@@ -130,8 +135,11 @@ public/
 ├── 404.html                # SPA redirect handler for GitHub Pages
 ├── favicon.png             # Site icon
 ├── CNAME                   # GitHub Pages custom domain
+├── robots.txt              # Search engine crawl rules
+├── sitemap.xml             # Sitemap for SEO
 ├── service-worker.js       # Offline caching service worker
 ├── images/                 # UI images (arrows, icons, etc.)
+│   └── pokemon_gifs/       # Local Pokemon GIF sprites (tier_0/ through tier_7/)
 └── xml/                    # PokeMMO counter template files
 ```
 
@@ -180,19 +188,19 @@ Base URL: `https://adminpage.hypersmmo.workers.dev/admin`
 | Endpoint | Description |
 |----------|-------------|
 | `API.twitchStreamers` | Get Twitch live status via `twitch-api.hypersmmo.workers.dev` |
-| `API.pokemonSprite(name, shiny)` | Get Pokemon GIF from PokemonDB |
+| `API.pokemonSprite(name)` | Get local Pokemon GIF path (falls back to PokemonDB on error) |
 
 ### Example Usage
 
 ```javascript
-import API from '../api/endpoints';
+import { API } from '../api/endpoints';
 
 // Fetch database
 const response = await fetch(API.database);
 const data = await response.json();
 
-// Get Pokemon sprite URL
-const spriteUrl = API.pokemonSprite('pikachu', true); // shiny sprite
+// Get Pokemon sprite URL (local gif path)
+const spriteUrl = API.pokemonSprite('pikachu');
 ```
 
 ---
@@ -257,16 +265,16 @@ Located in `src/data/tier_pokemon.json` and `src/data/tier_points.json`:
 ```javascript
 // tier_pokemon.json - Pokemon grouped by tier
 {
-  "1": ["Bulbasaur", "Charmander", ...],
-  "2": ["Pikachu", "Eevee", ...],
-  // Tiers 1-6
+  "Tier 0": ["bulbasaur", "charmander", ...],
+  "Tier 1": ["absol", "aerodactyl", ...],
+  // Tier 0 through Tier 7
 }
 
 // tier_points.json - Points per tier
 {
-  "1": 10,
-  "2": 15,
-  // etc.
+  "Tier 0": 30,
+  "Tier 1": 25,
+  // Tier 0 (30) down to Tier 7 (2)
 }
 ```
 
@@ -277,13 +285,13 @@ Located in `src/data/tier_pokemon.json` and `src/data/tier_points.json`:
 ### `<PlayerCard />`
 Displays a player's summary with shiny count and preview images.
 - **Location:** `src/components/PlayerCard/`
-- **Props:** `player`, `shinies`, `shinyCount`
+- **Props:** `player`, `data`, `rank`, `streamers`
 - **Memoized** for performance
 
 ### `<ShinyItem />`
 Renders an individual shiny Pokemon with sprite and traits.
 - **Location:** `src/components/ShinyItem/`
-- **Props:** `pokemon`, `traits`, `showPoints`
+- **Props:** `shiny`, `points`
 
 ### `<Navbar />`
 Main navigation with responsive mobile hamburger menu.
@@ -316,24 +324,48 @@ const { data, isLoading, error } = useDatabase();
 ```
 
 ### `useStreamers()`
-Fetches streamer list and Twitch live status in parallel.
+Fetches Twitch live/offline status from the Twitch API worker.
 
 ```javascript
-const { streamers, isLoading } = useStreamers();
+const { data, isLoading } = useStreamers();
+// data = { live: [...], offline: [...] }
 ```
 
 ### `useTrophies()`
 Loads trophy data with path transformations for assets.
 
 ```javascript
-const { trophies, trophyAssignments, isLoading } = useTrophies();
+const { data, isLoading } = useTrophies();
+// data = { trophies, trophyAssignments }
 ```
 
 ### `useTierData()`
 Builds a lookup map for Pokemon tier classifications.
 
 ```javascript
-const tierMap = useTierData(); // { "Pikachu": 2, "Charizard": 4, ... }
+const { tierPokemon, tierPoints, tierLookup } = useTierData();
+// tierLookup = { "pikachu": "Tier 7", "charizard": "Tier 0", ... }
+```
+
+### `useDocumentHead()`
+Sets page title, meta description, Open Graph tags, and canonical URL per route.
+
+```javascript
+useDocumentHead({ title: 'Pokedex', description: '...', canonicalPath: '/pokedex' });
+```
+
+### `useShinyData()`
+Fetches a player's shiny data from the Shinyboard.net API.
+
+```javascript
+const shinies = await grabShinyData('playerName');
+```
+
+### `useTieredShinies()`
+Groups shinies by tier for SHOTM displays, with optional month/year filtering.
+
+```javascript
+const tiers = useTieredShinies(shotmData, tierLookup, { onlyCurrentMonth: true });
 ```
 
 ---
@@ -344,23 +376,24 @@ const tierMap = useTierData(); // { "Pikachu": 2, "Charizard": 4, ... }
 Handles base path for assets in both dev and production.
 
 ```javascript
-import { getAssetPath } from '../utils/assets';
-const imagePath = getAssetPath('/images/logo.png');
+import { getAssetUrl } from '../utils/assets';
+const imagePath = getAssetUrl('/images/logo.png');
 ```
 
 ### `src/utils/points.js`
 Calculates SHOTM points based on Pokemon tier and traits.
 
 ```javascript
-import { calculatePoints } from '../utils/points';
-const points = calculatePoints(pokemon, tierMap);
+import { calculateShinyPoints } from '../utils/points';
+const points = calculateShinyPoints(shiny, tierPoints, tierLookup);
 ```
 
 ### `src/utils/pokemon.js`
-Pokemon name normalization and sprite URL generation.
+Pokemon name normalization and local GIF resolution with remote fallback.
 
 ```javascript
-import { normalizePokemonName, getPokemonSpriteUrl } from '../utils/pokemon';
+import { getLocalPokemonGif, onGifError, normalizePokemonName } from '../utils/pokemon';
+const gifPath = getLocalPokemonGif('pikachu'); // /images/pokemon_gifs/tier_7/pikachu.gif?v=1
 const normalized = normalizePokemonName("Nidoran♂"); // "nidoran-m"
 ```
 
@@ -368,7 +401,7 @@ const normalized = normalizePokemonName("Nidoran♂"); // "nidoran-m"
 Bingo card game logic for Random Pokemon Generator.
 
 ```javascript
-import { generateBingoCard, checkBingo } from '../utils/bingo';
+import { checkBingo, saveBingo, loadBingo } from '../utils/bingo';
 ```
 
 ---
@@ -376,18 +409,21 @@ import { generateBingoCard, checkBingo } from '../utils/bingo';
 ## Configuration Files
 
 ### `vite.config.js`
-- Base URL: `/synergy-shiny-showcase/` (for GitHub Pages subdirectory)
+- Base URL: `/` (custom domain via CNAME)
 - Code splitting configured for `vendor`, `query`, and `jszip` chunks
 - React plugin enabled
+- Dev server proxy for admin API and Twitch API
 
 ### `package.json`
 - ES modules (`"type": "module"`)
 - Dependencies and scripts defined
 
 ### `index.html`
-- Entry point with meta tags for SEO
+- Entry point with meta tags for SEO (Open Graph, Twitter Cards)
 - Preconnects to external resources (PokemonDB, admin API)
-- Google Site Verification included
+- Google Site Verification and Google Analytics included
+- Structured data (JSON-LD) for SERP sitelinks
+- SPA redirect handler script for GitHub Pages
 
 ---
 
@@ -420,7 +456,7 @@ npm run preview
 
 ### GitHub Pages SPA Routing
 
-The `public/404.html` file handles client-side routing by redirecting to the main app with route preservation. This is processed in `main.jsx` before mounting.
+The `public/404.html` file handles client-side routing by redirecting to the main app with route preservation. The redirect is decoded by an inline script in `index.html` (and a matching handler in `main.jsx`).
 
 ---
 
@@ -432,7 +468,7 @@ Service worker located at `public/service-worker.js`.
 
 | Cache | Purpose |
 |-------|---------|
-| `synergy-showcase-v3` | Main app assets |
+| `synergy-showcase-v4` | Main app assets |
 | `pokemon-sprites-v1` | Pokemon sprite images |
 | `api-data-v1` | API response data |
 
@@ -481,14 +517,14 @@ Default settings in `src/main.jsx`:
 
 ### Asset Base Path
 
-Always use the `getAssetPath()` utility for static assets to handle the GitHub Pages subdirectory:
+Always use the `getAssetUrl()` utility for static assets to handle the base path correctly:
 
 ```javascript
 // Correct
-import { getAssetPath } from '../utils/assets';
-<img src={getAssetPath('/images/icon.png')} />
+import { getAssetUrl } from '../utils/assets';
+<img src={getAssetUrl('/images/icon.png')} />
 
-// Incorrect (won't work in production)
+// Incorrect (may not resolve correctly with different base paths)
 <img src="/images/icon.png" />
 ```
 
@@ -542,7 +578,7 @@ import { getAssetPath } from '../utils/assets';
 ### Common Issues
 
 **Issue:** Assets not loading in production
-**Solution:** Use `getAssetPath()` utility for all static assets
+**Solution:** Use `getAssetUrl()` utility for all static assets
 
 **Issue:** Routes returning 404 on refresh
 **Solution:** Ensure `public/404.html` is deployed and GitHub Pages is configured correctly
@@ -559,5 +595,5 @@ import { getAssetPath } from '../utils/assets';
 
 - **Live Site:** GitHub Pages deployment
 - **Backend API:** Cloudflare Workers at `adminpage.hypersmmo.workers.dev`
-- **Pokemon Sprites:** `img.pokemondb.net`
+- **Pokemon Sprites:** Local GIFs in `public/images/pokemon_gifs/` (fallback: `img.pokemondb.net`)
 - **Twitch API:** `twitch-api.hypersmmo.workers.dev`
