@@ -1,5 +1,6 @@
 import { useState, useCallback, useRef, useMemo } from 'react'
 import { API } from '../../../api/endpoints'
+import generationData from '../../../data/generation.json'
 
 function recalcShinyCount(playerObj) {
   const shinies = playerObj?.shinies
@@ -303,11 +304,20 @@ export default function useAdminDatabase(auth) {
   }, [database])
 
   const allPokemonNames = useMemo(() => {
-    const all = Object.values(database).flatMap(p =>
+    const names = new Map()
+    // Add all pokemon from generation data
+    Object.values(generationData).flat(2).forEach(name => {
+      names.set(name.toLowerCase(), name.charAt(0).toUpperCase() + name.slice(1).toLowerCase())
+    })
+    // Merge in any names from the database (may have custom casing)
+    Object.values(database).flatMap(p =>
       Object.values(p.shinies || {}).map(s => s.Pokemon)
-    )
-    return [...new Map(all.map(p => [p.toLowerCase(), p])).values()]
-      .map(p => p.charAt(0).toUpperCase() + p.slice(1).toLowerCase())
+    ).forEach(name => {
+      if (!names.has(name.toLowerCase())) {
+        names.set(name.toLowerCase(), name.charAt(0).toUpperCase() + name.slice(1).toLowerCase())
+      }
+    })
+    return [...names.values()].sort()
   }, [database])
 
   const hasSnapshot = !!snapshotRef.current
