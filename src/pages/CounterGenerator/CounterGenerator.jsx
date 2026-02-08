@@ -5,10 +5,10 @@ import styles from './CounterGenerator.module.css'
 export default function CounterGenerator() {
   useDocumentHead({
     title: 'PokeMMO Encounter Counter Theme Generator',
-    description: 'PokeMMO encounter counter theme generator. Upload a GIF, resize it, and download a ready-to-use counter theme ZIP for your shiny hunts.',
+    description: 'PokeMMO Custom encounter counter theme generator. Upload a GIF, Resize it and download a ready-to-use counter theme ZIP file for your shiny hunts',
     canonicalPath: '/counter-generator',
   })
-  
+
   const [status, setStatus] = useState('')
   const [generateEnabled, setGenerateEnabled] = useState(false)
   const loadedFileRef = useRef(null)
