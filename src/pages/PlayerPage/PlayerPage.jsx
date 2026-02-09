@@ -69,7 +69,7 @@ export default function PlayerPage() {
       </h2>
     )
   }
-
+  console.log(safeRealKey)
   // --- Render main player page ---
   return (
     <div className={styles.playerPage}>
@@ -84,17 +84,16 @@ export default function PlayerPage() {
           <div className={styles.favouriteGrid}>
             {safeFavourites.map(([id, s]) => (
               <div key={id} className={styles.bigShinyWrapper}>
-                <ShinyItem shiny={s} />
+                <ShinyItem shiny={s} userName={safeRealKey} />
               </div>
             ))}
           </div>
         </div>
       )}
-
       {safeNormalShinies.length > 0 && (
         <div className={styles.shinyList}>
           {safeNormalShinies.map(([id, s]) => (
-            <ShinyItem key={id} shiny={s} />
+            <ShinyItem key={id} shiny={s} userName={safeRealKey} />
           ))}
         </div>
       )}

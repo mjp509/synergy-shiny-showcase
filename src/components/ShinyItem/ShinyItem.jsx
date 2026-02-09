@@ -84,7 +84,7 @@ function ShinyItem({ shiny, points, userName }) {
   const isSold = shiny.Sold?.toLowerCase() === 'yes'
 
   // Conditional override for InfoBox text
-  const infoText = userName === 'Strength' && shiny.Pokemon === 'Zorua'
+  const infoText = userName === 'Strength' && shiny.Pokemon === 'zorua'
     ? 'Never forget reactive gas...'
     : shiny.infoText
 
@@ -102,7 +102,7 @@ function ShinyItem({ shiny, points, userName }) {
           onError={onGifError(shiny.Pokemon)}
         />
       </div>
-      <InfoBox shiny={{ ...shiny, infoText }} points={points} />
+      <InfoBox shiny={shiny} points={points} customText={infoText} />
     </span>
   )
 }

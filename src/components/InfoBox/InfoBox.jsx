@@ -14,7 +14,7 @@ const TRAIT_CHECKS = [
   { key: 'Reaction', label: 'Reaction', cls: 'tagReaction' },
 ]
 
-export default function InfoBox({ shiny, points }) {
+export default function InfoBox({ shiny, points, customText }) {
   const boxRef = useRef(null)
 
   useEffect(() => {
@@ -73,7 +73,7 @@ export default function InfoBox({ shiny, points }) {
 
   return (
     <div className={styles.infoBox} ref={boxRef}>
-      <strong>{shiny.Pokemon}</strong>
+      <strong>{customText || shiny.Pokemon}</strong>
       {points !== undefined && (
         <div className={styles.detail}>({points} pts)</div>
       )}
