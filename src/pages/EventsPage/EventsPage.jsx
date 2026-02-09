@@ -1,12 +1,18 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import styles from './EventsPage.module.css'
+import { useDocumentHead } from '../../hooks/useDocumentHead'
 
 export default function EventsPage() {
   const [events, setEvents] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const navigate = useNavigate()
 
+    useDocumentHead({
+    title: 'Team Synergy PokeMMO Events Page!',
+    description: 'Team Synergys PokeMMO Events Page!',
+    canonicalPath: '/events',
+  })
   useEffect(() => {
     async function fetchEvents() {
       try {
@@ -62,7 +68,7 @@ export default function EventsPage() {
 
   return (
     <div>
-      <h1>Events</h1>
+      <h1>Team Synergy Events!</h1>
 
       {ongoingEvents.length > 0 && (
         <>
