@@ -112,35 +112,20 @@ export default function PlayerPage() {
     // LIVE EMBED
     if (isLive) {
       return (
-        <div style={{ marginTop: '2rem', textAlign: 'center' }}>
+        <div className={styles.twitchSection}>
           <h2>🔴 Live on Twitch</h2>
 
-          <div
-            style={{
-              position: 'relative',
-              width: '100%',
-              maxWidth: '720px',
-              margin: '24px auto',
-              paddingTop: '56.25%',
-              zIndex: 0,
-            }}
-          >
+          <div className={styles.twitchWrapper}>
             <iframe
               src={`https://player.twitch.tv/?channel=${streamerInfo.twitch_username.toLowerCase()}&parent=${parentDomain}`}
               allowFullScreen
               loading="lazy"
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '100%',
-                borderRadius: '12px',
-                border: 'none',
-              }}
+              className={styles.twitchIframe}
             />
           </div>
         </div>
+
+
       )
     }
 
@@ -184,11 +169,9 @@ export default function PlayerPage() {
   return (
     <div className={styles.playerPage}>
       <BackButton to={backTo} label={backLabel} />
-
+      
       <h1>{safeRealKey}'s Shiny Collection &#10024;</h1>
       <p>Total Shinies: {playerData.shiny_count ?? 0}</p>
-
-      {renderTwitchSection()}
 
       {safeFavourites.length > 0 && (
         <div className={styles.favouriteList}>
@@ -210,6 +193,8 @@ export default function PlayerPage() {
           ))}
         </div>
       )}
+      
+      {renderTwitchSection()}
 
       {trophiesData && (
         <TrophyShelf

@@ -88,3 +88,44 @@
     transform: scale(1.1);
   }
 }
+
+
+/* Twitch live embed section */
+.twitchSection {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+/* Wrapper for responsive iframe */
+.twitchWrapper {
+  position: relative;
+  width: 100%;
+  max-width: 620px; /* max width for desktop */
+  margin: 0 auto;
+  padding-top: 56.25%; /* 16:9 aspect ratio for mobile */
+}
+
+/* iframe styling */
+.twitchIframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 12px;
+}
+
+/* Desktop-specific fix: prevent stretched height */
+@media (min-width: 768px) {
+  .twitchWrapper {
+    padding-top: 0;
+    height: 378px; /* fixed height for desktop */
+  }
+
+  .twitchIframe {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+}
