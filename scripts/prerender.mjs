@@ -13,6 +13,7 @@ const ROUTES = [
   '/pokedex',
   '/streamers',
   '/trophy-board',
+  `/events`,
   '/counter-generator',
   '/random-pokemon-generator',
 ];
