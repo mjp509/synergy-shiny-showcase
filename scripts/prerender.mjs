@@ -6,6 +6,10 @@ const __dirname = fileURLToPath(new URL('.', import.meta.url));
 const tierPokemonPath = join(__dirname, '../src/data/tier_pokemon.json');
 const tierPokemonRaw = await readFile(tierPokemonPath, 'utf-8');
 const tierPokemon = JSON.parse(tierPokemonRaw);
+const trophiesPath = join(__dirname, '../src/data/trophies.json');
+const trophiesRaw = await readFile(trophiesPath, 'utf-8');
+const trophiesData = JSON.parse(trophiesRaw);
+
 const DIST = join(__dirname, '..', 'dist');
 
 // ---------------- STATIC ROUTES ----------------
@@ -109,6 +113,29 @@ async function getEvents() {
     };
   });
 }
+
+
+export async function getTrophies() {
+  // Path to local trophies.json
+  const trophiesPath = join(__dirname, '../src/data/trophies.json');
+  const trophiesRaw = await readFile(trophiesPath, 'utf-8');
+  const trophiesJson = JSON.parse(trophiesRaw);
+
+  // Read only the "trophies" object
+  const trophiesData = trophiesJson.trophies;
+
+  return Object.keys(trophiesData).map(trophyName => {
+    const trophyImg = trophiesData[trophyName] || '/favicon.png';
+
+    return {
+      route: `/trophy/${encodeURIComponent(trophyName.toLowerCase())}`,
+      ogTitle: `${trophyName} Trophy | Team Synergy - PokeMMO`,
+      ogDescription: `See which Team Synergy members earned the ${trophyName} trophy in PokeMMO.`,
+      ogImage: `https://synergymmo.com${trophyImg}`,
+    };
+  });
+}
+
 // ---------------- PRERENDER ----------------
 async function prerenderRoute(templateHtml, outPath, meta = {}) {
   let html = templateHtml;
@@ -143,7 +170,6 @@ async function prerenderRoute(templateHtml, outPath, meta = {}) {
   console.log(`→ Prerendered ${outPath}`);
 }
 
-// ---------------- MAIN ----------------
 async function prerender() {
   console.log('Starting prerender...');
 
@@ -167,6 +193,13 @@ async function prerender() {
   for (const e of events) {
     const outPath = join(DIST, e.route.slice(1), 'index.html');
     await prerenderRoute(templateHtml, outPath, e);
+  }
+
+  // Trophy pages
+  const trophies = await getTrophies();
+  for (const t of trophies) {
+    const outPath = join(DIST, t.route.slice(1), 'index.html');
+    await prerenderRoute(templateHtml, outPath, t);
   }
 
   console.log('Prerender complete!');

@@ -17,6 +17,7 @@ export default function TrophyPage() {
       k => k.toLowerCase() === decodeURIComponent(trophyName).toLowerCase()
     ) || null
   }, [trophiesData, trophyName])
+  const trophyImg = trophies[trophyKey]
 
   useDocumentHead({
     title: trophyKey ? `${trophyKey} Trophy` : decodeURIComponent(trophyName),
@@ -24,6 +25,7 @@ export default function TrophyPage() {
       ? `See which Team Synergy members earned the ${trophyKey} trophy in PokeMMO.`
       : `View trophy details for Team Synergy in PokeMMO.`,
     canonicalPath: `/trophy/${encodeURIComponent(trophyName.toLowerCase())}`,
+    ogImage: trophyImg,
   })
 
   if (loadingTrophies || loadingDB) return <div className="message">Loading...</div>
@@ -34,7 +36,6 @@ export default function TrophyPage() {
     return <h2 style={{ color: 'white', textAlign: 'center' }}>Trophy "{trophyName}" not found</h2>
   }
 
-  const trophyImg = trophies[trophyKey]
   const players = (trophyAssignments[trophyKey] || []).filter(player =>
     Object.keys(shinyData).some(
       dbKey => dbKey.toLowerCase() === player.toLowerCase()
