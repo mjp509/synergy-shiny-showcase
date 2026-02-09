@@ -20,17 +20,19 @@ export default function TrophyPage() {
       k => k.toLowerCase() === decodeURIComponent(trophyName).toLowerCase()
     ) || null;
 
-const trophyImg = trophyKey ? `${DOMAIN}${trophies[trophyKey]}` : `${DOMAIN}/favicon.png`;
+  const trophyImg = trophyKey ? `${DOMAIN}${trophies[trophyKey]}` : `${DOMAIN}/favicon.png`;
 
-  // Call useDocumentHead unconditionally
+  const ogUrl = `${DOMAIN}/trophy/${encodeURIComponent(trophyName.toLowerCase())}`;
   useDocumentHead({
     title: trophyKey ? `${trophyKey} Trophy` : decodeURIComponent(trophyName),
     description: trophyKey
       ? `See which Team Synergy members earned the ${trophyKey} trophy in PokeMMO.`
       : `View trophy details for Team Synergy in PokeMMO.`,
-    canonicalPath: `/trophy/${encodeURIComponent(trophyName.toLowerCase())}`,
+    canonicalPath: ogUrl,
     ogImage: trophyImg,
+    url: ogUrl, 
   });
+
 
   // Loading fallback
   if (loadingTrophies || loadingDB) {
