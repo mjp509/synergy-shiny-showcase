@@ -205,6 +205,7 @@ export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutat
         <thead>
           <tr>
             <th>Title</th>
+            <th>Event Type</th>
             <th>Start</th>
             <th>End</th>
             <th>Actions</th>
@@ -214,6 +215,7 @@ export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutat
           {events.map((e) => (
             <tr key={e.id}>
               <td>{e.title}</td>
+              <td>{e.eventType}</td>
               <td>
                 {e.startDate
                   ? new Date(e.startDate).toLocaleString(undefined, {
@@ -257,7 +259,7 @@ export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutat
             Select Event Type
           </option>
           <option value="catchevent">Catch Event</option>
-          <option value="battleevent">Battle Event</option>
+          <option value="battleevent">Metronome</option>
         </select>
       </div>
 
@@ -267,7 +269,7 @@ export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutat
         { label: "Image Link", field: "imageLink" },
         { label: "Location", field: "location" },
         { label: "Duration", field: "duration" },
-        { label: "Scoring", field: "scoring" },
+        ...(eventData.eventType === "catchevent" ? [{ label: "Scoring", field: "scoring" }] : []),
       ].map(({ label, field }) => (
         <div key={field}>
           <label>{label}:</label>
@@ -278,6 +280,7 @@ export default function EventsTab({ eventDB, onCreate, onEdit, onDelete, isMutat
           />
         </div>
       ))}
+
 
       {/* Date Inputs */}
       <div className="datetimeWrapper" onClick={(e) => e.currentTarget.querySelector("input").showPicker?.()}>

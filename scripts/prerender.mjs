@@ -1,8 +1,7 @@
-import puppeteer from 'puppeteer';
-import { createServer } from 'http';
 import { readFile, writeFile, mkdir } from 'fs/promises';
 import { join, extname } from 'path';
 import { fileURLToPath } from 'url';
+
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 const DIST = join(__dirname, '..', 'dist');
@@ -36,168 +35,117 @@ const MIME_TYPES = {
   '.woff2': 'font/woff2',
 };
 
-/* ---------------- STATIC SERVER ---------------- */
+/* ---------------- FETCH DYNAMIC DATA ---------------- */
 
-function createStaticServer() {
-  return createServer(async (req, res) => {
-    let pathname = new URL(req.url, 'http://localhost').pathname;
-    let filePath = join(DIST, pathname);
+async function getPlayers() {
+  const res = await fetch('https://adminpage.hypersmmo.workers.dev/admin/database');
+  const data = await res.json();
+  return Object.entries(data).map(([name, player]) => {
+    // Pick first favorite shiny for OG image
+    const shinies = Object.values(player.shinies || {});
+    const fav = shinies.find((s) => s.Favourite?.toLowerCase() === 'yes') || shinies[0];
+    const ogImage = fav ? `/images/pokemon_gifs/tier_0/${fav.Pokemon.toLowerCase()}.gif` : '/favicon.png';
 
-    if (!extname(pathname)) {
-      filePath = join(DIST, 'index.html');
-    }
-
-    try {
-      const data = await readFile(filePath);
-      const ext = extname(filePath);
-      res.writeHead(200, {
-        'Content-Type': MIME_TYPES[ext] || 'application/octet-stream',
-      });
-      res.end(data);
-    } catch {
-      try {
-        const data = await readFile(join(DIST, 'index.html'));
-        res.writeHead(200, { 'Content-Type': 'text/html' });
-        res.end(data);
-      } catch {
-        res.writeHead(404);
-        res.end('Not found');
-      }
-    }
+    return {
+      route: `/player/${encodeURIComponent(name.toLowerCase())}`,
+      ogTitle: `${name}'s Shinies | Team Synergy - PokeMMO`,
+      ogDescription: `Browse ${name}'s shiny Pokemon collection in PokeMMO.`,
+      ogImage: `https://synergymmo.com${ogImage}`,
+    };
   });
 }
 
-/* ---------------- FETCH DYNAMIC ROUTES ---------------- */
-
-async function getEventRoutes() {
-  try {
-    const res = await fetch('https://adminpage.hypersmmo.workers.dev/admin/events');
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-    return data.map((e) => `/event/${e.id}`);
-  } catch (err) {
-    console.warn('⚠ Failed to fetch events:', err.message);
-    return [];
-  }
-}
-
-async function getTrophyRoutes() {
-  try {
-    const trophiesPath = join(DIST, 'data', 'trophies.json');
-    const raw = await readFile(trophiesPath, 'utf-8');
-    const data = JSON.parse(raw);
-    return Object.keys(data.trophies || {}).map(
-      (name) => `/trophy/${encodeURIComponent(name.toLowerCase())}`
-    );
-  } catch (err) {
-    console.warn('⚠ Failed to load trophies.json:', err.message);
-    return [];
-  }
-}
-
-async function getPlayerRoutes() {
-  try {
-    const res = await fetch('https://adminpage.hypersmmo.workers.dev/admin/database');
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-    return Object.keys(data).map(
-      (name) => `/player/${encodeURIComponent(name.toLowerCase())}`
-    );
-  } catch (err) {
-    console.warn('⚠ Failed to fetch player database:', err.message);
-    return [];
-  }
-}
-
-/* ---------------- RENDER A SINGLE ROUTE ---------------- */
-
-async function renderRoute(browser, port, route) {
-  const url = `http://localhost:${port}${route}`;
-  const outDir = route === '/' ? DIST : join(DIST, route.slice(1));
-  const outPath = join(outDir, 'index.html');
-
-  // Skip if file already exists
-  try {
-    await readFile(outPath);
-    console.log(`✓ Skipped ${route}`);
-    return;
-  } catch {}
-
-  const page = await browser.newPage();
-
-  // Block heavy assets & analytics
-  await page.setRequestInterception(true);
-  page.on('request', (req) => {
-    const type = req.resourceType();
-    const url = req.url();
-    if (
-      ['image', 'font', 'media'].includes(type) ||
-      url.includes('analytics') ||
-      url.includes('gtag') ||
-      url.includes('doubleclick')
-    ) {
-      req.abort();
-    } else {
-      req.continue();
-    }
+async function getEvents() {
+  const res = await fetch('https://adminpage.hypersmmo.workers.dev/admin/events');
+  const data = await res.json();
+  return data.map((e) => {
+    const ogImage = e.imageLink || '/favicon.png';
+    return {
+      route: `/event/${e.id}`,
+      ogTitle: `${e.title} | Team Synergy - PokeMMO`,
+      ogDescription: e.description || `Join the ${e.title} event in PokeMMO.`,
+      ogImage: ogImage.startsWith('http') ? ogImage : `https://synergymmo.com${ogImage}`,
+    };
   });
-
-  try {
-    await page.goto(url, { waitUntil: 'networkidle2', timeout: 20000 });
-    await page.waitForFunction(() => document.title && document.title.length > 0, { timeout: 8000 });
-    const html = await page.content();
-    await mkdir(outDir, { recursive: true });
-    const finalHtml = html.startsWith('<!DOCTYPE') ? html : `<!DOCTYPE html>${html}`;
-    await writeFile(outPath, finalHtml);
-    console.log(`→ ${route}`);
-  } catch (err) {
-    console.warn(`⚠ Failed ${route}:`, err.message);
-  }
-
-  await page.close();
 }
 
-/* ---------------- PARALLEL RENDERING ---------------- */
+/* ---------------- PRERENDER HTML ---------------- */
+async function prerenderRoute(templateHtml, outPath, meta = {}) {
+  let html = templateHtml;
+
+  const title = meta.ogTitle || 'Team Synergy - PokeMMO';
+  const description = meta.ogDescription || 'Team Synergy is a PokeMMO shiny hunting team.';
+  const image = meta.ogImage || 'https://synergymmo.com/favicon.png';
+
+  // Inject OG tags
+  html = html.replace(/<title>.*<\/title>/, `<title>${title}</title>`);
+  html = html.replace(
+    /<meta property="og:title" content=".*">/,
+    `<meta property="og:title" content="${title}">`
+  );
+  html = html.replace(
+    /<meta property="og:description" content=".*">/,
+    `<meta property="og:description" content="${description}">`
+  );
+  html = html.replace(
+    /<meta property="og:image" content=".*">/,
+    `<meta property="og:image" content="${image}">`
+  );
+
+  // Inject Twitter tags (mirror OG)
+  html = html.replace(
+    /<meta name="twitter:title" content=".*">/,
+    `<meta name="twitter:title" content="${title}">`
+  );
+  html = html.replace(
+    /<meta name="twitter:description" content=".*">/,
+    `<meta name="twitter:description" content="${description}">`
+  );
+  html = html.replace(
+    /<meta name="twitter:image" content=".*">/,
+    `<meta name="twitter:image" content="${image}">`
+  );
+  html = html.replace(
+    /<meta name="twitter:card" content=".*">/,
+    `<meta name="twitter:card" content="summary_large_image">`
+  );
+
+  await mkdir(join(outPath, '..'), { recursive: true });
+  await writeFile(outPath, html, 'utf-8');
+  console.log(`→ Prerendered ${outPath}`);
+}
+
+
+/* ---------------- MAIN ---------------- */
 
 async function prerender() {
   console.log('Starting prerender...');
 
-  const server = createStaticServer();
-  await new Promise((resolve) => server.listen(0, resolve));
-  const port = server.address().port;
-  console.log(`Static server running on port ${port}`);
+  // Read template HTML once
+  const templateHtml = await readFile(join(DIST, 'index.html'), 'utf-8');
 
-  const browser = await puppeteer.launch({
-    headless: true,
-    args: ['--no-sandbox', '--disable-setuid-sandbox'],
-  });
+  // Static routes
+  for (const route of STATIC_ROUTES) {
+    const outPath = route === '/' ? join(DIST, 'index.html') : join(DIST, route.slice(1), 'index.html');
+    await prerenderRoute(templateHtml, outPath);
+  }
 
-  // Fetch all dynamic routes
-  const EVENT_ROUTES = await getEventRoutes();
-  const TROPHY_ROUTES = await getTrophyRoutes();
-  const PLAYER_ROUTES = await getPlayerRoutes();
-  const ALL_ROUTES = [...STATIC_ROUTES, ...EVENT_ROUTES, ...TROPHY_ROUTES, ...PLAYER_ROUTES];
+  // Dynamic player pages
+  const players = await getPlayers();
+  for (const p of players) {
+    const outPath = join(DIST, p.route.slice(1), 'index.html');
+    await prerenderRoute(templateHtml, outPath, p);
+  }
 
-  console.log(`Total routes to prerender: ${ALL_ROUTES.length}`);
+  // Dynamic event pages
+  const events = await getEvents();
+  for (const e of events) {
+    const outPath = join(DIST, e.route.slice(1), 'index.html');
+    await prerenderRoute(templateHtml, outPath, e);
+  }
 
-  const CONCURRENCY = 6; // adjust for your CPU/memory
-  const queue = [...ALL_ROUTES];
-
-  const workers = Array.from({ length: CONCURRENCY }, async () => {
-    while (queue.length) {
-      const route = queue.shift();
-      if (route) await renderRoute(browser, port, route);
-    }
-  });
-
-  await Promise.all(workers);
-
-  await browser.close();
-  server.close();
   console.log('Prerender complete!');
 }
-
-/* ---------------- RUN ---------------- */
 
 prerender().catch((err) => {
   console.error('Prerender failed:', err);

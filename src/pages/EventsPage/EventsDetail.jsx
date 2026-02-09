@@ -11,9 +11,6 @@ export default function EventsDetail() {
 
   useDocumentHead({
     title: event ? event.title : 'Loading Event...',
-    description: event
-      ? event.description || DEFAULT_DESCRIPTION
-      : 'Loading event details...',
     canonicalPath: `/events/${id}`,
   })
 
