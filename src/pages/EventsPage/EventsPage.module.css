@@ -55,9 +55,14 @@
   line-height: 1.25;
 }
 
-#eventTitle {
+.eventTitle {
   text-align: center;
-  color: #b96dff;     
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.eventStatus{
+  text-align: center;   
   margin-top: 20px;
   margin-bottom: 10px;
 }

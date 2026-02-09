@@ -69,25 +69,25 @@ export default function EventsPage() {
 
   return (
     <div>
-      <h1>Team Synergy Events!</h1>
+      <h1 className={styles.eventTitle}>Team Synergy Events!</h1>
 
       {ongoingEvents.length > 0 && (
         <>
-          <h2>ONGOING</h2>
+          <h2 className={styles.eventStatus}>ONGOING</h2>
           {renderEventGrid(ongoingEvents)}
         </>
       )}
 
       {upcomingEvents.length > 0 && (
         <>
-          <h2>UPCOMING</h2>
+          <h2 className={styles.eventStatus}>UPCOMING</h2>
           {renderEventGrid(upcomingEvents)}
         </>
       )}
 
       {pastEvents.length > 0 && (
         <>
-          <h2>PAST</h2>
+          <h2 className={styles.eventStatus}>PAST</h2>
           {renderEventGrid(pastEvents)}
         </>
       )}
