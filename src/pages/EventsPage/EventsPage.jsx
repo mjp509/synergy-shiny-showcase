@@ -18,8 +18,8 @@ export default function EventsPage() {
       try {
         const res = await fetch('https://adminpage.hypersmmo.workers.dev/admin/events')
         const data = await res.json()
-        // Sort by startDate ascending
-        data.sort((a, b) => new Date(a.startDate) - new Date(b.startDate))
+        // Sort by startDate descending (latest first)
+        data.sort((a, b) => new Date(b.startDate) - new Date(a.startDate))
         setEvents(data)
       } catch (err) {
         console.error(err)
@@ -27,6 +27,7 @@ export default function EventsPage() {
         setIsLoading(false)
       }
     }
+
     fetchEvents()
   }, [])
 
