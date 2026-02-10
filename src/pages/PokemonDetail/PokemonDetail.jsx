@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import { useMemo, useState, useEffect } from 'react'
 import { usePokemonDetails } from '../../hooks/usePokemonDetails'
 import { useDocumentHead } from '../../hooks/useDocumentHead'
@@ -99,19 +99,60 @@ function groupMovesByMethod(moves) {
   return grouped
 }
 
+function getStatColor(value) {
+  const safeValue = Number.isFinite(value) ? value : 0
+  const clamped = Math.max(0, Math.min(200, safeValue))
+  const hue = (clamped / 200) * 120
+  return `hsl(${hue}, 70%, 45%)`
+}
+
+function getEggGroupColor(group) {
+  if (!group) return '#ffffff'
+  const normalized = group.toLowerCase().replace(/[^a-z0-9]/g, '')
+  const groupMap = {
+    monster: TYPE_COLORS.dragon,
+    plant: TYPE_COLORS.grass,
+    grass: TYPE_COLORS.grass,
+    bug: TYPE_COLORS.bug,
+    water1: TYPE_COLORS.water,
+    water2: TYPE_COLORS.water,
+    water3: TYPE_COLORS.water,
+    water: TYPE_COLORS.water,
+    flying: TYPE_COLORS.flying,
+    fairy: TYPE_COLORS.fairy,
+    dragon: TYPE_COLORS.dragon,
+    mineral: TYPE_COLORS.rock,
+    amorphous: TYPE_COLORS.ghost,
+    field: TYPE_COLORS.normal,
+    ditto: TYPE_COLORS.normal,
+    humanlike: TYPE_COLORS.psychic,
+    humanoid: TYPE_COLORS.psychic,
+  }
+  if (normalized.startsWith('water')) {
+    return TYPE_COLORS.water
+  }
+  return groupMap[normalized] || TYPE_COLORS[normalized] || '#ffffff'
+}
+
 export default function PokemonDetail() {
   const { pokemonName } = useParams()
   const navigate = useNavigate()
+  const location = useLocation()
   const { data: pokemon, isLoading, error } = usePokemonDetails(pokemonName)
   const { data: databaseData } = useDatabase()
   const { getNextPokemon, getPreviousPokemon } = usePokemonOrder()
   const sprites = usePokemonSprites(pokemonName)
   const [currentSpriteIndex, setCurrentSpriteIndex] = useState(0)
+  const [loadedSpriteUrl, setLoadedSpriteUrl] = useState('')
 
   // Reset sprite index when pokemon changes
   useEffect(() => {
     setCurrentSpriteIndex(0)
   }, [pokemonName])
+  
+  useEffect(() => {
+    setLoadedSpriteUrl('')
+  }, [pokemonName, currentSpriteIndex])
 
   // Get owners of this pokemon from the database
   const owners = useMemo(() => {
@@ -144,27 +185,55 @@ export default function PokemonDetail() {
     return `https://img.pokemondb.net/sprites/black-white/anim/shiny/${name}.gif`
   }, [pokemonName])
 
-  // Set document head with SEO
+  // Capitalise Pokémon name
+  const formatName = (name) =>
+    name ? name.charAt(0).toUpperCase() + name.slice(1) : "";
+
+  // Build readable generation text
+  const buildGenerationText = (pokemon) => {
+    if (!pokemon) {
+      return "Browse Pokémon details, shiny forms, typings, and generation info.";
+    }
+
+    const name = formatName(pokemon.displayName);
+    const types = pokemon.types.join(" / ");
+    const generation = pokemon.generation
+      ? `from Generation ${pokemon.generation}`
+      : "from an unknown generation";
+
+    return `${name} is a ${types}-type Pokémon ${generation}. View shiny forms, stats, and more.`;
+  };
+
   useDocumentHead({
-    title: pokemon ? `${pokemon.displayName} - Shiny Dex` : 'Pokémon Details - Shiny Dex',
-    description: pokemon 
-      ? `${pokemon.displayName} - Type: ${pokemon.types.join(', ')}. ${pokemon.description.substring(0, 150)}...`
-      : 'View detailed Pokémon information',
-    canonicalPath: `/pokemon/${pokemonName}`,
-    ogImage: animatedShinyGif,
+    title: pokemon
+      ? `${formatName(pokemon.displayName)} | Shiny Dex`
+      : "Pokémon Details | Shiny Dex",
+
+    description: buildGenerationText(pokemon),
+
+    canonicalPath: `/pokemon/${pokemonName?.toLowerCase()}`,
+
     url: `https://synergymmo.com/pokemon/${pokemonName?.toLowerCase()}`,
-    twitterCard: 'summary_large_image',
-    twitterTitle: pokemon ? `${pokemon.displayName} - Shiny Dex` : 'Pokémon Details - Shiny Dex',
-    twitterDescription: pokemon
-      ? `${pokemon.displayName} - Type: ${pokemon.types.join(', ')}. ${pokemon.description.substring(0, 150)}...`
-      : 'View detailed Pokémon information',
+
+    ogImage: animatedShinyGif,
+
+    twitterCard: "summary_large_image",
+
+    twitterTitle: pokemon
+      ? `${formatName(pokemon.displayName)} | Shiny Dex`
+      : "Pokémon Details | Shiny Dex",
+
+    twitterDescription: buildGenerationText(pokemon),
+
     twitterImage: animatedShinyGif,
-  })
+  });
+
+
 
   if (isLoading) {
     return (
       <div className={styles.container}>
-        <BackButton />
+        <BackButton to={location.state?.fromPokemon ? '/pokedex' : undefined} />
         <div className={styles.loadingMessage}>Loading Pokémon data...</div>
       </div>
     )
@@ -175,7 +244,7 @@ export default function PokemonDetail() {
     
     return (
       <div className={styles.container}>
-        <BackButton />
+        <BackButton to={location.state?.fromPokemon ? '/pokedex' : undefined} />
         <div className={styles.errorMessage}>
           <h2>⚠️ Unable to Load Pokémon</h2>
           <p className={styles.errorDescription}>
@@ -206,22 +275,27 @@ export default function PokemonDetail() {
   // Get next/previous pokemon for navigation
   const nextPokemon = getNextPokemon(pokemonName)
   const prevPokemon = getPreviousPokemon(pokemonName)
+  const currentSprite = sprites.length > 0
+    ? sprites[currentSpriteIndex]
+    : { url: pokemon.sprite, label: pokemon.displayName, type: 'png' }
+  const currentSpriteUrl = currentSprite?.url
+  const isSpriteLoaded = loadedSpriteUrl === currentSpriteUrl
   
   const handlePrevious = () => {
     if (prevPokemon) {
-      navigate(`/pokemon/${prevPokemon}`)
+      navigate(`/pokemon/${prevPokemon}`, { state: { fromPokemon: true } })
     }
   }
   
   const handleNext = () => {
     if (nextPokemon) {
-      navigate(`/pokemon/${nextPokemon}`)
+      navigate(`/pokemon/${nextPokemon}`, { state: { fromPokemon: true } })
     }
   }
 
   return (
     <article className={styles.container}>
-      <BackButton />
+      <BackButton to={location.state?.fromPokemon ? '/pokedex' : undefined} />
 
       <header className={styles.header}>
         <button
@@ -256,15 +330,17 @@ export default function PokemonDetail() {
             <div className={styles.imageWrapper}>
               {sprites.length > 0 ? (
                 <picture>
-                  {sprites[currentSpriteIndex].type === 'gif' ? (
-                    <source srcSet={sprites[currentSpriteIndex].url} type="image/gif" />
+                  {currentSprite.type === 'gif' ? (
+                    <source srcSet={currentSpriteUrl} type="image/gif" />
                   ) : (
-                    <source srcSet={sprites[currentSpriteIndex].url} type="image/png" />
+                    <source srcSet={currentSpriteUrl} type="image/png" />
                   )}
                   <img
-                    src={sprites[currentSpriteIndex].url}
-                    alt={`${pokemon.displayName} - ${sprites[currentSpriteIndex].label}`}
-                    className={styles.pokemonImage}
+                    key={currentSpriteUrl}
+                    src={currentSpriteUrl}
+                    alt={`${pokemon.displayName} - ${currentSprite.label}`}
+                    className={`${styles.pokemonImage} ${isSpriteLoaded ? styles.pokemonImageLoaded : styles.pokemonImageLoading}`}
+                    onLoad={() => setLoadedSpriteUrl(currentSpriteUrl)}
                     loading="lazy"
                   />
                 </picture>
@@ -272,9 +348,11 @@ export default function PokemonDetail() {
                 <picture>
                   <source srcSet={pokemon.sprite} type="image/png" />
                   <img
+                    key={currentSpriteUrl}
                     src={pokemon.sprite}
                     alt={pokemon.displayName}
-                    className={styles.pokemonImage}
+                    className={`${styles.pokemonImage} ${isSpriteLoaded ? styles.pokemonImageLoaded : styles.pokemonImageLoading}`}
+                    onLoad={() => setLoadedSpriteUrl(currentSpriteUrl)}
                     loading="lazy"
                   />
                 </picture>
@@ -321,6 +399,44 @@ export default function PokemonDetail() {
                 {pokemon.generation.replace('-', ' ').toUpperCase()}
               </span>
             </div>
+            {/* Gender Ratio */}
+            {pokemon.genderRate !== undefined && (
+              <div className={styles.basicInfoGenderSection}>
+                <span className={styles.basicInfoGenderLabel}>Gender Ratio</span>
+                {pokemon.genderRate === -1 ? (
+                  <div style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '0.95rem' }}>Genderless</div>
+                ) : (
+                  <div className={styles.basicInfoGender}>
+                    <div className={styles.basicInfoGenderRow}>
+                      <span className={styles.basicInfoGenderLabel2}>♂ Male</span>
+                      <div className={styles.basicInfoGenderBar}>
+                        <div 
+                          className={styles.basicInfoGenderFill} 
+                          style={{
+                            width: `${(8 - pokemon.genderRate) / 8 * 100}%`,
+                            backgroundColor: '#667eea'
+                          }}
+                        />
+                      </div>
+                      <span className={styles.basicInfoGenderPercent}>{((8 - pokemon.genderRate) / 8 * 100).toFixed(1)}%</span>
+                    </div>
+                    <div className={styles.basicInfoGenderRow}>
+                      <span className={styles.basicInfoGenderLabel2}>♀ Female</span>
+                      <div className={styles.basicInfoGenderBar}>
+                        <div 
+                          className={styles.basicInfoGenderFill} 
+                          style={{
+                            width: `${pokemon.genderRate / 8 * 100}%`,
+                            backgroundColor: '#f085b3'
+                          }}
+                        />
+                      </div>
+                      <span className={styles.basicInfoGenderPercent}>{(pokemon.genderRate / 8 * 100).toFixed(1)}%</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </section>
 
@@ -382,21 +498,58 @@ export default function PokemonDetail() {
                 { label: 'SP.ATK', value: pokemon.stats.spAtk },
                 { label: 'SP.DEF', value: pokemon.stats.spDef },
                 { label: 'SPD', value: pokemon.stats.speed },
-              ].map(stat => (
-                <div key={stat.label} className={styles.statRow}>
-                  <span className={styles.statLabel}>{stat.label}</span>
-                  <div className={styles.statBarContainer}>
-                    <div
-                      className={styles.statBar}
-                      style={{
-                        width: `${(stat.value / 200) * 100}%`,
-                        backgroundColor: typeColor,
-                      }}
-                    />
+              ].map(stat => {
+                const statColor = getStatColor(stat.value)
+
+                return (
+                  <div key={stat.label} className={styles.statRow}>
+                    <span className={styles.statLabel}>{stat.label}</span>
+                    <div className={styles.statBarContainer}>
+                      <div
+                        className={styles.statBar}
+                        style={{
+                          width: `${(stat.value / 200) * 100}%`,
+                          backgroundColor: statColor,
+                          color: statColor,
+                        }}
+                      />
+                    </div>
+                    <span className={styles.statValue}>{stat.value}</span>
                   </div>
-                  <span className={styles.statValue}>{stat.value}</span>
-                </div>
-              ))}
+                )
+              })}
+            </div>
+          </div>
+
+          {/* Breeding & Catch Info */}
+          <div className={styles.infoCard}>
+            <h2 className={styles.cardTitle}>Breeding & Catch Information</h2>
+            <div className={styles.additionalInfo}>
+              <div className={styles.infoGroup}>
+                <span className={styles.label}>Egg Groups</span>
+                {pokemon.eggGroups.length > 0 ? (
+                  <div className={styles.eggGroupList}>
+                    {pokemon.eggGroups.map((group) => {
+                      const groupColor = getEggGroupColor(group)
+                      return (
+                        <span
+                          key={group}
+                          className={styles.eggGroupTag}
+                          style={{ '--egg-color': groupColor }}
+                        >
+                          {group.replace('-', ' ')}
+                        </span>
+                      )
+                    })}
+                  </div>
+                ) : (
+                  <span className={styles.eggGroupNone}>None</span>
+                )}
+              </div>
+              <div className={styles.infoGroup}>
+                <span className={styles.label}>Catch Rate</span>
+                <span className={styles.value}>{pokemon.catchRate}</span>
+              </div>
             </div>
           </div>
 
@@ -409,7 +562,7 @@ export default function PokemonDetail() {
                   <div key={index}>
                     {index > 0 && <span className={styles.evolutionOr}> or </span>}
                     <button
-                      onClick={() => navigate(`/pokemon/${evolution.species.name}`)}
+                      onClick={() => navigate(`/pokemon/${evolution.species.name}`, { state: { fromPokemon: true } })}
                       className={styles.evolutionLink}
                       title={`View ${evolution.species.name}`}
                     >
@@ -422,67 +575,7 @@ export default function PokemonDetail() {
           )}
         </section>
       </div>
-      {/* Breeding & Catch Info */}
-      <section className={styles.infoCard}>
-        <h2 className={styles.cardTitle}>Breeding & Catch Information</h2>
-        <div className={styles.additionalInfo}>
-          <div className={styles.infoGroup}>
-            <span className={styles.label}>Egg Groups</span>
-            <span className={styles.value}>
-              {pokemon.eggGroups.length > 0
-                ? pokemon.eggGroups.map(g => g.replace('-', ' ')).join(', ')
-                : 'None'}
-            </span>
-          </div>
-          <div className={styles.infoGroup}>
-            <span className={styles.label}>Catch Rate</span>
-            <span className={styles.value}>{pokemon.catchRate}</span>
-          </div>
-        </div>
-      </section>
 
-      {/* Gender Ratio */}
-      {pokemon.genderRate !== undefined && (
-        <section className={styles.infoCard}>
-          <h2 className={styles.cardTitle}>Gender Ratio</h2>
-          <div className={styles.genderContainer}>
-            {pokemon.genderRate === -1 ? (
-              <p className={styles.noGenderText}>Genderless</p>
-            ) : (
-              <>
-                <div className={styles.genderRatio}>
-                  <span className={styles.genderLabel}>Male</span>
-                  <div className={styles.genderBar}>
-                    <div 
-                      className={styles.genderFill} 
-                      style={{
-                        width: `${(8 - pokemon.genderRate) / 8 * 100}%`,
-                        backgroundColor: '#667eea'
-                      }}
-                    />
-                  </div>
-                  <span className={styles.genderPercent}>{((8 - pokemon.genderRate) / 8 * 100).toFixed(1)}%</span>
-                </div>
-                <div className={styles.genderRatio}>
-                  <span className={styles.genderLabel}>Female</span>
-                  <div className={styles.genderBar}>
-                    <div 
-                      className={styles.genderFill} 
-                      style={{
-                        width: `${pokemon.genderRate / 8 * 100}%`,
-                        backgroundColor: '#f085b3'
-                      }}
-                    />
-                  </div>
-                  <span className={styles.genderPercent}>{(pokemon.genderRate / 8 * 100).toFixed(1)}%</span>
-                </div>
-              </>
-            )}
-          </div>
-        </section>
-      )}
-
-      
       {/* Owners */}
       {Object.keys(owners).length > 0 && (
         <section className={styles.ownersSection}>
