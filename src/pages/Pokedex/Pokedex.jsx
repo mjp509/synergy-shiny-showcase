@@ -13,8 +13,8 @@ import styles from './Pokedex.module.css'
 
 export default function Pokedex() {
   useDocumentHead({
-    title: 'Fully Updated, Detailed PokeMMO PokeDex! - Team Synergy\'s Shiny & Living Dex', 
-    description: 'Filter by tier, type, location, and abilities. Search shinies, track caught progress, find encounters, and explore all generations with advanced filtering & Track Team Synergy\'s complete Pokédex in PokeMMO. ',
+    title: 'Pokédex Tracker - Shiny & Living Dex',
+    description: 'Track Team Synergy\'s complete Pokédex in PokeMMO. Filter by tier, type, location, and abilities. Search shinies, track caught progress, find encounters, and explore all generations with advanced filtering.',
     canonicalPath: '/pokedex',
   })
   const navigate = useNavigate()

@@ -223,6 +223,42 @@ async function prerender() {
 
   // Static route OG overrides
   const STATIC_META = {
+    '/pokedex': {
+      route: '/pokedex',
+      ogTitle: 'Pokédex Tracker - Shiny & Living Dex | Team Synergy - PokeMMO',
+      ogDescription: 'Track Team Synergy\'s complete Pokédex in PokeMMO. Filter by tier, type, location, and abilities. Search shinies, track caught progress, find encounters, and explore all generations with advanced filtering.',
+      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_1/pikachu.gif',
+    },
+    '/random-pokemon-generator': {
+      route: '/random-pokemon-generator',
+      ogTitle: 'Random Pokémon Generator & Shiny Bingo | Team Synergy - PokeMMO',
+      ogDescription: 'Generate random Pokémon targets for PokeMMO hunts. Play shiny bingo with 3x3, 4x4, or 5x5 boards, filter by tier, randomize natures and IVs. Track your completion and find new hunt challenges.',
+      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_0/bulbasaur.gif',
+    },
+    '/counter-generator': {
+      route: '/counter-generator',
+      ogTitle: 'PokeMMO Counter Theme Generator | Team Synergy - PokeMMO',
+      ogDescription: 'Create custom encounter counter themes for PokeMMO. Upload Pokémon GIFs, resize and customize them, then download ready-to-use counter theme packages to track your shiny hunts in-game.',
+      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_0/charmander.gif',
+    },
+    '/events': {
+      route: '/events',
+      ogTitle: 'Team Synergy Events | Team Synergy - PokeMMO',
+      ogDescription: 'Discover Team Synergy\'s PokeMMO community events. Join shiny hunting competitions, seasonal tournaments, team challenges, and special gaming events. Stay connected with the latest Team Synergy activities.',
+      ogImage: 'https://synergymmo.com/favicon.png',
+    },
+    '/trophy-board': {
+      route: '/trophy-board',
+      ogTitle: 'Team Synergy Trophy Board | Team Synergy - PokeMMO',
+      ogDescription: 'Explore trophies and achievements earned by Team Synergy members in PokeMMO. View championship awards, milestone accomplishments, and community recognition. Celebrate team success and member achievements.',
+      ogImage: 'https://synergymmo.com/favicon.png',
+    },
+    '/streamers': {
+      route: '/streamers',
+      ogTitle: 'Team Synergy Streamers | Team Synergy - PokeMMO',
+      ogDescription: 'Watch Team Synergy members stream PokeMMO live on Twitch. Check live status, find active streamers, join the community watching shiny hunts, encounters, and competitive gameplay.',
+      ogImage: 'https://synergymmo.com/favicon.png',
+    },
     '/shiny-war-2025': {
       route: '/shiny-war-2025',
       ogTitle: 'Shiny Wars 2025 Results | Team Synergy - PokeMMO',
