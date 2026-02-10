@@ -41,6 +41,7 @@
   transition: all 0.3s ease;
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
   flex-shrink: 0;
+  align-self: flex-start;
 }
 
 .navArrow:hover:not(:disabled) {
@@ -74,6 +75,18 @@
   font-size: 1.2rem;
   color: rgba(255, 255, 255, 0.6);
   font-weight: 600;
+}
+
+.unobtainableLabel {
+  margin-top: 0.5rem;
+  background: linear-gradient(135deg, #ff4444 0%, #cc0000 100%);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+  box-shadow: 0 4px 12px rgba(255, 0, 0, 0.3);
 }
 
 .loadingMessage,

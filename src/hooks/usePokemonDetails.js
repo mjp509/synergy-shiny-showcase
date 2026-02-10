@@ -194,7 +194,8 @@ export function usePokemonDetails(pokemonName) {
         growthRate: pokemon.growth_rate || 'medium',
         locations: locations,
         shinyTier: pokemon.shiny_tier || 0,
-        shinyPoints: pokemon.shiny_points || 0
+        shinyPoints: pokemon.shiny_points || 0,
+        obtainable: pokemon.obtainable !== false
       }
       
       setData(formattedData)

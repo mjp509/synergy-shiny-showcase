@@ -70,7 +70,12 @@
     ["kabuto","kabutops"],
     ["aerodactyl"],
     ["munchlax","snorlax"],
-    ["dratini","dragonair","dragonite"]
+    ["dratini","dragonair","dragonite"],
+    ["mewtwo"],
+    ["mew"],
+    ["articuno"],
+    ["zapdos"],
+    ["moltres"]
   ],
   "Generation 2": [
     ["chikorita","bayleef","meganium"],
@@ -119,7 +124,13 @@
     ["tyrogue","hitmonlee","hitmonchan","hitmontop"],
     ["elekid","electabuzz","electivire"],
     ["miltank"],
-    ["larvitar","pupitar","tyranitar"]
+    ["larvitar","pupitar","tyranitar"],
+    ["suicune"],
+    ["entei"],
+    ["raikou"],
+    ["lugia"],
+    ["ho-oh"],
+    ["celebi"]
   ],
   "Generation 3": [
     ["treecko","grovyle","sceptile"],
@@ -183,7 +194,17 @@
     ["relicanth"],
     ["luvdisc"],
     ["bagon","shelgon","salamence"],
-    ["beldum","metang","metagross"]
+    ["beldum","metang","metagross"],
+    ["regirock"],
+    ["regice"],
+    ["registeel"],
+    ["latias"],
+    ["latios"],
+    ["kyogre"],
+    ["groudon"],
+    ["rayquaza"],
+    ["Jirachi"],
+    ["deoxys-normal"]
   ],
   "Generation 4": [
     ["turtwig","grotle","torterra"],
@@ -221,7 +242,17 @@
     ["carnivine"],
     ["finneon","lumineon"],
     ["snover","abomasnow"],
-    ["rotom"]
+    ["rotom"],
+    ["dialga"],
+    ["palkia"],
+    ["giratina-origin"],
+    ["heatran"],
+    ["cresselia"],
+    ["phione"],
+    ["manaphy"],
+    ["shaymin-land"],
+    ["darkrai"],
+    ["arceus"]
   ],
   "Generation 5": [
     ["snivy","servine","serperior"],
@@ -292,6 +323,16 @@
     ["heatmor"],
     ["durant"],
     ["deino","zweilous","hydreigon"],
-    ["larvesta", "volcarona"]
+    ["larvesta", "volcarona"],
+    ["cobalion","terrakion","virizion"],
+    ["tornadus-incarnate"],
+    ["thundurus-incarnate"],
+    ["landorus-incarnate"],
+    ["reshiram"],
+    ["zekrom"],
+    ["kyurem"],
+    ["keldeo-ordinary"],
+    ["meloetta-aria"],
+    ["genesect"]
   ]
 }

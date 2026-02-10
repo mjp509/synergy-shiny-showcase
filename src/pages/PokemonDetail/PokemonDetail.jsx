@@ -334,6 +334,9 @@ useDocumentHead({
         <div className={styles.titleContainer}>
           <h1 className={styles.title}>{pokemon.displayName}</h1>
           <span className={styles.pokemonId}>#{String(pokemon.id).padStart(3, '0')}</span>
+          {(pokemon.isLegendary || pokemon.isMythical) && !pokemon.obtainable && (
+            <div className={styles.unobtainableLabel}>UNOBTAINABLE</div>
+          )}
         </div>
         <button
           className={styles.navArrow}
@@ -624,37 +627,58 @@ useDocumentHead({
       )}
 
       {/* Locations */}
-      {pokemon?.locations && pokemon.locations.length > 0 && (
-        <section className={styles.infoCard}>
-          <h2 className={styles.cardTitle}>Locations</h2>
-          <div className={styles.locationsContainer}>
-            {pokemon.locations.map((location, index) => (
-              <div key={index} className={styles.locationCard}>
-                <div className={styles.locationHeader}>
-                  <h3 className={styles.locationName}>{location.location}</h3>
-                  <span className={styles.locationRegion}>{location.region_name}</span>
-                </div>
-                <div className={styles.locationDetails}>
-                  <span className={styles.locationDetail}>
-                    <strong>Level:</strong> {location.min_level === location.max_level ? location.min_level : `${location.min_level}-${location.max_level}`}
-                  </span>
-                  <span className={styles.locationDetail}>
-                    <strong>Rarity:</strong> {location.rarity}
-                  </span>
-                  <span className={styles.locationDetail}>
-                    <strong>Time:</strong> {formatEncounterTime(location.time)}
-                  </span>
-                  {location.type && (
+      {pokemon?.locations && pokemon.locations.length > 0 && (() => {
+        // Define rarity order
+        const rarityOrder = {
+          'Horde': 0,
+          'Very Common': 1,
+          'Common': 2,
+          'Uncommon': 3,
+          'Fishing': 4,
+          'Rare': 5,
+          'Very Rare': 6,
+          'Lure': 7
+        }
+        
+        // Sort locations by rarity
+        const sortedLocations = [...pokemon.locations].sort((a, b) => {
+          const rarityA = rarityOrder[a.rarity] ?? 999
+          const rarityB = rarityOrder[b.rarity] ?? 999
+          return rarityA - rarityB
+        })
+        
+        return (
+          <section className={styles.infoCard}>
+            <h2 className={styles.cardTitle}>Locations</h2>
+            <div className={styles.locationsContainer}>
+              {sortedLocations.map((location, index) => (
+                <div key={index} className={styles.locationCard}>
+                  <div className={styles.locationHeader}>
+                    <h3 className={styles.locationName}>{location.location}</h3>
+                    <span className={styles.locationRegion}>{location.region_name}</span>
+                  </div>
+                  <div className={styles.locationDetails}>
                     <span className={styles.locationDetail}>
-                      <strong>Habitat:</strong> {location.type}
+                      <strong>Level:</strong> {location.min_level === location.max_level ? location.min_level : `${location.min_level}-${location.max_level}`}
                     </span>
-                  )}
+                    <span className={styles.locationDetail}>
+                      <strong>Rarity:</strong> {location.rarity}
+                    </span>
+                    <span className={styles.locationDetail}>
+                      <strong>Time:</strong> {formatEncounterTime(location.time)}
+                    </span>
+                    {location.type && (
+                      <span className={styles.locationDetail}>
+                        <strong>Habitat:</strong> {location.type}
+                      </span>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
+              ))}
+            </div>
+          </section>
+        )
+      })()}
 
       {/* Moves */}
       <section className={styles.infoCard} key={`moves-${pokemonName}`}>
