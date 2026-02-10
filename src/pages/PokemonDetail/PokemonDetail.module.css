@@ -687,6 +687,14 @@
   gap: 1rem;
 }
 
+.moveGroupHeader {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
 .moveGroupTitle {
   font-size: 1rem;
   font-weight: 600;
@@ -696,6 +704,37 @@
   letter-spacing: 0.5px;
   padding-bottom: 0.5rem;
   border-bottom: 1px solid rgba(102, 126, 234, 0.2);
+}
+
+.levelFilter {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.levelFilterLabel {
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.levelFilterInput {
+  width: 110px;
+  padding: 0.45rem 0.6rem;
+  border-radius: 6px;
+  border: 1px solid rgba(102, 126, 234, 0.4);
+  background: rgba(10, 10, 20, 0.6);
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.85rem;
+}
+
+.levelFilterInput:focus {
+  outline: none;
+  border-color: rgba(102, 126, 234, 0.8);
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
 }
 
 .moveTag {
@@ -711,6 +750,13 @@
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
+}
+
+.moveTagHighlight {
+  background: rgba(255, 216, 79, 0.22);
+  border-color: rgba(255, 216, 79, 0.65);
+  color: rgba(255, 246, 200, 0.95);
+  box-shadow: 0 0 0 1px rgba(255, 216, 79, 0.25);
 }
 
 .moveTag:hover {

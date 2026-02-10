@@ -6474,8 +6474,8 @@
         "normal": "https://img.pokemondb.net/sprites/black-white/anim/normal/shellos-east.gif"
       },
       "official": {
-        "shiny": null,
-        "normal": null
+        "shiny": "https://img.pokemondb.net/sprites/home/shiny/shellos-east.png",
+        "normal": "https://img.pokemondb.net/sprites/home/normal/shellos-east.png"
       }
     },
     "name": "shellos-east",
@@ -6502,8 +6502,8 @@
         "normal": "https://img.pokemondb.net/sprites/black-white/anim/normal/gastrodon-east.gif"
       },
       "official": {
-        "shiny": null,
-        "normal": null
+        "shiny": "https://img.pokemondb.net/sprites/home/shiny/gastrodon-east.png",
+        "normal": "https://img.pokemondb.net/sprites/home/normal/gastrodon-east.png"
       }
     },
     "name": "gastrodon-east",

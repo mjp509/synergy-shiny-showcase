@@ -27,9 +27,19 @@ export function usePokemonDetails(pokemonName) {
       // Normalize the name for lookup
       const normalizedName = pokemonName.toLowerCase().trim()
       const aliasMap = {
-        darmanitan: 'darmanitan-standard'
+        darmanitan: 'darmanitan-standard',
+        'wormadam': 'wormadam-plant',
+        'gastrodon-west': 'gastrodon',
+        'shellos-west': 'shellos'
       }
       let lookupName = aliasMap[normalizedName] || normalizedName
+
+      const displayNameMap = {
+        shellos: 'Shellos-West',
+        'shellos-west': 'Shellos-West',
+        wormadam: 'Wormadam-Plant',
+        'wormadam-plant': 'Wormadam-Plant'
+      }
       
       // Handle gendered suffixes that are not separate entries in the data
       if (!pokemonData[lookupName] && /-(f|m)$/.test(lookupName)) {
@@ -156,7 +166,7 @@ export function usePokemonDetails(pokemonName) {
       const formattedData = {
         id: pokemon.id,
         name: pokemon.name,
-        displayName: pokemonName,
+        displayName: displayNameMap[normalizedName] || pokemonName,
         height: 0.7, // Default fallback - height not in data
         weight: 5, // Default fallback - weight not in data
         types: (pokemon.types || []).filter(Boolean),

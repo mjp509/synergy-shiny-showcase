@@ -134,6 +134,15 @@ function getEggGroupColor(group) {
   return groupMap[normalized] || TYPE_COLORS[normalized] || '#ffffff'
 }
 
+function formatEncounterTime(time) {
+  if (!time) return ''
+  return time
+    .replace(/SEASON0/g, 'Summer')
+    .replace(/SEASON1/g, 'Spring')
+    .replace(/SEASON2/g, 'Autumn')
+    .replace(/SEASON3/g, 'Winter')
+}
+
 export default function PokemonDetail() {
   const { pokemonName } = useParams()
   const navigate = useNavigate()
@@ -144,6 +153,13 @@ export default function PokemonDetail() {
   const sprites = usePokemonSprites(pokemonName)
   const [currentSpriteIndex, setCurrentSpriteIndex] = useState(0)
   const [loadedSpriteUrl, setLoadedSpriteUrl] = useState('')
+  const [wildLevel, setWildLevel] = useState('')
+  const spriteAliasMap = useMemo(() => ({
+    wormadam: 'wormadam-plant',
+    'gastrodon-west': 'gastrodon',
+    'shellos-west': 'shellos'
+  }), [])
+  const spriteName = spriteAliasMap[pokemonName?.toLowerCase()] || pokemonName
 
   // Reset sprite index when pokemon changes
   useEffect(() => {
@@ -180,10 +196,10 @@ export default function PokemonDetail() {
 
   // Get animated shiny GIF for OG image
   const animatedShinyGif = useMemo(() => {
-    if (!pokemonName) return 'https://synergymmo.com/favicon.png'
-    const name = pokemonName.toLowerCase().replace(/\s/g, '-')
+    if (!spriteName) return 'https://synergymmo.com/favicon.png'
+    const name = spriteName.toLowerCase().replace(/\s/g, '-')
     return `https://img.pokemondb.net/sprites/black-white/anim/shiny/${name}.gif`
-  }, [pokemonName])
+  }, [spriteName])
 
 // Capitalize first letter helper
 const capitalize = (str) => str ? str.charAt(0).toUpperCase() + str.slice(1) : "";
@@ -295,6 +311,9 @@ useDocumentHead({
       navigate(`/pokemon/${nextPokemon}`, { state: { fromPokemon: true } })
     }
   }
+
+  const wildLevelValue = Number.parseInt(wildLevel, 10)
+  const hasWildLevel = Number.isFinite(wildLevelValue) && wildLevelValue > 0
 
   return (
     <article className={styles.container}>
@@ -621,7 +640,7 @@ useDocumentHead({
                     <strong>Rarity:</strong> {location.rarity}
                   </span>
                   <span className={styles.locationDetail}>
-                    <strong>Time:</strong> {location.time}
+                    <strong>Time:</strong> {formatEncounterTime(location.time)}
                   </span>
                   {location.type && (
                     <span className={styles.locationDetail}>
@@ -653,17 +672,52 @@ useDocumentHead({
                 {['level-up', 'machine', 'tutor', 'egg'].map(method => {
                   const moves = groupedMoves[method]
                   if (moves.length === 0) return null
+
+                  const highlightedMoveKeys = method === 'level-up' && hasWildLevel
+                    ? new Set(
+                      moves
+                        .map((move, index) => ({
+                          move,
+                          index,
+                          level: move.methods?.[0]?.level
+                        }))
+                        .filter(({ level }) => Number.isFinite(level) && level <= wildLevelValue)
+                        .slice(-4)
+                        .map(({ move, index }) => `${move.name}-${move.methods?.[0]?.method || 'unknown'}-${move.methods?.[0]?.level || 0}-${index}`)
+                    )
+                    : new Set()
                   
                   return (
                     <div key={`${pokemonName}-${method}`} className={styles.moveGroup}>
-                      <h3 className={styles.moveGroupTitle}>{methodLabels[method]}</h3>
+                      <div className={styles.moveGroupHeader}>
+                        <h3 className={styles.moveGroupTitle}>{methodLabels[method]}</h3>
+                        {method === 'level-up' && (
+                          <label className={styles.levelFilter} htmlFor="wild-level-input">
+                            <span className={styles.levelFilterLabel}>Wild Pokemon Level</span>
+                            <input
+                              id="wild-level-input"
+                              className={styles.levelFilterInput}
+                              type="number"
+                              min="1"
+                              inputMode="numeric"
+                              placeholder="e.g. 22"
+                              value={wildLevel}
+                              onChange={(e) => setWildLevel(e.target.value)}
+                            />
+                          </label>
+                        )}
+                      </div>
                       <div className={styles.movesGrid}>
                         {moves.map((move, moveIndex) => {
                           const primaryMethod = move.methods?.[0]
                           const methodLabel = getMoveLearningMethod(primaryMethod?.method, primaryMethod?.level)
                           const moveKey = `${move.name}-${primaryMethod?.method || 'unknown'}-${primaryMethod?.level || 0}-${moveIndex}`
                           return (
-                            <div key={moveKey} className={styles.moveTag} title={methodLabel}>
+                            <div
+                              key={moveKey}
+                              className={`${styles.moveTag} ${highlightedMoveKeys.has(moveKey) ? styles.moveTagHighlight : ''}`}
+                              title={methodLabel}
+                            >
                               <div>{move.name}</div>
                               <div className={styles.moveMethod}>{methodLabel}</div>
                             </div>

@@ -14,6 +14,100 @@
   flex-wrap: wrap;
 }
 
+.dropdown {
+  position: relative;
+  width: 280px;
+}
+
+.dropdownButton {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 18px;
+  border: 2px solid #444;
+  background: #1a1a1a;
+  color: #fff;
+  font-size: 0.95rem;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.dropdownButton:focus {
+  outline: none;
+  border-color: #4a90e2;
+  box-shadow: 0 4px 12px rgba(74,144,226,0.5);
+  background: #222;
+}
+
+.dropdownLabel {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: rgba(255, 255, 255, 0.65);
+  text-align: center;
+}
+
+.dropdownValue {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.95);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.dropdownCaret {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.dropdownMenu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  max-height: 60vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: rgba(20, 20, 35, 0.98);
+  border: 1px solid rgba(102, 126, 234, 0.35);
+  border-radius: 12px;
+  padding: 10px 14px;
+  column-count: 2;
+  column-gap: 16px;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.45);
+  z-index: 10;
+}
+
+.dropdownOption {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.85);
+  padding: 6px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  break-inside: avoid;
+  width: 100%;
+}
+
+.dropdownOption:hover {
+  background: rgba(102, 126, 234, 0.15);
+}
+
+.dropdownOption input {
+  accent-color: #7f5fff;
+}
+
 .raritySelect {
   width: 260px;
   padding: 10px 14px;

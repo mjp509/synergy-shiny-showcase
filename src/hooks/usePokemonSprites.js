@@ -10,6 +10,12 @@ export function usePokemonSprites(pokemonName) {
     if (!pokemonName) return []
 
     const pokemonLower = pokemonName.toLowerCase()
+    const aliasMap = {
+      wormadam: 'wormadam-plant',
+      'gastrodon-west': 'gastrodon',
+      'shellos-west': 'shellos'
+    }
+    const lookupName = aliasMap[pokemonLower] || pokemonLower
     const femaleOverrides = {
       'frillish-f': {
         animated: {
@@ -42,7 +48,7 @@ export function usePokemonSprites(pokemonName) {
         },
       },
     }
-    const femaleOverride = femaleOverrides[pokemonLower]
+    const femaleOverride = femaleOverrides[lookupName]
     if (femaleOverride) {
       const sprites = []
 
@@ -80,7 +86,7 @@ export function usePokemonSprites(pokemonName) {
 
       return sprites
     }
-    const spriteData = spritesData[pokemonLower]
+    const spriteData = spritesData[lookupName]
 
     if (!spriteData || !spriteData.sprites) return []
 

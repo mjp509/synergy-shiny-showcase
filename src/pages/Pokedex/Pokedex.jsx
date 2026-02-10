@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef, useCallback } from 'react'
+import { useState, useMemo, useRef, useCallback, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useDatabase } from '../../hooks/useDatabase'
 import { useDocumentHead } from '../../hooks/useDocumentHead'
@@ -23,11 +23,15 @@ export default function Pokedex() {
   const [mode, setMode] = useState('shiny')
   const [hideComplete, setHideComplete] = useState(false)
   const [search, setSearch] = useState('')
-  const [rarityFilter, setRarityFilter] = useState('all')
-  const [tierFilter, setTierFilter] = useState('all')
+  const [selectedRarities, setSelectedRarities] = useState([])
+  const [selectedTiers, setSelectedTiers] = useState([])
+  const [isRarityOpen, setIsRarityOpen] = useState(false)
+  const [isTierOpen, setIsTierOpen] = useState(false)
   const [hoverInfo, setHoverInfo] = useState(null)
   const [hoverPos, setHoverPos] = useState({ x: 0, y: 0 })
   const infoBoxRef = useRef(null)
+  const rarityMenuRef = useRef(null)
+  const tierMenuRef = useRef(null)
   const searchTerm = search.trim().toLowerCase()
   const formatRarityKey = (value) => value.toLowerCase().trim().replace(/\s+/g, '_')
   const formatRarityLabel = (value) => {
@@ -104,6 +108,28 @@ export default function Pokedex() {
     return { globalShinies: gs, ownerMap: om }
   }, [data])
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (rarityMenuRef.current && !rarityMenuRef.current.contains(event.target)) {
+        setIsRarityOpen(false)
+      }
+      if (tierMenuRef.current && !tierMenuRef.current.contains(event.target)) {
+        setIsTierOpen(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  const formatSelectionSummary = (selected, options, labelFn, emptyLabel) => {
+    if (selected.length === 0) return emptyLabel
+    const ordered = options.filter(option => selected.includes(option))
+    const labels = ordered.map(labelFn)
+    if (labels.length <= 2) return labels.join(', ')
+    return `${labels.slice(0, 2).join(', ')} +${labels.length - 2}`
+  }
+
     const handleMouseOver = useCallback((e) => {
       const target = e.target
       if (target.tagName !== 'IMG' || !target.classList.contains(styles.complete)) return
@@ -175,30 +201,98 @@ export default function Pokedex() {
       <img src={getAssetUrl('images/pagebreak.png')} alt="Page Break" className="pagebreak" />
 
       <div className={styles.filterRow}>
-        <select
-          className={styles.raritySelect}
-          value={rarityFilter}
-          onChange={(e) => setRarityFilter(e.target.value)}
-          aria-label="Filter by encounter rarity"
-        >
-          {rarityOptions.map(option => (
-            <option key={option} value={option}>
-              {formatRarityLabel(option)}
-            </option>
-          ))}
-        </select>
-        <select
-          className={styles.raritySelect}
-          value={tierFilter}
-          onChange={(e) => setTierFilter(e.target.value)}
-          aria-label="Filter by tier"
-        >
-          {tierOptions.map(option => (
-            <option key={option} value={option}>
-              {option === 'all' ? 'All Tiers' : option}
-            </option>
-          ))}
-        </select>
+        <div className={styles.dropdown} ref={rarityMenuRef}>
+          <button
+            type="button"
+            className={styles.dropdownButton}
+            onClick={() => {
+              setIsRarityOpen((prev) => !prev)
+              setIsTierOpen(false)
+            }}
+            aria-expanded={isRarityOpen}
+            aria-haspopup="listbox"
+          >
+            <span className={styles.dropdownLabel}>Encounter Types</span>
+            <span className={styles.dropdownValue}>
+              {formatSelectionSummary(selectedRarities, rarityOptions, formatRarityLabel, 'All Encounter Types')}
+            </span>
+            <span className={styles.dropdownCaret}>▾</span>
+          </button>
+          {isRarityOpen && (
+            <div className={styles.dropdownMenu} role="listbox" aria-multiselectable="true">
+              <label className={styles.dropdownOption}>
+                <input
+                  type="checkbox"
+                  checked={selectedRarities.length === 0}
+                  onChange={() => setSelectedRarities([])}
+                />
+                <span>All Encounter Types</span>
+              </label>
+              {rarityOptions.filter(option => option !== 'all').map(option => (
+                <label key={option} className={styles.dropdownOption}>
+                  <input
+                    type="checkbox"
+                    checked={selectedRarities.includes(option)}
+                    onChange={(e) => {
+                      setSelectedRarities(prev => (
+                        e.target.checked
+                          ? [...prev, option]
+                          : prev.filter(value => value !== option)
+                      ))
+                    }}
+                  />
+                  <span>{formatRarityLabel(option)}</span>
+                </label>
+              ))}
+            </div>
+          )}
+        </div>
+        <div className={styles.dropdown} ref={tierMenuRef}>
+          <button
+            type="button"
+            className={styles.dropdownButton}
+            onClick={() => {
+              setIsTierOpen((prev) => !prev)
+              setIsRarityOpen(false)
+            }}
+            aria-expanded={isTierOpen}
+            aria-haspopup="listbox"
+          >
+            <span className={styles.dropdownLabel}>Tiers</span>
+            <span className={styles.dropdownValue}>
+              {formatSelectionSummary(selectedTiers, tierOptions, (value) => value, 'All Tiers')}
+            </span>
+            <span className={styles.dropdownCaret}>▾</span>
+          </button>
+          {isTierOpen && (
+            <div className={styles.dropdownMenu} role="listbox" aria-multiselectable="true">
+              <label className={styles.dropdownOption}>
+                <input
+                  type="checkbox"
+                  checked={selectedTiers.length === 0}
+                  onChange={() => setSelectedTiers([])}
+                />
+                <span>All Tiers</span>
+              </label>
+              {tierOptions.filter(option => option !== 'all').map(option => (
+                <label key={option} className={styles.dropdownOption}>
+                  <input
+                    type="checkbox"
+                    checked={selectedTiers.includes(option)}
+                    onChange={(e) => {
+                      setSelectedTiers(prev => (
+                        e.target.checked
+                          ? [...prev, option]
+                          : prev.filter(value => value !== option)
+                      ))
+                    }}
+                  />
+                  <span>{option}</span>
+                </label>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       <SearchBar
@@ -273,8 +367,11 @@ export default function Pokedex() {
                 || locationEntry.locationText.includes(searchTerm)
               if (!matchesSearch) return false
             }
-            if (rarityFilter !== 'all' && !locationEntry.raritySet.has(rarityFilter)) return false
-            if (tierFilter !== 'all' && pokemonTier !== tierFilter) return false
+            if (selectedRarities.length > 0) {
+              const matchesRarity = selectedRarities.some(value => locationEntry.raritySet.has(value))
+              if (!matchesRarity) return false
+            }
+            if (selectedTiers.length > 0 && !selectedTiers.includes(pokemonTier)) return false
             return true
           })
 
