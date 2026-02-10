@@ -87,7 +87,7 @@ export default function ShinyWar2025() {
       <div className={styles.teamHeader}>
         <h2>
           <a href="https://pokemmo.com/en/shiny_wars/teams/1789472954870489088/" target="_blank" rel="noopener noreferrer" className={styles.teamLink}>
-            #25 Team {warData.team}
+            #25 {warData.team}
           </a>
         </h2>
         <div className={styles.teamStatsStack}>
