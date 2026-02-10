@@ -3,6 +3,8 @@ import fs from 'fs';
 
 const baseUrl = 'https://synergymmo.com';
 const databaseUrl = 'https://adminpage.hypersmmo.workers.dev/admin/database';
+const pokemonDataPath = new URL('../data/pokemmo_data/pokemon-data.json', import.meta.url);
+const pokemonData = JSON.parse(fs.readFileSync(pokemonDataPath, 'utf-8'));
 
 const staticRoutes = [
   { path: '/', changefreq: 'daily', priority: '1.0' },
@@ -34,6 +36,15 @@ async function buildSitemap() {
     }
   } catch (err) {
     console.error('Failed to fetch players, generating sitemap with static routes only:', err.message);
+  }
+
+  const pokemonNames = Object.keys(pokemonData).sort();
+  for (const name of pokemonNames) {
+    allRoutes.push({
+      path: `/pokemon/${name}`,
+      changefreq: 'weekly',
+      priority: '0.5',
+    });
   }
 
   const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
