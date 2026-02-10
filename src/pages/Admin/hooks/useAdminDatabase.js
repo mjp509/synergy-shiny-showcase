@@ -266,7 +266,7 @@ export default function useAdminDatabase(auth) {
       if (!res.ok) return { success: false, error: newEvent.error || "Failed" };
 
       setEventDB(prev => [...prev, newEvent]);
-      await logAdminAction(`Added Event Name: ${newEvent.name || "Unnamed Event"}`);
+      await logAdminAction(`Added Event Name: ${newEvent.title || newEvent.name || "Unnamed Event"}`);
       return { success: true };
     } finally { setIsMutating(false); }
   }, [auth, saveSnapshot, logAdminAction]);
@@ -286,7 +286,24 @@ export default function useAdminDatabase(auth) {
 
       const updatedEvent = result.event;
       setEventDB(prev => prev.map(e => e.id === id ? updatedEvent : e));
-      await logAdminAction(`Updated Event Name: ${updatedEvent.name || "Unnamed Event"} (Change made)`);
+      // compute a minimal diff between previous event and the updated event
+      try {
+        const prevEvent = eventDB.find(e => e.id === id) || {};
+        const diff = {};
+        Object.keys(updatedEvent || {}).forEach(k => {
+          const a = prevEvent[k];
+          const b = updatedEvent[k];
+          try {
+            if (JSON.stringify(a) !== JSON.stringify(b)) diff[k] = b;
+          } catch (err) {
+            if (a !== b) diff[k] = b;
+          }
+        });
+        const changeText = Object.keys(diff).length ? ` (Change: ${JSON.stringify(diff)})` : ' (Change made)';
+        await logAdminAction(`Updated Event Name: ${updatedEvent.title || updatedEvent.name || "Unnamed Event"}${changeText}`);
+      } catch (err) {
+        await logAdminAction(`Updated Event Name: ${updatedEvent.title || updatedEvent.name || "Unnamed Event"} (Change made)`);
+      }
       return { success: true };
     } finally { setIsMutating(false); }
   }, [auth, saveSnapshot, logAdminAction]);
@@ -305,7 +322,7 @@ export default function useAdminDatabase(auth) {
       if (!res.ok) return { success: false, error: deleted.error || "Failed" };
 
       setEventDB(prev => prev.filter(e => e.id !== id));
-      await logAdminAction(`Deleted Event Name: ${deleted.event?.name || id}`);
+      await logAdminAction(`Deleted Event Name: ${deleted.event?.title || deleted.event?.name || id}`);
       return { success: true };
     } finally { setIsMutating(false); }
   }, [auth, saveSnapshot, logAdminAction]);
