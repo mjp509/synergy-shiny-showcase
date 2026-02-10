@@ -96,6 +96,10 @@
   justify-content: center;
 }
 
+.noLink {
+  text-decoration: none;
+}
+
 .topPlayer {
   color: gold;
 }

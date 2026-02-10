@@ -113,7 +113,7 @@ export default function ShinyWar2025() {
                   #{index + 1} {player.name} ({player.count})
                 </Link>
               ) : (
-                <span className={`${styles.playerName} ${playerClass}`}>
+                <span className={`${styles.playerName} ${styles.noLink} ${playerClass}`}>
                   #{index + 1} {player.name} ({player.count})
                 </span>
               )}
