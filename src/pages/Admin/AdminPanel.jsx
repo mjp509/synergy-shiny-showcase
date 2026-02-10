@@ -49,61 +49,6 @@ export default function AdminPanel() {
     else showToast('Undo failed.', 'error')
   }
 
-  // ---------------- Event Handlers ----------------
-  async function handleCreateEvent(eventData) {
-    db.setMutating(true)
-    try {
-      const res = await fetch('https://adminpage.hypersmmo.workers.dev/admin/events', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(eventData),
-      })
-      const data = await res.json()
-      if (data.id) db.addEvent(data) // add locally
-      return data
-    } catch (err) {
-      return { success: false, error: err.message }
-    } finally {
-      db.setMutating(false)
-    }
-  }
-
-  async function handleEditEvent(eventId, updatedData) {
-    db.setMutating(true)
-    try {
-      const res = await fetch('https://adminpage.hypersmmo.workers.dev/admin/events/edit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: eventId, ...updatedData }),
-      })
-      const data = await res.json()
-      if (data.success) db.updateEvent(eventId, updatedData) // update locally
-      return data
-    } catch (err) {
-      return { success: false, error: err.message }
-    } finally {
-      db.setMutating(false)
-    }
-  }
-
-  async function handleDeleteEvent(eventId) {
-    db.setMutating(true)
-    try {
-      const res = await fetch('https://adminpage.hypersmmo.workers.dev/admin/events/delete', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: eventId }),
-      })
-      const data = await res.json()
-      if (data.success) db.removeEvent(eventId) // remove locally
-      return data
-    } catch (err) {
-      return { success: false, error: err.message }
-    } finally {
-      db.setMutating(false)
-    }
-  }
-
   if (db.isLoading) {
     return (
       <div className={styles.panel}>

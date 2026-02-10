@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom'
+import { slugify } from '../../utils/slugify'
 import styles from './TrophyShelf.module.css'
 
 export default function TrophyShelf({ playerName, trophies, trophyAssignments }) {
@@ -38,7 +39,7 @@ export default function TrophyShelf({ playerName, trophies, trophyAssignments })
                   width="60"
                   height="60"
                   loading="lazy"
-                  onClick={() => navigate(`/trophy/${encodeURIComponent(awardName.toLowerCase())}`)}
+                  onClick={() => navigate(`/trophy/${slugify(awardName)}`)}
                 />
                 <div className={styles.tooltip}>
                   <strong>{awardName}</strong><br />
