@@ -59,6 +59,7 @@ export default function Pokedex() {
         const rawRarity = encounter.rarity || ''
         if (rawRarity) raritySet.add(formatRarityKey(rawRarity))
         if (rawType.includes('rod')) raritySet.add('fishing')
+        if(rawType.includes(`fossil`)) raritySet.add('Fossil')
       })
       if (locationText || raritySet.size) {
         index.set(key, {

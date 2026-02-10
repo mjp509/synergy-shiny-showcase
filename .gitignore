@@ -41,3 +41,5 @@ lerna-debug.log*
 
 # Temp files
 nul
+
+src/data/pokemmo_data/pokemon-data-save.json
