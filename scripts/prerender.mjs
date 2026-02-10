@@ -120,20 +120,47 @@ async function getPokemon() {
   const raw = await readFile(pokemonPath, 'utf-8');
   const pokemonData = JSON.parse(raw);
 
+    function capitalize(str) {
+    return str ? str.charAt(0).toUpperCase() + str.slice(1) : '';
+  }
+
+  function formatTypes(types) {
+    return types?.map(capitalize).join(' / ') || 'Unknown';
+  }
+
+  function sanitize(name) {
+    return name
+      .trim()
+      .toLowerCase()
+      .replace(/[\u2018\u2019']/g, '')
+      .replace(/\./g, '')
+      .replace(/\s+/g, '-')
+      .replace(/[♀]/g, 'f')
+      .replace(/[♂]/g, 'm');
+  }
+
+  // Build tier lookup
+  const tierLookup = {};
+  Object.entries(tierPokemon).forEach(([tier, names]) => {
+    names.forEach(n => (tierLookup[sanitize(n)] = tier));
+  });
+
   return Object.entries(pokemonData).map(([key, pokemon]) => {
-    const name = pokemon.displayName || key;
+    const name = capitalize(pokemon.displayName || key);
     const sanitized = key.toLowerCase().replace(/\s/g, '-');
     const animatedShinyGif = `https://img.pokemondb.net/sprites/black-white/anim/shiny/${sanitized}.gif`;
-    const description = pokemon.description ? pokemon.description.substring(0, 150) : `${name} Pokémon details`;
-    const types = pokemon.types ? pokemon.types.join(', ') : 'Unknown';
+
+    const types = formatTypes(pokemon.types);
+    const tier = tierLookup[sanitized] || 'Unknown';
 
     return {
       route: `/pokemon/${sanitized}`,
       ogTitle: `${name} - Shiny Dex | Team Synergy - PokeMMO`,
-      ogDescription: `${name} - Type: ${types}. ${description}...`,
+      ogDescription: `${name} - Type: ${types} - ${tier}`,
       ogImage: animatedShinyGif,
     };
   });
+
 }
 
 

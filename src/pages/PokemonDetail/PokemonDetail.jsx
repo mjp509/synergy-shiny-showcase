@@ -202,31 +202,32 @@ export default function PokemonDetail() {
   }, [spriteName])
 
 // Capitalize first letter helper
-const capitalize = (str) => str ? str.charAt(0).toUpperCase() + str.slice(1) : "";
+const capitalize = (str) =>
+  str ? str.charAt(0).toUpperCase() + str.slice(1) : "";
 
-// Convert types array to "Title Case / Title Case"
+// Format types → "Dark / Ghost"
 const formatTypes = (types) =>
-  types.map(type => capitalize(type)).join(" / ");
+  types?.map(capitalize).join(" / ") || "Unknown";
 
-// Convert egg groups array to readable string: "Egg1 & Egg2"
+// Format egg groups → "Field & Fairy"
 const formatEggGroups = (eggs) =>
-  eggs?.length ? eggs.map(capitalize).join(" & ") : "Unknown Egg Group";
+  eggs?.length ? eggs.map(capitalize).join(" & ") : "Unknown";
 
-// Build description text using types and egg groups
+// Build EXACT description format requested
 const buildDescription = (pokemon) => {
-  if (!pokemon) return "Explore Pokémon shiny forms, stats, moves, and egg groups in our Shiny Dex.";
+  if (!pokemon) return "Explore Pokémon in the Shiny Dex.";
 
   const name = capitalize(pokemon.displayName);
   const types = formatTypes(pokemon.types);
   const eggGroups = formatEggGroups(pokemon.eggGroups);
 
-  return `${name} is a ${types}-type Pokémon from the ${eggGroups}. Explore its shiny forms, stats, and moves in our Shiny Dex.`;
+  return `${name} - Type: ${types}, Egg Group: ${eggGroups}`;
 };
 
 useDocumentHead({
   title: pokemon
-    ? `${capitalize(pokemon.displayName)} | ${formatEggGroups(pokemon.eggGroups)} | Shiny Dex`
-    : "Pokémon Shiny Dex",
+    ? `${capitalize(pokemon.displayName)} - Shiny Dex | Team Synergy - PokeMMO`
+    : "Shiny Dex | Team Synergy - PokeMMO",
 
   description: buildDescription(pokemon),
 
@@ -239,13 +240,14 @@ useDocumentHead({
   twitterCard: "summary_large_image",
 
   twitterTitle: pokemon
-    ? `${capitalize(pokemon.displayName)} | ${formatEggGroups(pokemon.eggGroups)} | Shiny Dex`
-    : "Pokémon Shiny Dex",
+    ? `${capitalize(pokemon.displayName)} - Shiny Dex | Team Synergy - PokeMMO`
+    : "Shiny Dex | Team Synergy - PokeMMO",
 
   twitterDescription: buildDescription(pokemon),
 
   twitterImage: animatedShinyGif,
 });
+
 
 
 
