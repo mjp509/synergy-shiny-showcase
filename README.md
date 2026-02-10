@@ -313,6 +313,102 @@ Located in `src/data/shinywar2025.json` - Contains:
 - Ranking information
 - Real-time update timestamps
 
+### Pokemon Data
+
+Located in `src/data/pokemmo_data/pokemon-data.json` - Comprehensive Pokémon metadata:
+
+```javascript
+{
+  "bulbasaur": {
+    name: "Bulbasaur",
+    id: 1,
+    type: ["Grass", "Poison"],
+    types: ["Grass", "Poison"],
+    base: {
+      hp: 45,
+      attack: 49,
+      defense: 49,
+      spAtk: 65,
+      spDef: 65,
+      speed: 45
+    },
+    stats: [
+      { stat_name: "hp", base_stat: 45 },
+      { stat_name: "attack", base_stat: 49 },
+      // ... other stats
+    ],
+    abilities: [
+      {
+        ability_name: "Overgrow",
+        id: 65
+      },
+      {
+        ability_name: "Chlorophyll",
+        id: 34,
+        is_hidden: true
+      }
+    ],
+    moves: [
+      {
+        name: "Growl",
+        level: 0,
+        type: "Normal"
+      },
+      {
+        name: "Tackle",
+        level: 0,
+        type: "Normal"
+      }
+      // ... more moves
+    ],
+    is_legendary: false,
+    is_mythical: false,
+    obtainable: true,
+    evolution: {
+      "Ivysaur": 16,
+      "Venusaur": 32
+    }
+  }
+  // ... more Pokémon
+}
+```
+
+**Key Fields:**
+- `types`: Array of type strings (e.g., ["Grass", "Poison"])
+- `stats`: Array of stat objects with `stat_name` and `base_stat`
+- `abilities`: Array with `ability_name` and `is_hidden` flag
+- `moves`: Array with move name, learn level, and type
+- `is_legendary`/`is_mythical`: Boolean flags for legendary detection
+- `obtainable`: Whether Pokémon can be obtained in-game
+
+### Pokemon Sprites
+
+Located in `src/data/pokemmo_data/pokemon-sprites.json` - Image asset paths:
+
+```javascript
+{
+  "bulbasaur": {
+    normal_male: "/images/pokemon_gifs/tier_x/bulbasaur.gif",
+    normal_female: "/images/pokemon_gifs/tier_x/bulbasaur-female.gif",
+    shiny_male: "/images/pokemon_gifs/tier_x/bulbasaur-shiny.gif",
+    shiny_female: "/images/pokemon_gifs/tier_x/bulbasaur-shiny-female.gif",
+    front_default: "/sprites/front/bulbasaur.png",
+    front_shiny: "/sprites/front_shiny/bulbasaur.png"
+  }
+  // ... more Pokémon
+}
+```
+
+**Key Fields:**
+- `normal_male`/`normal_female`: Standard sprite paths
+- `shiny_male`/`shiny_female`: Shiny variant paths
+- `front_default`/`front_shiny`: Alternative sprite variants
+- Paths use fallback to remote source if local files don't exist
+
+**Backup Data:**
+- `pokemon-data-save.json`: Backup copy of pokemon-data.json
+- `pokemon-sprites-save.json`: Backup copy of pokemon-sprites.json
+
 ---
 
 ## Key Components
