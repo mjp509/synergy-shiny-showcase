@@ -26,9 +26,20 @@ export default function Pokedex() {
   const [selectedRarities, setSelectedRarities] = useState([])
   const [selectedTiers, setSelectedTiers] = useState([])
   const [selectedEggGroups, setSelectedEggGroups] = useState([])
+  const [statMinimums, setStatMinimums] = useState({
+    hp: '',
+    attack: '',
+    defense: '',
+    spAtk: '',
+    spDef: '',
+    speed: ''
+  })
+  const [statSearchMode, setStatSearchMode] = useState('form') // 'form' or 'typing'
+  const [statSearchInput, setStatSearchInput] = useState('')
   const [isRarityOpen, setIsRarityOpen] = useState(false)
   const [isTierOpen, setIsTierOpen] = useState(false)
   const [isEggGroupOpen, setIsEggGroupOpen] = useState(false)
+  const [isStatSearchOpen, setIsStatSearchOpen] = useState(false)
   const [synergyDataToggle, setSynergyDataToggle] = useState(false)
   const [hoverInfo, setHoverInfo] = useState(null)
   const [hoverPos, setHoverPos] = useState({ x: 0, y: 0 })
@@ -36,6 +47,7 @@ export default function Pokedex() {
   const rarityMenuRef = useRef(null)
   const tierMenuRef = useRef(null)
   const eggGroupMenuRef = useRef(null)
+  const statSearchMenuRef = useRef(null)
   const searchTerm = search.trim().toLowerCase()
   const formatRarityKey = (value) => value.toLowerCase().trim().replace(/\s+/g, '_')
   const formatRarityLabel = (value) => {
@@ -189,6 +201,9 @@ export default function Pokedex() {
       if (eggGroupMenuRef.current && !eggGroupMenuRef.current.contains(event.target)) {
         setIsEggGroupOpen(false)
       }
+      if (statSearchMenuRef.current && !statSearchMenuRef.current.contains(event.target)) {
+        setIsStatSearchOpen(false)
+      }
     }
 
     document.addEventListener('mousedown', handleClickOutside)
@@ -273,6 +288,43 @@ export default function Pokedex() {
   const handleMouseOut = useCallback((e) => {
     if (e.target.tagName === 'IMG') setHoverInfo(null)
   }, [])
+
+  const matchesStatSearch = (pokemonDetails) => {
+    // Hide unobtainable pokemon
+    if (pokemonDetails.obtainable === false) return false
+    
+    // Handle stats as array (from raw pokemonData)
+    const statsArray = pokemonDetails.stats || []
+    const statsMap = {}
+    
+    // Convert array format to map using stat_name
+    statsArray.forEach(stat => {
+      statsMap[stat.stat_name] = stat.base_stat
+    })
+    
+    // Map our internal keys to pokemon data stat_name values
+    const statNameMap = {
+      'hp': 'hp',
+      'attack': 'attack',
+      'defense': 'defense',
+      'spAtk': 'special-attack',
+      'spDef': 'special-defense',
+      'speed': 'speed'
+    }
+    
+    // Check each stat - if a minimum is set (non-empty and > 0), verify the pokemon meets it
+    for (const [statKey, minValue] of Object.entries(statMinimums)) {
+      if (minValue === '' || minValue === '0') continue // Skip empty or zero values
+      
+      const minimum = parseInt(minValue, 10)
+      if (!Number.isFinite(minimum)) continue
+      
+      const pokemonStat = statsMap[statNameMap[statKey]] || 0
+      if (pokemonStat < minimum) return false
+    }
+    
+    return true
+  }
 
   const sliderIndex = mode === 'shiny' ? 0 : 1
 
@@ -428,6 +480,104 @@ export default function Pokedex() {
             </div>
           )}
         </div>
+        <div className={styles.dropdown} ref={statSearchMenuRef}>
+          <button
+            type="button"
+            className={styles.dropdownButton}
+            onClick={() => {
+              setIsStatSearchOpen((prev) => !prev)
+              setIsRarityOpen(false)
+              setIsTierOpen(false)
+              setIsEggGroupOpen(false)
+            }}
+            aria-expanded={isStatSearchOpen}
+            aria-haspopup="listbox"
+          >
+            <span className={styles.dropdownLabel}>Stat Searcher</span>
+            <span className={styles.dropdownValue}>
+              {Object.values(statMinimums).some(v => v && v !== '0') ? 'Active' : 'Inactive'}
+            </span>
+            <span className={styles.dropdownCaret}>▾</span>
+          </button>
+          {isStatSearchOpen && (
+            <div className={styles.dropdownMenu} role="listbox" aria-multiselectable="true" style={{ minWidth: '340px', columnCount: 1 }}>
+              <div style={{ padding: '12px' }}>
+                <div style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.6)', marginBottom: '12px' }}>
+                  Enter minimum base stat values (leave empty for no filter):
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px 16px', marginBottom: '8px' }}>
+                  {[
+                    { label: 'HP', key: 'hp' },
+                    { label: 'Attack', key: 'attack' },
+                    { label: 'Defense', key: 'defense' },
+                    { label: 'Sp. Atk', key: 'spAtk' },
+                    { label: 'Sp. Def', key: 'spDef' },
+                    { label: 'Speed', key: 'speed' }
+                  ].map(({ label, key }) => (
+                    <div key={key} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <label style={{ width: '62px', fontSize: '0.9rem', color: 'rgba(255, 255, 255, 0.8)', textAlign: 'right' }}>
+                        {label}:
+                      </label>
+                      <input
+                        type="number"
+                        value={statMinimums[key]}
+                        onChange={(e) => setStatMinimums(prev => ({
+                          ...prev,
+                          [key]: e.target.value
+                        }))}
+                        placeholder="0"
+                        min="0"
+                        max="999"
+                        style={{
+                          width: '60px',
+                          padding: '6px 8px',
+                          background: 'rgba(0, 0, 0, 0.3)',
+                          border: '1px solid rgba(102, 126, 234, 0.5)',
+                          borderRadius: '4px',
+                          color: 'white',
+                          fontSize: '0.9rem'
+                        }}
+                      />
+                    </div>
+                  ))}
+                </div>
+                <div style={{ marginTop: '12px', paddingTop: '12px', borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}>
+                  <button
+                    onClick={() => setStatMinimums({
+                      hp: '',
+                      attack: '',
+                      defense: '',
+                      spAtk: '',
+                      spDef: '',
+                      speed: ''
+                    })}
+                    style={{
+                      width: '100%',
+                      padding: '6px 10px',
+                      background: 'rgba(102, 126, 234, 0.2)',
+                      border: '1px solid rgba(102, 126, 234, 0.5)',
+                      borderRadius: '4px',
+                      color: '#667eea',
+                      fontSize: '0.85rem',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.background = 'rgba(102, 126, 234, 0.3)'
+                      e.target.style.borderColor = 'rgba(102, 126, 234, 0.7)'
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.background = 'rgba(102, 126, 234, 0.2)'
+                      e.target.style.borderColor = 'rgba(102, 126, 234, 0.5)'
+                    }}
+                  >
+                    Clear All
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
       <SearchBar
@@ -549,6 +699,7 @@ export default function Pokedex() {
               const matchesEggGroup = selectedEggGroups.some(group => pokemonEggGroups.includes(group))
               if (!matchesEggGroup) return
             }
+            if (!matchesStatSearch(pokemonDetails)) return
             
             totalPokemon++
             if (isComplete) completedPokemon++
@@ -680,6 +831,7 @@ export default function Pokedex() {
               const matchesEggGroup = selectedEggGroups.some(group => pokemonEggGroups.includes(group))
               if (!matchesEggGroup) return false
             }
+            if (!matchesStatSearch(pokemonDetails)) return false
             return true
           })
 

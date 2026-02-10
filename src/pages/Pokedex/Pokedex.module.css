@@ -7,30 +7,50 @@
 }
 
 .filterRow {
-  display: flex;
-  justify-content: center;
-  margin: 20px 0 10px 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  justify-items: center;
+  max-width: 1000px;
+  margin: 20px auto 10px auto;
   gap: 12px;
-  flex-wrap: wrap;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+@media (max-width: 1200px) {
+  .filterRow {
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .filterRow {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 500px;
+    gap: 10px;
+    padding: 0 15px;
+  }
 }
 
 @media (max-width: 768px) {
   .filterRow {
+    grid-template-columns: 1fr;
+    max-width: 100%;
     gap: 8px;
     margin: 15px 0 8px 0;
+    padding: 0 12px;
   }
 }
 
 .dropdown {
   position: relative;
-  width: 280px;
+  width: 100%;
+  min-width: 160px;
 }
 
-@media (max-width: 768px) {
+@media (min-width: 769px) and (max-width: 900px) {
   .dropdown {
-    width: 240px;
-    flex: 0 1 calc(50% - 6px);
-    min-width: 160px;
+    min-width: 150px;
   }
 }
 
@@ -132,6 +152,14 @@
   backdrop-filter: blur(10px);
   column-count: 2;
   column-gap: 16px;
+  min-width: 280px;
+}
+
+@media (max-width: 900px) {
+  .dropdownMenu {
+    column-count: 1;
+    min-width: 240px;
+  }
 }
 
 @media (max-width: 768px) {
@@ -145,6 +173,7 @@
     border-radius: 12px;
     max-width: calc(100vw - 16px);
     z-index: 1001;
+    min-width: auto;
   }
 }
 
