@@ -1,6 +1,6 @@
 import styles from './SearchBar.module.css'
 
-export default function SearchBar({ value, onChange }) {
+export default function SearchBar({ value, onChange, placeholder = 'Search for a player...' }) {
   return (
     <div className={styles.searchBar}>
       <input
@@ -8,7 +8,7 @@ export default function SearchBar({ value, onChange }) {
         value={value}
         onChange={e => onChange(e.target.value)}
         autoComplete="off"
-        placeholder="Search for a player..."
+        placeholder={placeholder}
       />
     </div>
   )

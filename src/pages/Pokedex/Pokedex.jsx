@@ -2,10 +2,13 @@ import { useState, useMemo, useRef, useCallback } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useDatabase } from '../../hooks/useDatabase'
 import { useDocumentHead } from '../../hooks/useDocumentHead'
+import { useTierData } from '../../hooks/useTierData'
+import SearchBar from '../../components/SearchBar/SearchBar'
 import { getAssetUrl } from '../../utils/assets'
 import { normalizePokemonName, onGifError } from '../../utils/pokemon'
 import { API } from '../../api/endpoints'
 import generationData from '../../data/generation.json'
+import pokemonData from '../../data/pokemmo_data/pokemon-data.json'
 import styles from './Pokedex.module.css'
 
 export default function Pokedex() {
@@ -16,11 +19,74 @@ export default function Pokedex() {
   })
   const navigate = useNavigate()
   const { data, isLoading } = useDatabase()
+  const { tierPokemon, tierLookup } = useTierData()
   const [mode, setMode] = useState('shiny')
   const [hideComplete, setHideComplete] = useState(false)
+  const [search, setSearch] = useState('')
+  const [rarityFilter, setRarityFilter] = useState('all')
+  const [tierFilter, setTierFilter] = useState('all')
   const [hoverInfo, setHoverInfo] = useState(null)
   const [hoverPos, setHoverPos] = useState({ x: 0, y: 0 })
   const infoBoxRef = useRef(null)
+  const searchTerm = search.trim().toLowerCase()
+  const formatRarityKey = (value) => value.toLowerCase().trim().replace(/\s+/g, '_')
+  const formatRarityLabel = (value) => {
+    if (value === 'all') return 'All Rarities'
+    if (value === 'fishing') return 'Fishing'
+    return value
+      .split('_')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ')
+  }
+  const nameAliasMap = {
+    darmanitan: 'darmanitan-standard'
+  }
+  const locationIndex = useMemo(() => {
+    const index = new Map()
+    Object.entries(pokemonData).forEach(([key, details]) => {
+      const encounters = details.location_area_encounters || []
+      const locationText = encounters
+        .map(loc => [loc.location, loc.region_name, loc.type].filter(Boolean).join(' '))
+        .join(' ')
+        .toLowerCase()
+      const raritySet = new Set()
+      encounters.forEach(encounter => {
+        const rawType = (encounter.type || '').toLowerCase()
+        const rawRarity = encounter.rarity || ''
+        if (rawRarity) raritySet.add(formatRarityKey(rawRarity))
+        if (rawType.includes('rod')) raritySet.add('fishing')
+      })
+      if (locationText || raritySet.size) {
+        index.set(key, {
+          locationText,
+          raritySet
+        })
+      }
+    })
+    return index
+  }, [])
+  const rarityOptions = useMemo(() => {
+    const options = new Set()
+    locationIndex.forEach(entry => {
+      if (!entry) return
+      entry.raritySet.forEach(value => options.add(value))
+    })
+    const sorted = Array.from(options).sort((a, b) => {
+      if (a === 'fishing') return 1
+      if (b === 'fishing') return -1
+      return a.localeCompare(b)
+    })
+    return ['all', ...sorted]
+  }, [locationIndex])
+  const tierOptions = useMemo(() => {
+    const tiers = Object.keys(tierPokemon || {})
+    const sorted = tiers.sort((a, b) => {
+      const aNum = parseInt(a.replace(/\D/g, ''), 10)
+      const bNum = parseInt(b.replace(/\D/g, ''), 10)
+      return aNum - bNum
+    })
+    return ['all', ...sorted]
+  }, [tierPokemon])
   const { globalShinies, ownerMap } = useMemo(() => {
     if (!data) return { globalShinies: new Set(), ownerMap: new Map() }
     const gs = new Set()
@@ -108,6 +174,39 @@ export default function Pokedex() {
       </h1>
       <img src={getAssetUrl('images/pagebreak.png')} alt="Page Break" className="pagebreak" />
 
+      <div className={styles.filterRow}>
+        <select
+          className={styles.raritySelect}
+          value={rarityFilter}
+          onChange={(e) => setRarityFilter(e.target.value)}
+          aria-label="Filter by encounter rarity"
+        >
+          {rarityOptions.map(option => (
+            <option key={option} value={option}>
+              {formatRarityLabel(option)}
+            </option>
+          ))}
+        </select>
+        <select
+          className={styles.raritySelect}
+          value={tierFilter}
+          onChange={(e) => setTierFilter(e.target.value)}
+          aria-label="Filter by tier"
+        >
+          {tierOptions.map(option => (
+            <option key={option} value={option}>
+              {option === 'all' ? 'All Tiers' : option}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <SearchBar
+        value={search}
+        onChange={setSearch}
+        placeholder="Search Pokemon,location or region..."
+      />
+
       <div className={styles.toggleContainer}>
         <div className={styles.toggle}>
           <span
@@ -157,12 +256,25 @@ export default function Pokedex() {
           const seenPokemon = new Set()
           const visiblePokemon = flatPokemon.filter(pokemon => {
             const lowerName = pokemon.toLowerCase()
+            const normalized = normalizePokemonName(pokemon)
+            const lookupName = nameAliasMap[normalized] || normalized
+            const locationEntry = locationIndex.get(lookupName) || { locationText: '', raritySet: new Set() }
+            const pokemonTier = tierLookup[normalized] || ''
             // Skip if we've already processed this pokemon
             if (seenPokemon.has(lowerName)) return false
             seenPokemon.add(lowerName)
 
             const isComplete = mode === 'shiny' ? speciesCompleteSet.has(lowerName) : globalShinies.has(lowerName)
             if (hideComplete && isComplete) return false
+            if (searchTerm) {
+              const matchesSearch =
+                lowerName.includes(searchTerm)
+                || normalized.includes(searchTerm)
+                || locationEntry.locationText.includes(searchTerm)
+              if (!matchesSearch) return false
+            }
+            if (rarityFilter !== 'all' && !locationEntry.raritySet.has(rarityFilter)) return false
+            if (tierFilter !== 'all' && pokemonTier !== tierFilter) return false
             return true
           })
 

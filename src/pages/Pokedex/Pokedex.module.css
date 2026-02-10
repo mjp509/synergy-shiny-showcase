@@ -6,6 +6,33 @@
   margin: 20px;
 }
 
+.filterRow {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0 10px 0;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.raritySelect {
+  width: 260px;
+  padding: 10px 14px;
+  border-radius: 18px;
+  border: 2px solid #444;
+  background: #1a1a1a;
+  color: #fff;
+  font-size: 1rem;
+  outline: none;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+  transition: all 0.3s ease;
+}
+
+.raritySelect:focus {
+  border-color: #4a90e2;
+  box-shadow: 0 4px 12px rgba(74,144,226,0.5);
+  background: #222;
+}
+
 .toggle {
   position: relative;
   display: flex;
