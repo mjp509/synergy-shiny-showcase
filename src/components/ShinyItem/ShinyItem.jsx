@@ -1,4 +1,5 @@
 import { memo, useMemo } from 'react'
+import { useNavigate } from 'react-router-dom'
 import InfoBox from '../InfoBox/InfoBox'
 import { getLocalPokemonGif, onGifError } from '../../utils/pokemon'
 import styles from './ShinyItem.module.css'
@@ -23,6 +24,7 @@ const ICON_MAP = {
 }
 
 function ShinyItem({ shiny, points, userName }) {
+  const navigate = useNavigate()
   const shinyGifPath = useMemo(() => getLocalPokemonGif(shiny.Pokemon), [shiny.Pokemon])
 
   // Container CSS classes based on traits
@@ -95,11 +97,19 @@ function ShinyItem({ shiny, points, userName }) {
         <img
           src={shinyGifPath}
           alt={shiny.Pokemon}
-          className={`${styles.shinyGif} ${isSold ? styles.soldPokemon : ''}`}
+          className={`${styles.shinyGif} ${isSold ? styles.soldPokemon : ''} ${styles.clickable}`}
           width="80"
           height="80"
           loading="lazy"
           onError={onGifError(shiny.Pokemon)}
+          onClick={() => navigate(`/pokemon/${shiny.Pokemon.toLowerCase()}`)}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              navigate(`/pokemon/${shiny.Pokemon.toLowerCase()}`)
+            }
+          }}
         />
       </div>
       <InfoBox shiny={shiny} points={points} customText={infoText} />

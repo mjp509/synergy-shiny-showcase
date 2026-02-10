@@ -15,6 +15,7 @@ const TrophyPage = lazy(() => import('./pages/TrophyPage/TrophyPage'))
 const CounterGenerator = lazy(() => import('./pages/CounterGenerator/CounterGenerator'))
 const RandomPokemon = lazy(() => import('./pages/RandomPokemon/RandomPokemon'))
 const ShinyWar2025 = lazy(() => import('./pages/ShinyWar2025/ShinyWar2025'))
+const PokemonDetail = lazy(() => import('./pages/PokemonDetail/PokemonDetail'))
 const AdminLogin = lazy(() => import('./pages/Admin/AdminLogin'))
 const AdminPanel = lazy(() => import('./pages/Admin/AdminPanel'))
 const NotFound = lazy(() => import('./pages/NotFound/NotFound'))
@@ -44,6 +45,7 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Showcase />} />
             <Route path="/player/:playerName" element={<PlayerPage />} />
+            <Route path="/pokemon/:pokemonName" element={<PokemonDetail />} />
             <Route path="/shotm" element={<SHOTM />} />
             <Route path="/pokedex" element={<Pokedex />} />
             <Route path="/streamers" element={<Streamers />} />

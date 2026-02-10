@@ -38,6 +38,21 @@
   object-fit: contain;
 }
 
+.clickable {
+  cursor: pointer;
+  transition: filter 0.2s ease;
+}
+
+.clickable:hover {
+  filter: brightness(1.1);
+}
+
+.clickable:focus {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
 .soldPokemon {
   filter: grayscale(100%);
   opacity: 80%;

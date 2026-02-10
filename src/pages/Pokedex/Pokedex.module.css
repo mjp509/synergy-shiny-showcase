@@ -89,23 +89,38 @@
   height: 50px;
   object-fit: contain;
   box-sizing: border-box;
-  transition: filter 0.3s, opacity 0.3s;
+  transition: filter 0.3s, opacity 0.3s, transform 0.2s;
+  cursor: pointer;
+}
+
+.pokemon:hover {
+  transform: scale(1.15);
+  filter: brightness(1.1);
+}
+
+.pokemon:focus {
+  outline: 2px solid rgba(102, 126, 234, 0.8);
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 
 .complete {
-  /* no filter */
+  opacity: 1;
+}
+
+.complete:hover {
+  filter: brightness(1.15);
 }
 
 .incomplete {
   filter: grayscale(100%);
   opacity: 0.6;
-  transition: filter 0.3s;
+  transition: filter 0.3s, opacity 0.3s, transform 0.2s;
 }
 
 .incomplete:hover {
-  filter: grayscale(0%) brightness(100%);
+  filter: grayscale(0%) brightness(120%);
   opacity: 1;
-  cursor: pointer;
 }
 
 .infoBox {

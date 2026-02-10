@@ -1,5 +1,5 @@
 import { useState, useMemo, useRef, useCallback } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useDatabase } from '../../hooks/useDatabase'
 import { useDocumentHead } from '../../hooks/useDocumentHead'
 import { getAssetUrl } from '../../utils/assets'
@@ -14,6 +14,7 @@ export default function Pokedex() {
     description: 'Track every shiny Pokemon caught by Team Synergy in PokeMMO. Browse our community Shiny Dex across all generations.',
     canonicalPath: '/pokedex',
   })
+  const navigate = useNavigate()
   const { data, isLoading } = useDatabase()
   const [mode, setMode] = useState('shiny')
   const [hideComplete, setHideComplete] = useState(false)
@@ -192,6 +193,15 @@ export default function Pokedex() {
                     height="50"
                     loading="lazy"
                     onError={onGifError(normalized)}
+                    onClick={() => navigate(`/pokemon/${pokemon.toLowerCase()}`)}
+                    style={{ cursor: 'pointer' }}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        navigate(`/pokemon/${pokemon.toLowerCase()}`)
+                      }
+                    }}
                   />
                 )
               })}
