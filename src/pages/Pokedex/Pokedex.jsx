@@ -31,7 +31,7 @@ export default function Pokedex() {
   const searchTerm = search.trim().toLowerCase()
   const formatRarityKey = (value) => value.toLowerCase().trim().replace(/\s+/g, '_')
   const formatRarityLabel = (value) => {
-    if (value === 'all') return 'All Rarities'
+    if (value === 'all') return 'All Encounter Types'
     if (value === 'fishing') return 'Fishing'
     return value
       .split('_')
