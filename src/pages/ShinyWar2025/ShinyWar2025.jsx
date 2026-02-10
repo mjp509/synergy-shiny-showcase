@@ -31,7 +31,7 @@ const BASE = import.meta.env.BASE_URL || '/'
 
 export default function ShinyWar2025() {
   useDocumentHead({
-    title: 'Shiny War 2025 Results',
+    title: 'Shiny Wars 2025 Results',
     description: 'Team Synergy placed #25 in the Official PokeMMO Shiny Wars 2025 with 1060 points and 111 shinies. View every catch with tier breakdowns and point totals.',
     canonicalPath: '/shiny-war-2025',
     ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_1/leafeon.gif',
@@ -81,7 +81,7 @@ export default function ShinyWar2025() {
 
   return (
     <div>
-      <h1>Shiny War 2025</h1>
+      <h1>Shiny Wars 2025</h1>
       <img src={getAssetUrl('images/pagebreak.png')} alt="" className="pagebreak" />
 
       <div className={styles.teamHeader}>
