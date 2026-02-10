@@ -195,7 +195,10 @@ export function usePokemonDetails(pokemonName) {
         locations: locations,
         shinyTier: pokemon.shiny_tier || 0,
         shinyPoints: pokemon.shiny_points || 0,
-        obtainable: pokemon.obtainable !== false
+        obtainable: pokemon.obtainable !== false,
+        cries: pokemon.cries || { latest: '', legacy: '' },
+        nameTranslations: pokemon.name_translations || {},
+        varieties: pokemon.varieties || []
       }
       
       setData(formattedData)

@@ -26,6 +26,9 @@ export default function Pokedex() {
   const [selectedRarities, setSelectedRarities] = useState([])
   const [selectedTiers, setSelectedTiers] = useState([])
   const [selectedEggGroups, setSelectedEggGroups] = useState([])
+  const [selectedTypes, setSelectedTypes] = useState([])
+  const [movesToFilterBy, setMovesToFilterBy] = useState(['', '', '', ''])
+  const [abilitySearch, setAbilitySearch] = useState('')
   const [statMinimums, setStatMinimums] = useState({
     hp: '',
     attack: '',
@@ -39,6 +42,9 @@ export default function Pokedex() {
   const [isRarityOpen, setIsRarityOpen] = useState(false)
   const [isTierOpen, setIsTierOpen] = useState(false)
   const [isEggGroupOpen, setIsEggGroupOpen] = useState(false)
+  const [isTypesOpen, setIsTypesOpen] = useState(false)
+  const [isMovesOpen, setIsMovesOpen] = useState(false)
+  const [isAbilitiesOpen, setIsAbilitiesOpen] = useState(false)
   const [isStatSearchOpen, setIsStatSearchOpen] = useState(false)
   const [synergyDataToggle, setSynergyDataToggle] = useState(false)
   const [hoverInfo, setHoverInfo] = useState(null)
@@ -47,6 +53,9 @@ export default function Pokedex() {
   const rarityMenuRef = useRef(null)
   const tierMenuRef = useRef(null)
   const eggGroupMenuRef = useRef(null)
+  const typesMenuRef = useRef(null)
+  const movesMenuRef = useRef(null)
+  const abilitiesMenuRef = useRef(null)
   const statSearchMenuRef = useRef(null)
   const searchTerm = search.trim().toLowerCase()
   const formatRarityKey = (value) => value.toLowerCase().trim().replace(/\s+/g, '_')
@@ -134,6 +143,49 @@ export default function Pokedex() {
     return ['all', ...sorted]
   }, [eggGroupIndex])
   
+  const typeIndex = useMemo(() => {
+    const index = new Map()
+    Object.entries(pokemonData).forEach(([key, details]) => {
+      const types = details.types || []
+      if (types.length > 0) {
+        index.set(key, types)
+      }
+    })
+    return index
+  }, [])
+  
+  const typeOptions = useMemo(() => {
+    const options = new Set()
+    typeIndex.forEach(types => {
+      types.forEach(type => options.add(type))
+    })
+    const sorted = Array.from(options).sort()
+    return ['all', ...sorted]
+  }, [typeIndex])
+  
+  const abilityIndex = useMemo(() => {
+    const index = new Map()
+    Object.entries(pokemonData).forEach(([key, details]) => {
+      const abilities = details.abilities || []
+      if (abilities.length > 0) {
+        const abilityNames = abilities.map(a => a.ability_name).filter(Boolean)
+        if (abilityNames.length > 0) {
+          index.set(key, abilityNames)
+        }
+      }
+    })
+    return index
+  }, [])
+  
+  const abilityOptions = useMemo(() => {
+    const options = new Set()
+    abilityIndex.forEach(abilities => {
+      abilities.forEach(ability => options.add(ability))
+    })
+    const sorted = Array.from(options).sort()
+    return ['all', ...sorted]
+  }, [abilityIndex])
+  
   const searchSuggestions = useMemo(() => {
     const suggestions = new Set()
     
@@ -150,7 +202,11 @@ export default function Pokedex() {
     Object.entries(pokemonData).forEach(([_, details]) => {
       const moves = details.moves || []
       moves.forEach(m => {
-        if (m.move) {
+        if (typeof m === 'string') {
+          suggestions.add(m)
+        } else if (m.name && typeof m.name === 'string') {
+          suggestions.add(m.name)
+        } else if (m.move && typeof m.move === 'string') {
           suggestions.add(m.move)
         }
       })
@@ -200,6 +256,15 @@ export default function Pokedex() {
       }
       if (eggGroupMenuRef.current && !eggGroupMenuRef.current.contains(event.target)) {
         setIsEggGroupOpen(false)
+      }
+      if (typesMenuRef.current && !typesMenuRef.current.contains(event.target)) {
+        setIsTypesOpen(false)
+      }
+      if (movesMenuRef.current && !movesMenuRef.current.contains(event.target)) {
+        setIsMovesOpen(false)
+      }
+      if (abilitiesMenuRef.current && !abilitiesMenuRef.current.contains(event.target)) {
+        setIsAbilitiesOpen(false)
       }
       if (statSearchMenuRef.current && !statSearchMenuRef.current.contains(event.target)) {
         setIsStatSearchOpen(false)
@@ -347,6 +412,8 @@ export default function Pokedex() {
               setIsRarityOpen((prev) => !prev)
               setIsTierOpen(false)
               setIsEggGroupOpen(false)
+              setIsTypesOpen(false)
+              setIsStatSearchOpen(false)
             }}
             aria-expanded={isRarityOpen}
             aria-haspopup="listbox"
@@ -394,6 +461,8 @@ export default function Pokedex() {
               setIsTierOpen((prev) => !prev)
               setIsRarityOpen(false)
               setIsEggGroupOpen(false)
+              setIsTypesOpen(false)
+              setIsStatSearchOpen(false)
             }}
             aria-expanded={isTierOpen}
             aria-haspopup="listbox"
@@ -441,6 +510,8 @@ export default function Pokedex() {
               setIsEggGroupOpen((prev) => !prev)
               setIsRarityOpen(false)
               setIsTierOpen(false)
+              setIsTypesOpen(false)
+              setIsStatSearchOpen(false)
             }}
             aria-expanded={isEggGroupOpen}
             aria-haspopup="listbox"
@@ -480,6 +551,212 @@ export default function Pokedex() {
             </div>
           )}
         </div>
+        <div className={styles.dropdown} ref={typesMenuRef}>
+          <button
+            type="button"
+            className={styles.dropdownButton}
+            onClick={() => {
+              setIsTypesOpen((prev) => !prev)
+              setIsRarityOpen(false)
+              setIsTierOpen(false)
+              setIsEggGroupOpen(false)
+              setIsStatSearchOpen(false)
+            }}
+            aria-expanded={isTypesOpen}
+            aria-haspopup="listbox"
+          >
+            <span className={styles.dropdownLabel}>Types</span>
+            <span className={styles.dropdownValue}>
+              {formatSelectionSummary(selectedTypes, typeOptions, (value) => value.charAt(0).toUpperCase() + value.slice(1), 'All Types')}
+            </span>
+            <span className={styles.dropdownCaret}>▾</span>
+          </button>
+          {isTypesOpen && (
+            <div className={styles.dropdownMenu} role="listbox" aria-multiselectable="true">
+              <label className={styles.dropdownOption}>
+                <input
+                  type="checkbox"
+                  checked={selectedTypes.length === 0}
+                  onChange={() => setSelectedTypes([])}
+                />
+                <span>All Types</span>
+              </label>
+              {typeOptions.filter(option => option !== 'all').map(option => (
+                <label key={option} className={styles.dropdownOption}>
+                  <input
+                    type="checkbox"
+                    checked={selectedTypes.includes(option)}
+                    onChange={(e) => {
+                      setSelectedTypes(prev => (
+                        e.target.checked
+                          ? [...prev, option]
+                          : prev.filter(value => value !== option)
+                      ))
+                    }}
+                  />
+                  <span>{option.charAt(0).toUpperCase() + option.slice(1)}</span>
+                </label>
+              ))}
+            </div>
+          )}
+        </div>
+        <div className={styles.dropdown} ref={movesMenuRef}>
+          <button
+            type="button"
+            className={styles.dropdownButton}
+            onClick={() => {
+              setIsMovesOpen((prev) => !prev)
+              setIsRarityOpen(false)
+              setIsTierOpen(false)
+              setIsEggGroupOpen(false)
+              setIsTypesOpen(false)
+              setIsStatSearchOpen(false)
+            }}
+            aria-expanded={isMovesOpen}
+            aria-haspopup="listbox"
+          >
+            <span className={styles.dropdownLabel}>Moves</span>
+            <span className={styles.dropdownValue}>
+              {movesToFilterBy.filter(m => m.trim()).length === 0 ? 'All Moves' : `${movesToFilterBy.filter(m => m.trim()).length} Moves`}
+            </span>
+            <span className={styles.dropdownCaret}>▾</span>
+          </button>
+          {isMovesOpen && (
+            <div className={styles.dropdownMenu} role="listbox" aria-multiselectable="true" style={{ minWidth: '340px', columnCount: 1 }}>
+              <div style={{ padding: '12px' }}>
+                <div style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.6)', marginBottom: '12px' }}>
+                  Type up to 4 move names (leave blank for no filter):
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '8px', marginBottom: '12px' }}>
+                  {[0, 1, 2, 3].map((index) => (
+                    <input
+                      key={index}
+                      type="text"
+                      placeholder={`Move ${index + 1}`}
+                      value={movesToFilterBy[index]}
+                      onChange={(e) => {
+                        const newMoves = [...movesToFilterBy]
+                        newMoves[index] = e.target.value
+                        setMovesToFilterBy(newMoves)
+                      }}
+                      style={{
+                        padding: '6px 8px',
+                        background: 'rgba(0, 0, 0, 0.3)',
+                        border: '1px solid rgba(102, 126, 234, 0.5)',
+                        borderRadius: '4px',
+                        color: 'white',
+                        fontSize: '0.9rem'
+                      }}
+                    />
+                  ))}
+                </div>
+                <div style={{ marginTop: '12px', paddingTop: '12px', borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}>
+                  <button
+                    onClick={() => setMovesToFilterBy(['', '', '', ''])}
+                    style={{
+                      width: '100%',
+                      padding: '6px 10px',
+                      background: 'rgba(102, 126, 234, 0.2)',
+                      border: '1px solid rgba(102, 126, 234, 0.5)',
+                      borderRadius: '4px',
+                      color: '#667eea',
+                      fontSize: '0.85rem',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.background = 'rgba(102, 126, 234, 0.3)'
+                      e.target.style.borderColor = 'rgba(102, 126, 234, 0.7)'
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.background = 'rgba(102, 126, 234, 0.2)'
+                      e.target.style.borderColor = 'rgba(102, 126, 234, 0.5)'
+                    }}
+                  >
+                    Clear All
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+        <div className={styles.dropdown} ref={abilitiesMenuRef}>
+          <button
+            type="button"
+            className={styles.dropdownButton}
+            onClick={() => {
+              setIsAbilitiesOpen((prev) => !prev)
+              setIsRarityOpen(false)
+              setIsTierOpen(false)
+              setIsEggGroupOpen(false)
+              setIsTypesOpen(false)
+              setIsMovesOpen(false)
+              setIsStatSearchOpen(false)
+            }}
+            aria-expanded={isAbilitiesOpen}
+            aria-haspopup="listbox"
+          >
+            <span className={styles.dropdownLabel}>Abilities</span>
+            <span className={styles.dropdownValue}>
+              {abilitySearch.trim() ? abilitySearch : 'All Abilities'}
+            </span>
+            <span className={styles.dropdownCaret}>▾</span>
+          </button>
+          {isAbilitiesOpen && (
+            <div className={styles.dropdownMenu} role="listbox" aria-multiselectable="true" style={{ minWidth: '340px', columnCount: 1 }}>
+              <div style={{ padding: '12px' }}>
+                <div style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.6)', marginBottom: '12px' }}>
+                  Search for an ability (leave blank for no filter):
+                </div>
+                <input
+                  type="text"
+                  placeholder="Type ability name..."
+                  value={abilitySearch}
+                  onChange={(e) => setAbilitySearch(e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '8px 12px',
+                    background: 'rgba(0, 0, 0, 0.3)',
+                    border: '1px solid rgba(102, 126, 234, 0.5)',
+                    borderRadius: '4px',
+                    color: 'white',
+                    fontSize: '0.9rem',
+                    boxSizing: 'border-box'
+                  }}
+                  autoFocus
+                />
+                {abilitySearch.trim() && (
+                  <div style={{ marginTop: '12px', paddingTop: '12px', borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}>
+                    <button
+                      onClick={() => setAbilitySearch('')}
+                      style={{
+                        width: '100%',
+                        padding: '6px 10px',
+                        background: 'rgba(102, 126, 234, 0.2)',
+                        border: '1px solid rgba(102, 126, 234, 0.5)',
+                        borderRadius: '4px',
+                        color: '#667eea',
+                        fontSize: '0.85rem',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.background = 'rgba(102, 126, 234, 0.3)'
+                        e.target.style.borderColor = 'rgba(102, 126, 234, 0.7)'
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.background = 'rgba(102, 126, 234, 0.2)'
+                        e.target.style.borderColor = 'rgba(102, 126, 234, 0.5)'
+                      }}
+                    >
+                      Clear
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
         <div className={styles.dropdown} ref={statSearchMenuRef}>
           <button
             type="button"
@@ -489,6 +766,9 @@ export default function Pokedex() {
               setIsRarityOpen(false)
               setIsTierOpen(false)
               setIsEggGroupOpen(false)
+              setIsTypesOpen(false)
+              setIsMovesOpen(false)
+              setIsAbilitiesOpen(false)
             }}
             aria-expanded={isStatSearchOpen}
             aria-haspopup="listbox"
@@ -699,6 +979,31 @@ export default function Pokedex() {
               const matchesEggGroup = selectedEggGroups.some(group => pokemonEggGroups.includes(group))
               if (!matchesEggGroup) return
             }
+            if (selectedTypes.length > 0) {
+              const pokemonTypes = pokemonDetails.types || []
+              const matchesType = selectedTypes.every(type => pokemonTypes.includes(type))
+              if (!matchesType) return
+            }
+            const filledMoves = movesToFilterBy.filter(m => m.trim())
+            if (filledMoves.length > 0) {
+              const pokemonMovesRaw = pokemonDetails.moves || []
+              const pokemonMoveNames = pokemonMovesRaw.map(m => typeof m === 'string' ? m : m.name).filter(Boolean)
+              const matchesMove = filledMoves.every(moveFilter => 
+                pokemonMoveNames.some(pokemonMove => 
+                  pokemonMove.toLowerCase().includes(moveFilter.toLowerCase())
+                )
+              )
+              if (!matchesMove) return
+            }
+            if (abilitySearch.trim()) {
+              const pokemonAbilitiesRaw = pokemonDetails.abilities || []
+              const pokemonAbilityNames = pokemonAbilitiesRaw.map(a => a.ability_name).filter(Boolean)
+              const searchLower = abilitySearch.toLowerCase()
+              const matchesAbility = pokemonAbilityNames.some(pokemonAbility => 
+                pokemonAbility.toLowerCase().includes(searchLower)
+              )
+              if (!matchesAbility) return
+            }
             if (!matchesStatSearch(pokemonDetails)) return
             
             totalPokemon++
@@ -830,6 +1135,31 @@ export default function Pokedex() {
             if (selectedEggGroups.length > 0) {
               const matchesEggGroup = selectedEggGroups.some(group => pokemonEggGroups.includes(group))
               if (!matchesEggGroup) return false
+            }
+            if (selectedTypes.length > 0) {
+              const pokemonTypes = pokemonDetails.types || []
+              const matchesType = selectedTypes.every(type => pokemonTypes.includes(type))
+              if (!matchesType) return false
+            }
+            const filledMoves = movesToFilterBy.filter(m => m.trim())
+            if (filledMoves.length > 0) {
+              const pokemonMovesRaw = pokemonDetails.moves || []
+              const pokemonMoveNames = pokemonMovesRaw.map(m => typeof m === 'string' ? m : m.name).filter(Boolean)
+              const matchesMove = filledMoves.every(moveFilter => 
+                pokemonMoveNames.some(pokemonMove => 
+                  pokemonMove.toLowerCase().includes(moveFilter.toLowerCase())
+                )
+              )
+              if (!matchesMove) return false
+            }
+            if (abilitySearch.trim()) {
+              const pokemonAbilitiesRaw = pokemonDetails.abilities || []
+              const pokemonAbilityNames = pokemonAbilitiesRaw.map(a => a.ability_name).filter(Boolean)
+              const searchLower = abilitySearch.toLowerCase()
+              const matchesAbility = pokemonAbilityNames.some(pokemonAbility => 
+                pokemonAbility.toLowerCase().includes(searchLower)
+              )
+              if (!matchesAbility) return false
             }
             if (!matchesStatSearch(pokemonDetails)) return false
             return true

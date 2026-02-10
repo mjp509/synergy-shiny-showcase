@@ -29,6 +29,39 @@ const TYPE_COLORS = {
   fairy: '#EE99AC',
 }
 
+const TIER_COLORS = {
+  0: '#ffd700',
+  1: '#c084fc',
+  2: '#60a5fa',
+  3: '#4ade80',
+  4: '#2dd4bf',
+  5: '#fb923c',
+  6: '#94a3b8',
+  7: '#cbd5e1',
+}
+
+// Type effectiveness chart - what types are weak to/resistant to
+const TYPE_EFFECTIVENESS = {
+  normal: { weak: ['fighting'], resists: [], immune: ['ghost'] },
+  fire: { weak: ['water', 'ground', 'rock'], resists: ['fire', 'grass', 'ice', 'bug', 'steel', 'fairy'], immune: [] },
+  water: { weak: ['electric', 'grass'], resists: ['steel', 'fire', 'water', 'ice'], immune: [] },
+  electric: { weak: ['ground'], resists: ['flying', 'steel', 'electric'], immune: [] },
+  grass: { weak: ['fire', 'ice', 'poison', 'flying', 'bug'], resists: ['ground', 'water', 'grass', 'electric'], immune: [] },
+  ice: { weak: ['fire', 'fighting', 'rock', 'steel'], resists: ['ice'], immune: [] },
+  fighting: { weak: ['flying', 'psychic', 'fairy'], resists: ['rock', 'bug', 'dark'], immune: [] },
+  poison: { weak: ['ground', 'psychic'], resists: ['fighting', 'poison', 'bug', 'grass'], immune: [] },
+  ground: { weak: ['water', 'grass', 'ice'], resists: ['poison', 'rock'], immune: ['electric'] },
+  flying: { weak: ['electric', 'ice', 'rock'], resists: ['fighting', 'bug', 'grass'], immune: [] },
+  psychic: { weak: ['bug', 'ghost', 'dark'], resists: ['fighting', 'psychic'], immune: [] },
+  bug: { weak: ['fire', 'flying', 'rock'], resists: ['fighting', 'ground', 'grass'], immune: [] },
+  rock: { weak: ['water', 'grass', 'fighting', 'ground', 'steel'], resists: ['normal', 'flying', 'poison', 'fire'], immune: [] },
+  ghost: { weak: ['ghost', 'dark'], resists: ['poison', 'bug'], immune: ['normal', 'fighting'] },
+  dragon: { weak: ['ice', 'dragon', 'fairy'], resists: ['fire', 'water', 'grass', 'electric'], immune: [] },
+  dark: { weak: ['fighting', 'bug', 'fairy'], resists: ['ghost', 'dark'], immune: ['psychic'] },
+  steel: { weak: ['fire', 'water', 'ground'], resists: ['normal', 'flying', 'rock', 'bug', 'steel', 'grass', 'psychic', 'ice', 'dragon', 'fairy'], immune: ['poison'] },
+  fairy: { weak: ['poison', 'steel'], resists: ['fighting', 'bug', 'dark'], immune: [] },
+}
+
 /**
  * Get human-readable label for move learning method
  * @param {string} method - The learning method name (level-up, egg, machine, tutor, etc.)
@@ -143,6 +176,92 @@ function formatEncounterTime(time) {
     .replace(/SEASON3/g, 'Winter')
 }
 
+/**
+ * Calculate combined type effectiveness for Pokemon with one or more types
+ * Handles stacking weaknesses (2x + 2x = 4x), canceling resistances, and immunities
+ * @param {Array<string>} types - Array of Pokemon types (e.g., ['fire', 'flying'])
+ * @returns {Object} Organized effectiveness data with weak, resist, and immune arrays
+ */
+function calculateCombinedTypeEffectiveness(types) {
+  if (!types || types.length === 0) return { weak: [], resist: [], immune: [] }
+  
+  // Track effectiveness for each attacking type
+  const effectivenessMap = {}
+  
+  // Initialize all types with their effectiveness scores
+  Object.keys(TYPE_EFFECTIVENESS).forEach(attackType => {
+    effectivenessMap[attackType] = {
+      weakCount: 0,      // Number of defensive types weak to this
+      resistCount: 0,    // Number of defensive types resisting this
+      immuneCount: 0     // Number of defensive types immune to this
+    }
+  })
+  
+  // For each Pokemon type, add its effectiveness data
+  types.forEach(defenseType => {
+    const typeData = TYPE_EFFECTIVENESS[defenseType.toLowerCase()]
+    if (!typeData) return
+    
+    // Mark types this defense type is weak to
+    typeData.weak.forEach(weakType => {
+      effectivenessMap[weakType].weakCount++
+    })
+    
+    // Mark types this defense type resists
+    typeData.resists.forEach(resistType => {
+      effectivenessMap[resistType].resistCount++
+    })
+    
+    // Mark types this defense type is immune to
+    typeData.immune.forEach(immuneType => {
+      effectivenessMap[immuneType].immuneCount++
+    })
+  })
+  
+  // Calculate final effectiveness
+  const result = {
+    fourxWeak: [],  // Weak to attack (all defensive types weak to it)
+    twoXWeak: [],   // Weak to attack (some defensive types weak to it)
+    neutral: [],    // Normal damage
+    halfDmg: [],    // Resists attack (some defensive types resist)
+    quarterDmg: [], // Resists attack (all defensive types resist)
+    immune: []      // Immune to attack
+  }
+  
+  Object.entries(effectivenessMap).forEach(([attackType, data]) => {
+    // If immune, it always takes no damage (immunity overrides weakness)
+    if (data.immuneCount > 0) {
+      result.immune.push(attackType)
+    }
+    // If weak but no immunity
+    else if (data.weakCount > 0 && data.resistCount === 0) {
+      if (data.weakCount >= types.length) {
+        result.fourxWeak.push(attackType)
+      } else {
+        result.twoXWeak.push(attackType)
+      }
+    }
+    // If resist but no weakness or immunity
+    else if (data.resistCount > 0 && data.weakCount === 0) {
+      if (data.resistCount >= types.length) {
+        result.quarterDmg.push(attackType)
+      } else {
+        result.halfDmg.push(attackType)
+      }
+    }
+    // If both weak and resist, they cancel out to neutral
+    else if (data.weakCount > 0 && data.resistCount > 0) {
+      result.neutral.push(attackType)
+    }
+    // Otherwise neutral
+    else if (!data.immuneCount) {
+      result.neutral.push(attackType)
+    }
+  })
+  
+  return result
+}
+
 export default function PokemonDetail() {
   const { pokemonName } = useParams()
   const navigate = useNavigate()
@@ -154,6 +273,7 @@ export default function PokemonDetail() {
   const [currentSpriteIndex, setCurrentSpriteIndex] = useState(0)
   const [loadedSpriteUrl, setLoadedSpriteUrl] = useState('')
   const [wildLevel, setWildLevel] = useState('')
+  const [audioRef] = useState(new Audio())
   const spriteAliasMap = useMemo(() => ({
     wormadam: 'wormadam-plant',
     'gastrodon-west': 'gastrodon',
@@ -314,6 +434,15 @@ useDocumentHead({
     }
   }
 
+  const playCry = () => {
+    if (pokemon.cries && (pokemon.cries.latest || pokemon.cries.legacy)) {
+      const cryUrl = pokemon.cries.latest || pokemon.cries.legacy
+      audioRef.src = cryUrl
+      audioRef.volume = 0.25
+      audioRef.play().catch(err => console.error('Error playing cry:', err))
+    }
+  }
+
   const wildLevelValue = Number.parseInt(wildLevel, 10)
   const hasWildLevel = Number.isFinite(wildLevelValue) && wildLevelValue > 0
 
@@ -383,6 +512,16 @@ useDocumentHead({
                     loading="lazy"
                   />
                 </picture>
+              )}
+              {pokemon.cries && (pokemon.cries.latest || pokemon.cries.legacy) && (
+                <button
+                  onClick={playCry}
+                  className={styles.volumeButton}
+                  title="Play Pokémon cry"
+                  aria-label={`Play ${pokemon.displayName} cry`}
+                >
+                  🔊
+                </button>
               )}
             </div>
             {sprites.length > 1 && (
@@ -548,6 +687,82 @@ useDocumentHead({
             </div>
           </div>
 
+          {/* Type Effectiveness */}
+          <div className={styles.infoCard}>
+            <h2 className={styles.cardTitle}>Type Chart</h2>
+            {(() => {
+              const combined = calculateCombinedTypeEffectiveness(pokemon.types)
+              
+              return (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                  {combined.fourxWeak.length > 0 && (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                      <span style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.7)', fontWeight: '600' }}>4x Weak To:</span>
+                      <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                        {combined.fourxWeak.map(type => (
+                          <span key={type} style={{ padding: '0.4rem 0.8rem', background: 'rgba(239, 68, 68, 0.3)', border: '2px solid rgba(239, 68, 68, 0.7)', borderRadius: '6px', fontSize: '0.9rem', fontWeight: '600', color: '#fca5a5', textTransform: 'capitalize' }}>
+                            {type}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {combined.twoXWeak.length > 0 && (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                      <span style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.7)', fontWeight: '600' }}>Weak To:</span>
+                      <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                        {combined.twoXWeak.map(type => (
+                          <span key={type} style={{ padding: '0.4rem 0.8rem', background: 'rgba(239, 68, 68, 0.2)', border: '1px solid rgba(239, 68, 68, 0.5)', borderRadius: '6px', fontSize: '0.9rem', color: '#fca5a5', textTransform: 'capitalize' }}>
+                            {type}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {combined.halfDmg.length > 0 && (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                      <span style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.7)', fontWeight: '600' }}>Resists:</span>
+                      <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                        {combined.halfDmg.map(type => (
+                          <span key={type} style={{ padding: '0.4rem 0.8rem', background: 'rgba(74, 222, 128, 0.2)', border: '1px solid rgba(74, 222, 128, 0.5)', borderRadius: '6px', fontSize: '0.9rem', color: '#86efac', textTransform: 'capitalize' }}>
+                            {type}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {combined.quarterDmg.length > 0 && (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                      <span style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.7)', fontWeight: '600' }}>Resists (1/4 Damage):</span>
+                      <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                        {combined.quarterDmg.map(type => (
+                          <span key={type} style={{ padding: '0.4rem 0.8rem', background: 'rgba(74, 222, 128, 0.3)', border: '2px solid rgba(74, 222, 128, 0.7)', borderRadius: '6px', fontSize: '0.9rem', fontWeight: '600', color: '#86efac', textTransform: 'capitalize' }}>
+                            {type}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {combined.immune.length > 0 && (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                      <span style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.7)', fontWeight: '600' }}>Immune To:</span>
+                      <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                        {combined.immune.map(type => (
+                          <span key={type} style={{ padding: '0.4rem 0.8rem', background: 'rgba(168, 85, 247, 0.2)', border: '1px solid rgba(168, 85, 247, 0.5)', borderRadius: '6px', fontSize: '0.9rem', color: '#d8b4fe', textTransform: 'capitalize' }}>
+                            {type}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )
+            })()}
+          </div>
           {/* Breeding & Catch Info */}
           <div className={styles.infoCard}>
             <h2 className={styles.cardTitle}>Breeding & Catch Information</h2>
@@ -575,7 +790,29 @@ useDocumentHead({
               </div>
               <div className={styles.infoGroup}>
                 <span className={styles.label}>Catch Rate</span>
-                <span className={styles.value}>{pokemon.catchRate}</span>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                  <span className={styles.value}>{pokemon.catchRate}/255</span>
+                  <div className={styles.catchBar}>
+                    <div 
+                      className={styles.catchBarFill}
+                      style={{ 
+                        width: `${(pokemon.catchRate / 255) * 100}%`,
+                        background: pokemon.catchRate > 200 ? '#4ade80' : pokemon.catchRate > 100 ? '#60a5fa' : pokemon.catchRate > 50 ? '#fb923c' : '#ef4444'
+                      }}
+                    />
+                  </div>
+                  <span className={styles.catchDifficulty} style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.7)' }}>
+                    {pokemon.catchRate > 200 ? 'Very Easy' : pokemon.catchRate > 100 ? 'Easy' : pokemon.catchRate > 50 ? 'Moderate' : 'Hard to catch'}
+                  </span>
+                </div>
+              </div>
+              <div className={styles.infoGroup}>
+                <span className={styles.label}>Exp Group</span>
+                <span className={styles.value}>{pokemon.growthRate ? pokemon.growthRate.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') : 'Unknown'}</span>
+              </div>
+              <div className={styles.infoGroup}>
+                <span className={styles.label}>Shiny Tier</span>
+                <span className={styles.value} style={{ color: TIER_COLORS[pokemon.shinyTier] ?? '#94a3b8' }}>Tier {pokemon.shinyTier}</span>
               </div>
             </div>
           </div>
@@ -640,6 +877,32 @@ useDocumentHead({
           'Lure': 7
         }
         
+        // Get encounter icon based on rarity and location type (habitat)
+        const getEncounterIcon = (rarity, habitat) => {
+          if (rarity === 'Lure') {
+            return '/images/lure.png'
+          }
+          if (rarity === 'Horde') {
+            return '/images/horde.png'
+          }
+          // Check habitat for fishing rods or fishing generic
+          if (habitat) {
+            if (habitat.includes('Super Rod')) {
+              return '/images/super_rod.png'
+            }
+            if (habitat.includes('Good Rod')) {
+              return '/images/good_rod.png'
+            }
+            if (habitat.includes('Old Rod')) {
+              return '/images/old_rod.png'
+            }
+            if (habitat.includes('Fishing')) {
+              return '/images/super_rod.png'
+            }
+          }
+          return null
+        }
+        
         // Sort locations by rarity
         const sortedLocations = [...pokemon.locations].sort((a, b) => {
           const rarityA = rarityOrder[a.rarity] ?? 999
@@ -651,30 +914,36 @@ useDocumentHead({
           <section className={styles.infoCard}>
             <h2 className={styles.cardTitle}>Locations</h2>
             <div className={styles.locationsContainer}>
-              {sortedLocations.map((location, index) => (
-                <div key={index} className={styles.locationCard}>
-                  <div className={styles.locationHeader}>
-                    <h3 className={styles.locationName}>{location.location}</h3>
-                    <span className={styles.locationRegion}>{location.region_name}</span>
-                  </div>
-                  <div className={styles.locationDetails}>
-                    <span className={styles.locationDetail}>
-                      <strong>Level:</strong> {location.min_level === location.max_level ? location.min_level : `${location.min_level}-${location.max_level}`}
-                    </span>
-                    <span className={styles.locationDetail}>
-                      <strong>Rarity:</strong> {location.rarity}
-                    </span>
-                    <span className={styles.locationDetail}>
-                      <strong>Time:</strong> {formatEncounterTime(location.time)}
-                    </span>
-                    {location.type && (
+              {sortedLocations.map((location, index) => {
+                const encounterIcon = getEncounterIcon(location.rarity, location.type)
+                return (
+                  <div key={index} className={styles.locationCard}>
+                    <div className={styles.locationHeader}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <h3 className={styles.locationName}>{location.location}</h3>
+                        {encounterIcon && <img style={{ width: '24px', height: '24px', marginLeft: 'auto' }} src={encounterIcon} alt={location.rarity} title={location.rarity} />}
+                      </div>
+                      <span className={styles.locationRegion}>{location.region_name}</span>
+                    </div>
+                    <div className={styles.locationDetails}>
                       <span className={styles.locationDetail}>
-                        <strong>Habitat:</strong> {location.type}
+                        <strong>Level:</strong> {location.min_level === location.max_level ? location.min_level : `${location.min_level}-${location.max_level}`}
                       </span>
-                    )}
+                      <span className={styles.locationDetail}>
+                        <strong>Rarity:</strong> {location.rarity}
+                      </span>
+                      <span className={styles.locationDetail}>
+                        <strong>Time:</strong> {formatEncounterTime(location.time)}
+                      </span>
+                      {location.type && (
+                        <span className={styles.locationDetail}>
+                          <strong>Habitat:</strong> {location.type}
+                        </span>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
           </section>
         )
@@ -779,6 +1048,54 @@ useDocumentHead({
         )}
       </section>
 
+      {/* Name Translations */}
+      {pokemon.nameTranslations && Object.keys(pokemon.nameTranslations).length > 0 && (
+        <section className={styles.infoSection}>
+          <h2 className={styles.cardTitle}>Name Translations</h2>
+          <div className={styles.translationsGrid}>
+            {Object.entries(pokemon.nameTranslations).map(([code, data]) => {
+              const languageNames = {
+                'ja-Hrkt': '日本語 (Hiragana)',
+                'roomaji': 'Romaji',
+                'ko': '한국어',
+                'zh-Hant': '繁體中文',
+                'fr': 'Français',
+                'de': 'Deutsch',
+                'es': 'Español',
+                'it': 'Italiano',
+                'en': 'English',
+                'ja': '日本語'
+              }
+              return (
+                <div key={code} className={styles.translationItem}>
+                  <span className={styles.translationCode}>{languageNames[code] || code}</span>
+                  <span className={styles.translationName}>{data.name}</span>
+                </div>
+              )
+            })}
+          </div>
+        </section>
+      )}
+
+      {/* Alternative Forms */}
+      {pokemon.varieties && pokemon.varieties.length > 1 && (
+        <section className={styles.infoSection}>
+          <h2 className={styles.cardTitle}>Forms</h2>
+          <div className={styles.formsGrid}>
+            {pokemon.varieties.map((form) => (
+              <button
+                key={form.name}
+                onClick={() => navigate(`/pokemon/${form.name}`)}
+                className={styles.formButton}
+                title={`View ${form.name}`}
+              >
+                <span className={styles.formName}>{form.name.replace('-', ' ').split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}</span>
+                {form.is_default && <span className={styles.formBadge}>Default</span>}
+              </button>
+            ))}
+          </div>
+        </section>
+      )}
 
     </article>
   )
