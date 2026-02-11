@@ -143,6 +143,17 @@ export default function Pokedex() {
     return descriptions[type] || ''
   }
 
+  // Helper function to convert time string with season names
+  const convertTimeString = (timeStr) => {
+    if (!timeStr) return timeStr
+    
+    return timeStr
+      .replace(/SEASON0/g, 'Summer')
+      .replace(/SEASON1/g, 'Spring')
+      .replace(/SEASON2/g, 'Autumn')
+      .replace(/SEASON3/g, 'Winter')
+  }
+
   // Helper function to get rarity and grass type for a Pokemon in a specific location and encounter type
   const getEncounterDetailsForPokemon = (pokemonName, locationSearch, encounterType) => {
     const lookupName = nameAliasMap[pokemonName] || pokemonName
@@ -274,10 +285,25 @@ export default function Pokedex() {
       grassTypes.push(rodLabel)
     }
     
+    // Extract time information from encounters
+    let time = 'ALL'
+    const timeValues = new Set()
+    matchingEncounters.forEach(encounter => {
+      if (encounter.time && encounter.time !== 'ALL') {
+        timeValues.add(encounter.time)
+      }
+    })
+    
+    // If there are specific times (not ALL), use the first one
+    if (timeValues.size > 0) {
+      time = Array.from(timeValues)[0]
+    }
+    
     return {
       rarities: Array.from(rarities),
       primaryRarity,
-      grassTypes
+      grassTypes,
+      time
     }
   }
 
@@ -1573,7 +1599,8 @@ export default function Pokedex() {
                     name: pokemon,
                     rarities: details.rarities,
                     primaryRarity: details.primaryRarity,
-                    grassTypes: details.grassTypes
+                    grassTypes: details.grassTypes,
+                    time: details.time
                   })
                 })
               })
@@ -1623,9 +1650,32 @@ export default function Pokedex() {
                       const showRarityInfo = type === 'Singles'
                       const primaryRarity = pokemonData.rarities && pokemonData.rarities[0]
                       const hasMultipleGrassTypes = pokemonData.grassTypes && pokemonData.grassTypes.length > 1
+                      
+                      // Determine styling based on time
+                      const getTimeBasedStyle = () => {
+                        if (!pokemonData.time || pokemonData.time === 'ALL') {
+                          return {}
+                        }
+                        
+                        const baseTime = pokemonData.time.split('/').slice(0, 2).join('/')
+                        if (baseTime.toLowerCase().includes('night')) {
+                          return {
+                            backgroundColor: 'rgba(44, 62, 80, 0.15)', // Dark blue-gray tint
+                            borderRadius: '4px',
+                            padding: '2px'
+                          }
+                        } else if (baseTime.toLowerCase().includes('day') || baseTime.toLowerCase().includes('morning')) {
+                          return {
+                            backgroundColor: 'rgba(255, 215, 0, 0.08)', // Light gold tint for day
+                            borderRadius: '4px',
+                            padding: '2px'
+                          }
+                        }
+                        return {}
+                      }
 
                       return (
-                        <div key={`${type}-${pokemon}-${idx}`} style={{ position: 'relative', display: 'inline-block' }}>
+                        <div key={`${type}-${pokemon}-${idx}`} style={{ position: 'relative', display: 'inline-block', ...getTimeBasedStyle() }}>
                           {/* Grass Type Separator */}
                           {hasMultipleGrassTypes && (
                             <div style={{
@@ -1702,6 +1752,59 @@ export default function Pokedex() {
                               }
                             }}
                           />
+                          
+                          {/* Time Label - Display if time is not "ALL" */}
+                          {pokemonData.time && pokemonData.time !== 'ALL' && (
+                            (() => {
+                              // Convert time string with proper season names
+                              const displayTime = convertTimeString(pokemonData.time)
+                              
+                              // Calculate number of visible grass types
+                              const visibleGrassTypes = (pokemonData.grassTypes || []).length
+                              
+                              // Adjust bottom position based on grass types (each ~18px)
+                              const grassTypeHeight = visibleGrassTypes > 0 ? visibleGrassTypes * 18 : 0
+                              const bottomPosition = -(22 + grassTypeHeight + 8) // -22 for base, +grass types, +8 for spacing
+                              
+                              // Determine styling based on time
+                              let backgroundColor = '#FFD700' // Default to day (gold)
+                              let textColor = '#000'
+                              
+                              if (pokemonData.time.toLowerCase().includes('night')) {
+                                backgroundColor = '#2c3e50' // Dark blue-gray for night
+                                textColor = '#e0e0e0'
+                              } else if (pokemonData.time.toLowerCase().includes('day') || pokemonData.time.toLowerCase().includes('morning')) {
+                                backgroundColor = '#FFD700' // Gold for day
+                                textColor = '#000'
+                              }
+                              
+                              return (
+                                <div style={{
+                                  position: 'absolute',
+                                  bottom: `${bottomPosition}px`,
+                                  left: '50%',
+                                  transform: 'translateX(-50%)',
+                                  fontSize: '0.65rem',
+                                  fontWeight: 'bold',
+                                  color: textColor,
+                                  backgroundColor: backgroundColor,
+                                  padding: '4px 8px',
+                                  borderRadius: '4px',
+                                  border: '1px solid rgba(0,0,0,0.3)',
+                                  boxShadow: '0 2px 6px rgba(0,0,0,0.5)',
+                                  zIndex: 2,
+                                  width: 'auto',
+                                  whiteSpace: 'normal',
+                                  textAlign: 'center',
+                                  minWidth: '55px',
+                                  maxWidth: '110px',
+                                  lineHeight: '1.2'
+                                }}>
+                                  {displayTime}
+                                </div>
+                              )
+                            })()
+                          )}
                           
                           {/* Rarity Info Card - Only for Singles */}
                           {showRarityInfo && primaryRarity && (

@@ -362,6 +362,7 @@
   grid-template-columns: repeat(auto-fit, 130px);
   grid-auto-rows: 130px;
   gap: 10px;
+  row-gap: 60px;
   width: 100%;
   padding: 20px 0;
   justify-content: center;
@@ -372,6 +373,7 @@
     grid-template-columns: repeat(auto-fit, 120px);
     grid-auto-rows: 120px;
     gap: 9px;
+    row-gap: 55px;
     justify-content: center;
   }
 }
@@ -381,6 +383,7 @@
     grid-template-columns: repeat(auto-fit, 110px);
     grid-auto-rows: 110px;
     gap: 8px;
+    row-gap: 50px;
     justify-content: center;
   }
 }
@@ -390,6 +393,7 @@
     grid-template-columns: repeat(auto-fit, 100px);
     grid-auto-rows: 100px;
     gap: 7px;
+    row-gap: 45px;
     justify-content: center;
   }
 }
@@ -399,6 +403,7 @@
     grid-template-columns: repeat(auto-fit, 85px);
     grid-auto-rows: 85px;
     gap: 6px;
+    row-gap: 40px;
     justify-content: center;
   }
 }
@@ -408,6 +413,7 @@
     grid-template-columns: repeat(auto-fit, 70px);
     grid-auto-rows: 70px;
     gap: 5px;
+    row-gap: 35px;
     justify-content: center;
   }
 }
