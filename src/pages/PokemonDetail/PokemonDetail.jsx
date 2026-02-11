@@ -620,6 +620,7 @@ function calculateBestCatchMethod(catchRate) {
     'Pokéball': 1,
     'Great Ball': 1.5,
     'Ultra Ball': 2,
+    'Quick Ball': 2.25,
     'Dusk Ball': 2.5,
   }
   
@@ -638,6 +639,11 @@ function calculateBestCatchMethod(catchRate) {
     { ball: 'Ultra Ball', ballRate: 2.0, hp: 1, turns: 1, statusMod: 1.0 },
     { ball: 'Ultra Ball', ballRate: 2.0, hp: 100, turns: 1, statusMod: 2.0 },
     { ball: 'Ultra Ball', ballRate: 2.0, hp: 1, turns: 2, statusMod: 2.0 },
+    
+    { ball: 'Quick Ball', ballRate: 5.0, hp: 100, turns: 0, statusMod: 1.0 },
+    { ball: 'Quick Ball', ballRate: 1.0, hp: 1, turns: 1, statusMod: 1.0 },
+    { ball: 'Quick Ball', ballRate: 1.0, hp: 100, turns: 1, statusMod: 2.0 },
+    { ball: 'Quick Ball', ballRate: 1.0, hp: 1, turns: 2, statusMod: 2.0 },
     
     { ball: 'Dusk Ball', ballRate: 3.5, hp: 100, turns: 0, statusMod: 1.0 },
     { ball: 'Dusk Ball', ballRate: 3.5, hp: 1, turns: 1, statusMod: 1.0 },
@@ -706,16 +712,56 @@ export default function PokemonDetail() {
   const [hoveredAbility, setHoveredAbility] = useState(null)
   const [hoveredEvolution, setHoveredEvolution] = useState(null)
   const [showCatchRateTooltip, setShowCatchRateTooltip] = useState(false)
+  const [catchRateTooltipPos, setCatchRateTooltipPos] = useState('top')
   const [maxWildLevel, setMaxWildLevel] = useState(0)
   const [branchCount, setBranchCount] = useState(0)
-  const [showMobileFilters, setShowMobileFilters] = useState(false)
   const evolutionContainerRef = useRef(null)
+  const catchRateContainerRef = useRef(null)
   const spriteAliasMap = useMemo(() => ({
     wormadam: 'wormadam-plant',
     'gastrodon-west': 'gastrodon',
     'shellos-west': 'shellos'
   }), [])
   const spriteName = spriteAliasMap[pokemonName?.toLowerCase()] || pokemonName
+
+  // Calculate best tooltip position based on viewport space
+  useEffect(() => {
+    if (!showCatchRateTooltip || !catchRateContainerRef.current) return
+
+    const rect = catchRateContainerRef.current.getBoundingClientRect()
+    const spaceAbove = rect.top
+    const spaceBelow = window.innerHeight - rect.bottom
+    const spaceLeft = rect.left
+    const spaceRight = window.innerWidth - rect.right
+    const tooltipHeight = 400 // approximate max height
+
+    let position = 'top'
+    if (spaceAbove < tooltipHeight && spaceBelow > tooltipHeight) {
+      position = 'bottom'
+    } else if (spaceAbove < tooltipHeight && spaceBelow < tooltipHeight) {
+      // Not enough space above or below, try sides
+      if (spaceRight > spaceLeft) {
+        position = 'right'
+      } else {
+        position = 'left'
+      }
+    }
+    setCatchRateTooltipPos(position)
+  }, [showCatchRateTooltip])
+
+  // Close tooltip when clicking outside
+  useEffect(() => {
+    if (!showCatchRateTooltip) return
+
+    const handleClickOutside = (e) => {
+      if (catchRateContainerRef.current && !catchRateContainerRef.current.contains(e.target)) {
+        setShowCatchRateTooltip(false)
+      }
+    }
+
+    document.addEventListener('click', handleClickOutside, true)
+    return () => document.removeEventListener('click', handleClickOutside, true)
+  }, [showCatchRateTooltip])
 
   // Calculate branch count from evolution chain (only for branching Pokemon)
   useEffect(() => {
@@ -1381,12 +1427,28 @@ useDocumentHead({
                   <span className={styles.eggGroupNone}>None</span>
                 )}
               </div>
-              <div className={styles.infoGroup}>
+              <div 
+                className={styles.infoGroup}
+                style={{ cursor: 'pointer' }}
+                onMouseEnter={() => setShowCatchRateTooltip(true)}
+                onMouseLeave={() => setShowCatchRateTooltip(false)}
+                onClick={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  setShowCatchRateTooltip(prev => !prev)
+                }}
+                onTouchEnd={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  setShowCatchRateTooltip(prev => !prev)
+                }}
+              >
                 <span className={styles.label}>Catch Rate</span>
                 <div 
+                  ref={catchRateContainerRef}
                   style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', position: 'relative' }}
-                  onMouseEnter={() => setShowCatchRateTooltip(true)}
-                  onMouseLeave={() => setShowCatchRateTooltip(false)}
+                  onClick={(e) => e.stopPropagation()}
+                  onTouchEnd={(e) => e.stopPropagation()}
                 >
                   <span className={styles.value}>{pokemon.catchRate}/255</span>
                   <div className={styles.catchBar}>
@@ -1403,7 +1465,7 @@ useDocumentHead({
                     {pokemon.catchRate > 200 ? 'Very Easy' : pokemon.catchRate > 100 ? 'Easy' : pokemon.catchRate > 50 ? 'Moderate' : 'Hard to catch'}
                   </span>
                   {showCatchRateTooltip && (
-                    <div className={styles.catchRateTooltip}>
+                    <div className={`${styles.catchRateTooltip} ${styles[`tooltip${catchRateTooltipPos.charAt(0).toUpperCase() + catchRateTooltipPos.slice(1)}`]}`}>
                       <div className={styles.tooltipTitle}>Catch Rate by Ball & HP</div>
                       {maxWildLevel > 0 && (
                         <div className={styles.tooltipLevelInfo}>
@@ -1461,6 +1523,21 @@ useDocumentHead({
                                 <div className={ultraBall1 === "100.0" ? styles.highlightedCell : ""}>{ultraBall1}%</div>
                                 <div className={ultraBallSleep100 === "100.0" ? styles.highlightedCell : ""}>{ultraBallSleep100}%</div>
                                 <div className={ultraBallSleep1 === "100.0" ? styles.highlightedCell : ""}>{ultraBallSleep1}%</div>
+                              </div>
+                            )
+                          })()}
+                          {(() => {
+                            const quickBall100 = calculateCatchChance(pokemon.catchRate, 5.0, 100).toFixed(1)
+                            const quickBall1 = calculateCatchChance(pokemon.catchRate, 1.0, 1).toFixed(1)
+                            const quickBallSleep100 = calculateCatchChance(pokemon.catchRate, 1.0, 100, 2.0).toFixed(1)
+                            const quickBallSleep1 = calculateCatchChance(pokemon.catchRate, 1.0, 1, 2.0).toFixed(1)
+                            return (
+                              <div className={styles.tooltipRow}>
+                                <div>Quick Ball<span className={styles.tooltipNote}>(Turn 1)</span></div>
+                                <div className={quickBall100 === "100.0" ? styles.highlightedCell : ""}>{quickBall100}%</div>
+                                <div className={quickBall1 === "100.0" ? styles.highlightedCell : ""}>{quickBall1}%</div>
+                                <div className={quickBallSleep100 === "100.0" ? styles.highlightedCell : ""}>{quickBallSleep100}%</div>
+                                <div className={quickBallSleep1 === "100.0" ? styles.highlightedCell : ""}>{quickBallSleep1}%</div>
                               </div>
                             )
                           })()}
@@ -1715,29 +1792,19 @@ useDocumentHead({
                       <div className={styles.moveGroupHeader}>
                         <h3 className={styles.moveGroupTitle}>{methodLabels[method]}</h3>
                         {method === 'level-up' && (
-                          <>
-                            <button 
-                              className={styles.mobileFilterToggle}
-                              onClick={() => setShowMobileFilters(!showMobileFilters)}
-                              aria-label="Toggle filters"
-                              title="Toggle filters"
-                            >
-                              ⚙️
-                            </button>
-                            <label className={`${styles.levelFilter} ${showMobileFilters ? styles.levelFilterActive : ''}`} htmlFor="wild-level-input">
-                              <span className={styles.levelFilterLabel}>Wild Pokémon Level</span>
-                              <input
-                                id="wild-level-input"
-                                className={styles.levelFilterInput}
-                                type="number"
-                                min="1"
-                                inputMode="numeric"
-                                placeholder="e.g. 22"
-                                value={wildLevel}
-                                onChange={(e) => setWildLevel(e.target.value)}
-                              />
-                            </label>
-                          </>
+                          <label className={styles.levelFilter} htmlFor="wild-level-input">
+                            <span className={styles.levelFilterLabel}>Wild Pokemon Level</span>
+                            <input
+                              id="wild-level-input"
+                              className={styles.levelFilterInput}
+                              type="number"
+                              min="1"
+                              inputMode="numeric"
+                              placeholder="e.g. 22"
+                              value={wildLevel}
+                              onChange={(e) => setWildLevel(e.target.value)}
+                            />
+                          </label>
                         )}
                       </div>
                       <div className={styles.movesGrid}>
