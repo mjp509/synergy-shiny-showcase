@@ -486,6 +486,71 @@
   max-height: 480px;
 }
 
+.formSelector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  margin-top: 0.25rem;
+  padding: 0.5rem;
+  background: rgba(102, 126, 234, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(102, 126, 234, 0.2);
+}
+
+.formSelectorLabel {
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.formOptions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem;
+  justify-content: center;
+  width: 100%;
+}
+
+.formButton {
+  padding: 0.25rem 0.5rem;
+  background: #1a1a1a;
+  color: rgba(255, 255, 255, 0.7);
+  border: 2px solid rgba(102, 126, 234, 0.3);
+  border-radius: 20px;
+  font-size: 0.72rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.formButton:hover {
+  color: rgba(255, 255, 255, 0.95);
+  border-color: rgba(102, 126, 234, 0.6);
+  background: #2a2a2a;
+}
+
+.formButtonActive {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-color: #667eea;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+@media (max-width: 480px) {
+  .formSelector {
+    padding: 0.75rem;
+    margin-top: 0.75rem;
+  }
+
+  .formButton {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+  }
+}
+
 .spriteNavigation {
   display: flex;
   align-items: center;

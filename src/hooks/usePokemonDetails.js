@@ -38,7 +38,36 @@ export function usePokemonDetails(pokemonName) {
         shellos: 'Shellos-West',
         'shellos-west': 'Shellos-West',
         wormadam: 'Wormadam-Plant',
-        'wormadam-plant': 'Wormadam-Plant'
+        'wormadam-plant': 'Wormadam-Plant',
+        unown: 'Unown A',
+        'unown-a': 'Unown A',
+        'unown-b': 'Unown B',
+        'unown-c': 'Unown C',
+        'unown-d': 'Unown D',
+        'unown-e': 'Unown E',
+        'unown-f': 'Unown F',
+        'unown-g': 'Unown G',
+        'unown-h': 'Unown H',
+        'unown-i': 'Unown I',
+        'unown-j': 'Unown J',
+        'unown-k': 'Unown K',
+        'unown-l': 'Unown L',
+        'unown-m': 'Unown M',
+        'unown-n': 'Unown N',
+        'unown-o': 'Unown O',
+        'unown-p': 'Unown P',
+        'unown-q': 'Unown Q',
+        'unown-r': 'Unown R',
+        'unown-s': 'Unown S',
+        'unown-t': 'Unown T',
+        'unown-u': 'Unown U',
+        'unown-v': 'Unown V',
+        'unown-w': 'Unown W',
+        'unown-x': 'Unown X',
+        'unown-y': 'Unown Y',
+        'unown-z': 'Unown Z',
+        'unown-exclamation': 'Unown !',
+        'unown-question': 'Unown ?'
       }
       
       // Handle gendered suffixes that are not separate entries in the data
@@ -139,17 +168,19 @@ export function usePokemonDetails(pokemonName) {
         time: loc.time || 'ALL'
       }))
       
-      // Get generation based on Pokemon ID
-      const getGeneration = (id) => {
+      // Get generation based on Pokemon ID, with special handling for Rotom
+      const getGeneration = (id, name) => {
+        // Rotom and all its forms (rotom-heat, rotom-wash, etc.) are from Generation IV
+        if (name && name.toLowerCase().includes('rotom')) {
+          return 'Generation IV'
+        }
+        
         if (id <= 151) return 'Generation I'
         if (id <= 251) return 'Generation II'
         if (id <= 386) return 'Generation III'
         if (id <= 493) return 'Generation IV'
         if (id <= 649) return 'Generation V'
-        if (id <= 721) return 'Generation VI'
-        if (id <= 809) return 'Generation VII'
-        if (id <= 898) return 'Generation VIII'
-        return 'Generation IX'
+        return 'Generation V'
       }
       
       const femaleSpriteOverrides = {
@@ -181,7 +212,7 @@ export function usePokemonDetails(pokemonName) {
         },
         moves: formattedMoves,
         sprite: sprite,
-        generation: getGeneration(pokemon.id),
+        generation: getGeneration(pokemon.id, normalizedName),
         description: `Pokémon ID: ${pokemon.id}. Base happiness: ${pokemon.base_happiness}. ${pokemon.is_legendary ? 'Legendary Pokémon.' : ''} ${pokemon.is_mythical ? 'Mythical Pokémon.' : ''}`,
         color: 'unknown',
         baseExperience: pokemon.base_experience || 0,

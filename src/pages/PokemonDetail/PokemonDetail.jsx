@@ -5,6 +5,7 @@ import { useDocumentHead } from '../../hooks/useDocumentHead'
 import { useDatabase } from '../../hooks/useDatabase'
 import { usePokemonOrder } from '../../hooks/usePokemonOrder'
 import { usePokemonSprites } from '../../hooks/usePokemonSprites'
+import { usePokemonForms } from '../../hooks/usePokemonForms'
 import BackButton from '../../components/BackButton/BackButton'
 import styles from './PokemonDetail.module.css'
 import abilitiesData from '../../data/pokemmo_data/abilities-data.json'
@@ -701,7 +702,9 @@ export default function PokemonDetail() {
   const { data: databaseData } = useDatabase()
   const { getNextPokemon, getPreviousPokemon } = usePokemonOrder()
   const sprites = usePokemonSprites(pokemonName)
+  const availableForms = usePokemonForms(pokemonName)
   const [currentSpriteIndex, setCurrentSpriteIndex] = useState(0)
+  const [selectedForm, setSelectedForm] = useState(null)
   const [loadedSpriteUrl, setLoadedSpriteUrl] = useState('')
   const [wildLevel, setWildLevel] = useState('')
   const [routeSearch, setRouteSearch] = useState('')
@@ -830,9 +833,10 @@ export default function PokemonDetail() {
     container.style.setProperty('--evolution-card-height', `${Math.max(cardHeight, 35)}px`);
   }, [branchCount, pokemon?.evolution_chain]);
   
-  // Reset sprite index when pokemon changes
+  // Reset sprite index and form when pokemon changes
   useEffect(() => {
     setCurrentSpriteIndex(0)
+    setSelectedForm(pokemonName)
   }, [pokemonName])
   
   useEffect(() => {
@@ -1116,6 +1120,27 @@ useDocumentHead({
                 />
               )}
             </div>
+            {availableForms.length > 1 && (
+              <div className={styles.formSelector}>
+                <label className={styles.formSelectorLabel}>Form/Gender:</label>
+                <div className={styles.formOptions}>
+                  {availableForms.map((form) => (
+                    <button
+                      key={form.name}
+                      className={`${styles.formButton} ${selectedForm === form.name ? styles.formButtonActive : ''}`}
+                      onClick={() => {
+                        setSelectedForm(form.name)
+                        setCurrentSpriteIndex(0)
+                        navigate(`/pokemon/${form.name}`, { state: { fromPokemon: true } })
+                      }}
+                      title={form.label}
+                    >
+                      {form.displayLabel}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
             {sprites.length > 1 && (
               <div className={styles.spriteNavigation}>
                 <button
