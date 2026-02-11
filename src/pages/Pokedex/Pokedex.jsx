@@ -226,7 +226,7 @@ export default function Pokedex() {
         }
       }
 
-      if (type === 'grass') {
+      if (type === 'grass' && region === 'unova') {
         hasNormalGrass = true
       }
       if (type === 'dark grass') {

@@ -887,6 +887,12 @@ The Pokedex component (`src/pages/Pokedex/Pokedex.jsx`) includes comprehensive f
 **Files Modified:** `PokemonDetail.jsx`, `Pokedex.jsx`
 **Details:** Uses React Router navigation state to pass location to Pokedex, automatically applying location filter.
 
+### Grass Encounter Region Filter (v1.3+)
+**Issue:** "Grass" label was rendering for all grass encounters regardless of region.
+**Fix:** Modified `getEncounterDetailsForPokemon()` in `Pokedex.jsx` to only show "Grass" label if the encounter region is Unova.
+**Files Modified:** `src/pages/Pokedex/Pokedex.jsx` (line 229)
+**Details:** Changed condition from `if (type === 'grass')` to `if (type === 'grass' && region === 'unova')` to restrict grass encounter display to Unova region only.
+
 ### Common Issues
 
 **Issue:** Assets not loading in production
