@@ -1808,24 +1808,7 @@ export default function Pokedex() {
                           
                           {/* Rarity Info Card - Only for Singles */}
                           {showRarityInfo && primaryRarity && (
-                            <div style={{
-                              position: 'absolute',
-                              top: '-10px',
-                              right: '-10px',
-                              background: getRarityColor(primaryRarity),
-                              color: '#000',
-                              padding: '4px 6px',
-                              borderRadius: '4px',
-                              fontSize: '0.75rem',
-                              fontWeight: 'bold',
-                              textTransform: 'capitalize',
-                              border: '2px solid rgba(0,0,0,0.5)',
-                              boxShadow: '0 3px 8px rgba(0,0,0,0.7)',
-                              zIndex: 2,
-                              minWidth: '45px',
-                              textAlign: 'center',
-                              filter: 'brightness(0.95)'
-                            }}>
+                            <div className={styles.rarityLabel} style={{ background: getRarityColor(primaryRarity) }}>
                               {primaryRarity.replace(/\b\w/g, l => l.toUpperCase())}
                             </div>
                           )}
