@@ -1186,6 +1186,11 @@
   flex-direction: row;
 }
 
+/* For linear evolutions with 2 or fewer (center the content) */
+.evolutionSmall {
+  justify-content: center;
+}
+
 @media (max-width: 480px) {
   .evolutionLineContainerLinear {
     flex-direction: column;
@@ -2560,7 +2565,7 @@
 @media (max-width: 480px) {
   .header {
     display: grid;
-    grid-template-columns: 32px 1fr;
+    grid-template-columns: 32px 1fr 32px;
     align-items: center;
     gap: 0.3rem;
     padding: 0.5rem;

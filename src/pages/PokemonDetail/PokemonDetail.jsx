@@ -367,6 +367,21 @@ function hasBranchingEvolutions(pokemonName) {
 }
 
 /**
+ * Count the number of evolutions in a linear chain
+ */
+function countLinearEvolutions(chainLink) {
+  const buildChainArray = (link, arr = []) => {
+    if (!link) return arr
+    arr.push(link)
+    if (link.evolves_to && link.evolves_to.length > 0) {
+      return buildChainArray(link.evolves_to[0], arr)
+    }
+    return arr
+  }
+  return buildChainArray(chainLink).length
+}
+
+/**
  * Render simple linear evolution chain with basic branching support
  */
 function renderEvolutionChainLinear(chainLink, navigate, currentPokemonName, hoveredEvolution, setHoveredEvolution) {
@@ -1028,7 +1043,7 @@ useDocumentHead({
             <div className={`${styles.infoCard} ${styles.evolutionSection}`}>
               <h2 className={styles.cardTitle}>Evolution Line</h2>
               <div 
-                className={`${styles.evolutionLineContainerHorizontal} ${hasBranchingEvolutions(pokemon?.name) ? styles.evolutionLineContainerBranching : styles.evolutionLineContainerLinear}`} 
+                className={`${styles.evolutionLineContainerHorizontal} ${hasBranchingEvolutions(pokemon?.name) ? styles.evolutionLineContainerBranching : styles.evolutionLineContainerLinear} ${!hasBranchingEvolutions(pokemon?.name) && countLinearEvolutions(pokemon.evolution_chain.chain) <= 2 ? styles.evolutionSmall : ''}`} 
                 ref={hasBranchingEvolutions(pokemon?.name) ? evolutionContainerRef : null}
               >
                 {hasBranchingEvolutions(pokemon?.name) 
