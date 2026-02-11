@@ -210,12 +210,16 @@ Shows core Pokémon data:
 #### 3. **Type & Ability Section**
 - **Types** - Colored badges showing primary and secondary types
   - Click type badges to see other Pokémon of that type (if implemented)
-- **Normal Ability** - Regular ability this Pokémon can have
-- **Hidden Ability** - Special/rare ability (marked with ⭐)
 
-**What do abilities do?** 
-- Hover over the abilities to see detailed explaination on what that ability does.
-- Example: Pikachu's "Static" paralyzes on contact
+**Abilities** 
+- **Normal Ability** - Regular ability this Pokémon can have
+- **Hidden Ability** - Special/rare ability (marked with ✨)
+
+**How to Learn More About Abilities**
+- **Hover Feature** - Move your mouse over any ability name to see a detailed information box explaining what that ability does in battle
+  - The tooltip will appear above the ability name with a smooth fade-in animation
+  - Example: Hovering over Pikachu's "Static" shows "Has a 30% chance of paralyzing on contact with the opposing Pokémon."
+- **What's the difference?** Hidden abilities are rarer, can only be obtained through Alpha swarms or Mystery balls, can sometimes have better abilities locked behind them.
 
 #### 4. **Base Stats Chart** 
 Compares this Pokémon's stats to others:
@@ -239,6 +243,29 @@ Compares this Pokémon's stats to others:
 - Numbers shown on the right
 
 **Example:** Alakazam has high SP.ATK (green) but low DEF (red) - glass cannon!
+
+
+#### 5. **Evolution Line**
+Shows the complete evolution chain for this Pokémon:
+
+**How to Read the Evolution Line:**
+- **Top Pokémon** - The base form (unevolved Pokémon)
+- **Arrows** - Show progression to the next evolution
+- **Evolution Conditions** - Text below each Pokémon shows HOW it evolves
+  - Examples: "Level Up at Level 16", "Use Item with Water Stone", "Trade holding King's Rock"
+- **Multiple Paths** - Some Pokémon have split evolutions (labeled "Option A" and "Option B")
+  - Example: Poliwag → Poliwhirl → Poliwrath (Option A) or Politoed (Option B)
+
+**Understanding Evolution Types:**
+- **Level Up at [Number]** - Evolves when reaching that level
+- **Use Item** - Use a specific item (Stone, etc.) on the Pokémon
+- **Trade** - Trade the Pokémon to someone
+- **Trade + Item** - Trade while holding a specific item
+- **Special Conditions** - Some Pokémon need happiness, location, or to know a specific move
+
+**Interactive Features:**
+- Click any Pokémon name in the evolution line to view its details
+- Hover for a subtle highlight effect
 
 
 #### 6. **Breeding Information**

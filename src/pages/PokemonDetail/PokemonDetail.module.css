@@ -525,6 +525,12 @@
   transition: all 0.3s ease;
 }
 
+.evolutionSection {
+  background: rgba(20, 20, 35, 0.85);
+  border: 1px solid rgba(102, 126, 234, 0.3);
+  height: 400px;
+}
+
 .infoCard:hover {
   border-color: rgba(102, 126, 234, 0.5);
   background: rgba(20, 20, 35, 0.95);
@@ -601,6 +607,65 @@
   background: rgba(255, 215, 0, 0.05) !important;
 }
 
+.abilityItem {
+  position: relative;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.abilityItem:hover {
+  background: rgba(102, 126, 234, 0.25);
+  border-left-color: rgba(102, 126, 234, 0.8) !important;
+  transform: translateX(4px);
+}
+
+.abilityItem.hiddenAbility:hover {
+  background: rgba(255, 215, 0, 0.12) !important;
+}
+
+.abilityTooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  right: 0;
+  margin-bottom: 8px;
+  padding: 0.75rem;
+  background: rgba(20, 20, 35, 0.98);
+  border: 1px solid rgba(102, 126, 234, 0.5);
+  border-radius: 6px;
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.5;
+  white-space: normal;
+  z-index: 10;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  animation: tooltipFadeIn 0.2s ease;
+}
+
+@keyframes tooltipFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.abilityTooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 12px;
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid rgba(20, 20, 35, 0.98);
+}
+
 /* Evolution */
 .evolutionContainer {
   display: flex;
@@ -644,6 +709,220 @@
 
 .evolutionLink:active {
   transform: translateY(0);
+}
+
+/* Evolution Line */
+.evolutionLineContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  padding: 1rem;
+}
+
+.evolutionLineContainerHorizontal {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1rem;
+  padding: 1.5rem 1rem;
+  overflow-x: auto;
+  height: 100%;
+  width: 100%;
+  align-content: center;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+.chainNode {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.chainNodeHorizontal {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+  flex-shrink: 0;
+}
+
+.chainPokemon {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.25) 0%, rgba(102, 126, 234, 0.12) 100%);
+  border: 2px solid rgba(102, 126, 234, 0.5);
+  color: #ffffff;
+  padding: 1.25rem 2rem;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 1.05rem;
+  font-weight: 700;
+  text-transform: capitalize;
+  transition: all 0.3s ease;
+  font-family: inherit;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  min-width: 180px;
+  text-align: center;
+  flex-shrink: 0;
+  height: fit-content;
+}
+
+.chainPokemon:hover {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.4) 0%, rgba(102, 126, 234, 0.25) 100%);
+  border-color: rgba(102, 126, 234, 0.8);
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+  transform: translateY(-4px);
+}
+
+.chainPokemon:active {
+  transform: translateY(-2px);
+}
+
+.chainPokemonName {
+  font-size: 1.1rem;
+  letter-spacing: 0.5px;
+}
+
+.chainCondition {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.65);
+  font-weight: 500;
+  font-style: italic;
+  margin-top: 0.5rem;
+  max-width: 160px;
+  line-height: 1.3;
+}
+
+.chainBranch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.chainArrow {
+  font-size: 1.5rem;
+  color: rgba(102, 126, 234, 0.6);
+  font-weight: bold;
+  animation: arrowBounce 2s ease-in-out infinite;
+}
+
+@keyframes arrowBounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(6px);
+  }
+}
+
+.chainChildren {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.chainChild {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  position: relative;
+}
+
+.branchLabel {
+  font-size: 0.8rem;
+  color: rgba(255, 215, 0, 0.7);
+  background: rgba(255, 215, 0, 0.1);
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  min-width: fit-content;
+}
+
+/* Mobile Responsive */
+@media (max-width: 1024px) {
+  .evolutionSection {
+    height: 350px;
+  }
+
+  .chainPokemon {
+    padding: 1rem 1.5rem;
+    font-size: 0.95rem;
+    min-width: 160px;
+  }
+
+  .chainCondition {
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .evolutionSection {
+    height: auto;
+    min-height: 280px;
+  }
+
+  .evolutionLineContainerHorizontal {
+    padding: 1rem 0.5rem;
+    gap: 0.75rem;
+  }
+
+  .chainPokemon {
+    padding: 0.9rem 1.2rem;
+    font-size: 0.9rem;
+    min-width: 140px;
+    gap: 0.4rem;
+  }
+
+  .chainPokemonName {
+    font-size: 0.95rem;
+  }
+
+  .chainCondition {
+    font-size: 0.7rem;
+    max-width: 130px;
+  }
+}
+
+@media (max-width: 480px) {
+  .evolutionSection {
+    height: auto;
+    min-height: 220px;
+    padding: 1rem 0.5rem;
+  }
+
+  .evolutionLineContainerHorizontal {
+    padding: 0.75rem 0.25rem;
+    gap: 0.4rem;
+    justify-content: flex-start;
+  }
+
+  .chainPokemon {
+    padding: 0.7rem 0.9rem;
+    font-size: 0.8rem;
+    min-width: 110px;
+    gap: 0.3rem;
+    flex-shrink: 0;
+  }
+
+  .chainPokemonName {
+    font-size: 0.8rem;
+  }
+
+  .chainCondition {
+    font-size: 0.6rem;
+    max-width: 100px;
+  }
 }
 
 /* Stats */

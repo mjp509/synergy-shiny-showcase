@@ -7,6 +7,7 @@ import { usePokemonOrder } from '../../hooks/usePokemonOrder'
 import { usePokemonSprites } from '../../hooks/usePokemonSprites'
 import BackButton from '../../components/BackButton/BackButton'
 import styles from './PokemonDetail.module.css'
+import abilitiesData from '../../data/pokemmo_data/abilities-data.json'
 
 const TYPE_COLORS = {
   normal: '#A8A878',
@@ -235,8 +236,165 @@ function calculateCombinedTypeEffectiveness(types) {
     }
   })
 
-  console.log(result)
   return result
+}
+
+/**
+ * Get ability data from abilities-data.json
+ * Converts ability name to slug format for lookup (e.g., "Flash Fire" -> "flash-fire")
+ */
+function getAbilityInfo(abilityName) {
+  if (!abilityName) return null
+  const slugName = abilityName.toLowerCase().replace(/\s+/g, '-')
+  return abilitiesData[slugName] || null
+}
+
+/**
+ * Format evolution details into a readable string
+ */
+function formatEvolutionDetails(details) {
+  if (!details || details.length === 0) return 'Unknown'
+  
+  const detail = details[0]
+  const parts = []
+  
+  if (detail.trigger?.name) {
+    const triggerMap = {
+      'level-up': 'Level Up',
+      'use-item': 'Use Item',
+      'trade': 'Trade',
+      'shedding': 'Shedding',
+      'spin': 'Spin',
+      'tower-of-darkness': 'Tower of Darkness',
+      'tower-of-waters': 'Tower of Waters'
+    }
+    parts.push(triggerMap[detail.trigger.name] || detail.trigger.name)
+  }
+  
+  if (detail.min_level) {
+    parts.push(`at Level ${detail.min_level}`)
+  }
+  
+  if (detail.item?.name) {
+    parts.push(`with ${detail.item.name.replace('-', ' ')}`)
+  }
+  
+  if (detail.held_item?.name) {
+    parts.push(`holding ${detail.held_item.name.replace('-', ' ')}`)
+  }
+  
+  if (detail.known_move) {
+    parts.push(`knows ${detail.known_move}`)
+  }
+  
+  if (detail.min_happiness) {
+    parts.push(`with ${detail.min_happiness} happiness`)
+  }
+  
+  if (detail.min_affection) {
+    parts.push(`with ${detail.min_affection} affection`)
+  }
+  
+  if (detail.time_of_day && detail.time_of_day.length > 0) {
+    parts.push(`at ${detail.time_of_day}`)
+  }
+  
+  return parts.length > 0 ? parts.join(' ') : 'Unknown'
+}
+
+/**
+ * Recursively render evolution chain
+ */
+function renderEvolutionChain(chainLink, navigate) {
+  if (!chainLink) return null
+  
+  const { species, evolves_to, evolution_details } = chainLink
+  
+  return (
+    <div key={species?.name} className={styles.chainNode}>
+      <button
+        onClick={() => navigate(`/pokemon/${species.name}`, { state: { fromPokemon: true } })}
+        className={styles.chainPokemon}
+        title={`View ${species.name}`}
+      >
+        <span className={styles.chainPokemonName}>
+          {species.name.charAt(0).toUpperCase() + species.name.slice(1).replace('-', ' ')}
+        </span>
+        {evolution_details && evolution_details.length > 0 && (
+          <span className={styles.chainCondition}>{formatEvolutionDetails(evolution_details)}</span>
+        )}
+      </button>
+      
+      {evolves_to && evolves_to.length > 0 && (
+        <div className={styles.chainBranch}>
+          <div className={styles.chainArrow}>↓</div>
+          <div className={styles.chainChildren}>
+            {evolves_to.map((child, index) => (
+              <div key={child.species?.name} className={styles.chainChild}>
+                {evolves_to.length > 1 && <span className={styles.branchLabel}>{index === 0 ? 'Option A' : 'Option B'}</span>}
+                {renderEvolutionChain(child, navigate)}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+/**
+ * Recursively render evolution chain horizontally
+ */
+function renderEvolutionChainHorizontal(chainLink, navigate) {
+  if (!chainLink) return null
+  
+  const { species, evolves_to } = chainLink
+  
+  // For horizontal layout, we need to flatten the chain and show only the main line
+  const getFirstEvolution = (link) => {
+    if (!link.evolves_to || link.evolves_to.length === 0) return link
+    // If there are multiple paths, just follow the first one for the horizontal chain
+    return getFirstEvolution(link.evolves_to[0])
+  }
+  
+  // Build the chain array
+  const buildChainArray = (link, arr = []) => {
+    if (!link) return arr
+    arr.push(link)
+    if (link.evolves_to && link.evolves_to.length > 0) {
+      return buildChainArray(link.evolves_to[0], arr)
+    }
+    return arr
+  }
+  
+  const chainArray = buildChainArray(chainLink)
+  
+  return (
+    <>
+      {chainArray.map((link, index) => (
+        <div key={link.species?.name} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <button
+            onClick={() => navigate(`/pokemon/${link.species.name}`, { state: { fromPokemon: true } })}
+            className={styles.chainPokemon}
+            style={{ minWidth: '140px', padding: '0.75rem 1rem', fontSize: '0.9rem' }}
+            title={`View ${link.species.name}`}
+          >
+            <span className={styles.chainPokemonName}>
+              {link.species.name.charAt(0).toUpperCase() + link.species.name.slice(1).replace('-', ' ')}
+            </span>
+            {link.evolution_details && link.evolution_details.length > 0 && (
+              <span className={styles.chainCondition} style={{ maxWidth: '140px', fontSize: '0.7rem' }}>
+                {formatEvolutionDetails(link.evolution_details)}
+              </span>
+            )}
+          </button>
+          {index < chainArray.length - 1 && (
+            <span style={{ fontSize: '1.5rem', color: 'rgba(102, 126, 234, 0.6)', fontWeight: 'bold', margin: '0 0.25rem' }}>→</span>
+          )}
+        </div>
+      ))}
+    </>
+  )
 }
 
 
@@ -256,6 +414,7 @@ export default function PokemonDetail() {
   const [showRoutesSuggestions, setShowRoutesSuggestions] = useState(false)
   const [particleAnimationKey, setParticleAnimationKey] = useState(0)
   const [audioRef] = useState(new Audio())
+  const [hoveredAbility, setHoveredAbility] = useState(null)
   const spriteAliasMap = useMemo(() => ({
     wormadam: 'wormadam-plant',
     'gastrodon-west': 'gastrodon',
@@ -618,6 +777,16 @@ useDocumentHead({
               </div>
             )}
           </div>
+          
+          {/* Evolution Line */}
+          {pokemon.evolution_chain?.chain && (
+            <div className={`${styles.infoCard} ${styles.evolutionSection}`}>
+              <h2 className={styles.cardTitle}>Evolution Line</h2>
+              <div className={styles.evolutionLineContainerHorizontal}>
+                {renderEvolutionChainHorizontal(pokemon.evolution_chain.chain, navigate)}
+              </div>
+            </div>
+          )}
         </section>
 
         {/* Details Section */}
@@ -646,9 +815,25 @@ useDocumentHead({
                 <div>
                   <h3 className={styles.abilitySubtitle}>Normal Abilities</h3>
                   <ul className={styles.abilityList}>
-                    {pokemon.abilities.normal.map(ability => (
-                      <li key={ability}>{ability.replace('-', ' ')}</li>
-                    ))}
+                    {pokemon.abilities.normal.map(ability => {
+                      const abilityInfo = getAbilityInfo(ability)
+                      const displayName = ability.replace('-', ' ')
+                      return (
+                        <li
+                          key={ability}
+                          className={styles.abilityItem}
+                          onMouseEnter={() => setHoveredAbility(ability)}
+                          onMouseLeave={() => setHoveredAbility(null)}
+                        >
+                          {displayName}
+                          {hoveredAbility === ability && abilityInfo && (
+                            <div className={styles.abilityTooltip}>
+                              {abilityInfo.effect}
+                            </div>
+                          )}
+                        </li>
+                      )
+                    })}
                   </ul>
                 </div>
               )}
@@ -656,11 +841,25 @@ useDocumentHead({
                 <div>
                   <h3 className={styles.abilitySubtitle}>Hidden Ability</h3>
                   <ul className={styles.abilityList}>
-                    {pokemon.abilities.hidden.map(ability => (
-                      <li key={ability} className={styles.hiddenAbility}>
-                        {ability.replace('-', ' ')} ✨
-                      </li>
-                    ))}
+                    {pokemon.abilities.hidden.map(ability => {
+                      const abilityInfo = getAbilityInfo(ability)
+                      const displayName = ability.replace('-', ' ')
+                      return (
+                        <li
+                          key={ability}
+                          className={`${styles.hiddenAbility} ${styles.abilityItem}`}
+                          onMouseEnter={() => setHoveredAbility(ability)}
+                          onMouseLeave={() => setHoveredAbility(null)}
+                        >
+                          {displayName} ✨
+                          {hoveredAbility === ability && abilityInfo && (
+                            <div className={styles.abilityTooltip}>
+                              {abilityInfo.effect}
+                            </div>
+                          )}
+                        </li>
+                      )
+                    })}
                   </ul>
                 </div>
               )}
@@ -739,7 +938,7 @@ useDocumentHead({
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                       <span style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.7)', fontWeight: '600' }}>Resists: (1/2 Damage)</span>
                       <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                        {combined.quarterDmg.map(type => (
+                        {combined.halfDmg.map(type => (
                           <span key={type} style={{ padding: '0.4rem 0.8rem', background: 'rgba(74, 222, 128, 0.2)', border: '1px solid rgba(74, 222, 128, 0.5)', borderRadius: '6px', fontSize: '0.9rem', color: '#86efac', textTransform: 'capitalize' }}>
                             {type}
                           </span>
@@ -752,7 +951,7 @@ useDocumentHead({
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                       <span style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.7)', fontWeight: '600' }}>Resists (1/4 Damage):</span>
                       <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                        {combined.halfDmg.map(type => (
+                        {combined.quarterDmg.map(type => (
                           <span key={type} style={{ padding: '0.4rem 0.8rem', background: 'rgba(74, 222, 128, 0.3)', border: '2px solid rgba(74, 222, 128, 0.7)', borderRadius: '6px', fontSize: '0.9rem', fontWeight: '600', color: '#86efac', textTransform: 'capitalize' }}>
                             {type}
                           </span>
@@ -777,6 +976,7 @@ useDocumentHead({
               )
             })()}
           </div>
+
           {/* Breeding & Catch Info */}
           <div className={styles.infoCard}>
             <h2 className={styles.cardTitle}>Breeding & Catch Information</h2>
@@ -830,27 +1030,6 @@ useDocumentHead({
               </div>
             </div>
           </div>
-
-          {/* Evolution */}
-          {pokemon.evolution_chain?.chain?.evolves_to && pokemon.evolution_chain.chain.evolves_to.length > 0 && (
-            <div className={styles.infoCard}>
-              <h2 className={styles.cardTitle}>Evolves Into</h2>
-              <div className={styles.evolutionContainer}>
-                {pokemon.evolution_chain.chain.evolves_to.map((evolution, index) => (
-                  <div key={index}>
-                    {index > 0 && <span className={styles.evolutionOr}> or </span>}
-                    <button
-                      onClick={() => navigate(`/pokemon/${evolution.species.name}`, { state: { fromPokemon: true } })}
-                      className={styles.evolutionLink}
-                      title={`View ${evolution.species.name}`}
-                    >
-                      {evolution.species.name.charAt(0).toUpperCase() + evolution.species.name.slice(1).replace('-', ' ')}
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
         </section>
       </div>
 

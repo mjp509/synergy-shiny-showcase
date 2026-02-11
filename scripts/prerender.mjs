@@ -227,7 +227,7 @@ async function prerender() {
       route: '/pokedex',
       ogTitle: 'Pokédex Tracker - Shiny & Living Dex | Team Synergy - PokeMMO',
       ogDescription: 'Track Team Synergy\'s complete Pokédex in PokeMMO. Filter by tier, type, location, and abilities. Search shinies, track caught progress, find encounters, and explore all generations with advanced filtering.',
-      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_1/pikachu.gif',
+      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_7/pikachu.gif',
     },
     '/random-pokemon-generator': {
       route: '/random-pokemon-generator',

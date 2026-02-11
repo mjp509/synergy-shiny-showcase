@@ -198,7 +198,8 @@ export function usePokemonDetails(pokemonName) {
         obtainable: pokemon.obtainable !== false,
         cries: pokemon.cries || { latest: '', legacy: '' },
         nameTranslations: pokemon.name_translations || {},
-        varieties: pokemon.varieties || []
+        varieties: pokemon.varieties || [],
+        evolution_chain: pokemon.evolution_chain || null
       }
       
       setData(formattedData)

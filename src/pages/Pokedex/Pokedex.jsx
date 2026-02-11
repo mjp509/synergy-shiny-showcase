@@ -506,8 +506,16 @@ export default function Pokedex() {
     }
   }, [synergyDataToggle])
 
+  // Clear hover information when component mounts to prevent stale state
+  useEffect(() => {
+    setHoverInfo(null)
+  }, [])
+
   // Handle location search from navigation state (from PokemonDetail)
   useEffect(() => {
+    // Clear hover info when navigating to Pokedex to prevent stale tooltips
+    setHoverInfo(null)
+    
     if (location.state?.locationSearch) {
       setLocationSearchInput(location.state.locationSearch)
       setLocationSearch(location.state.locationSearch)
