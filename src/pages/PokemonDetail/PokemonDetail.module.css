@@ -433,12 +433,12 @@
 
 .eggGroupTag {
   color: var(--egg-color);
-  border: 1px solid var(--egg-color);
+  border: 2px solid var(--egg-color);
   background: rgba(0, 0, 0, 0.35);
-  padding: 0.25rem 0.6rem;
+  padding: 0.5rem 1rem;
   border-radius: 999px;
   font-weight: 700;
-  font-size: 0.95rem;
+  font-size: 1.1rem;
   text-transform: capitalize;
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.55);
 }
@@ -782,6 +782,12 @@
 
 .chainPokemon:active {
   transform: translateY(-2px);
+}
+
+.chainPokemonCurrent {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.5) 0%, rgba(102, 126, 234, 0.35) 100%) !important;
+  border: 2px solid rgba(255, 215, 0, 0.8) !important;
+  box-shadow: 0 0 25px rgba(255, 215, 0, 0.6), 0 0 40px rgba(102, 126, 234, 0.4) !important;
 }
 
 .chainPokemonName {

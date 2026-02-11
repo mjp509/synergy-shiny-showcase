@@ -345,7 +345,7 @@ function renderEvolutionChain(chainLink, navigate) {
 /**
  * Recursively render evolution chain horizontally
  */
-function renderEvolutionChainHorizontal(chainLink, navigate) {
+function renderEvolutionChainHorizontal(chainLink, navigate, currentPokemonName) {
   if (!chainLink) return null
   
   const { species, evolves_to } = chainLink
@@ -371,28 +371,31 @@ function renderEvolutionChainHorizontal(chainLink, navigate) {
   
   return (
     <>
-      {chainArray.map((link, index) => (
-        <div key={link.species?.name} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <button
-            onClick={() => navigate(`/pokemon/${link.species.name}`, { state: { fromPokemon: true } })}
-            className={styles.chainPokemon}
-            style={{ minWidth: '140px', padding: '0.75rem 1rem', fontSize: '0.9rem' }}
-            title={`View ${link.species.name}`}
-          >
-            <span className={styles.chainPokemonName}>
-              {link.species.name.charAt(0).toUpperCase() + link.species.name.slice(1).replace('-', ' ')}
-            </span>
-            {link.evolution_details && link.evolution_details.length > 0 && (
-              <span className={styles.chainCondition} style={{ maxWidth: '140px', fontSize: '0.7rem' }}>
-                {formatEvolutionDetails(link.evolution_details)}
+      {chainArray.map((link, index) => {
+        const isCurrent = link.species?.name === currentPokemonName?.toLowerCase()
+        return (
+          <div key={link.species?.name} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <button
+              onClick={() => navigate(`/pokemon/${link.species.name}`, { state: { fromPokemon: true } })}
+              className={`${styles.chainPokemon} ${isCurrent ? styles.chainPokemonCurrent : ''}`}
+              style={{ minWidth: '140px', padding: '0.75rem 1rem', fontSize: '0.9rem' }}
+              title={`View ${link.species.name}`}
+            >
+              <span className={styles.chainPokemonName}>
+                {link.species.name.charAt(0).toUpperCase() + link.species.name.slice(1).replace('-', ' ')}
               </span>
+              {link.evolution_details && link.evolution_details.length > 0 && (
+                <span className={styles.chainCondition} style={{ maxWidth: '140px', fontSize: '0.7rem' }}>
+                  {formatEvolutionDetails(link.evolution_details)}
+                </span>
+              )}
+            </button>
+            {index < chainArray.length - 1 && (
+              <span style={{ fontSize: '1.5rem', color: 'rgba(102, 126, 234, 0.6)', fontWeight: 'bold', margin: '0 0.25rem' }}>→</span>
             )}
-          </button>
-          {index < chainArray.length - 1 && (
-            <span style={{ fontSize: '1.5rem', color: 'rgba(102, 126, 234, 0.6)', fontWeight: 'bold', margin: '0 0.25rem' }}>→</span>
-          )}
-        </div>
-      ))}
+          </div>
+        )
+      })}
     </>
   )
 }
@@ -783,7 +786,7 @@ useDocumentHead({
             <div className={`${styles.infoCard} ${styles.evolutionSection}`}>
               <h2 className={styles.cardTitle}>Evolution Line</h2>
               <div className={styles.evolutionLineContainerHorizontal}>
-                {renderEvolutionChainHorizontal(pokemon.evolution_chain.chain, navigate)}
+                {renderEvolutionChainHorizontal(pokemon.evolution_chain.chain, navigate, pokemon.name)}
               </div>
             </div>
           )}
