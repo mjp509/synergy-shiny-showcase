@@ -23,12 +23,12 @@ Choose between two tracking modes:
 - Shows Pokémon marked as caught in shiny form
 - Displays which team members have caught each shiny
 - Shows "Complete" checkmark when all team members have it
-- Best for: Tracking team collection progress
+- Best for: Tracking team collection progress through evolution lines
 
 **Living Dex Mode**
 - Shows Pokémon caught in regular (non-shiny) form
-- Useful for: Completing standard Pokédex entries
-
+- Best for: Tracking team complete collection progress, excluding evolution lines.
+- 
 To switch modes, click the toggle between "Shiny" and "Living Dex" buttons.
 
 #### 2. **Search Bar** (Top Center)
@@ -41,14 +41,13 @@ Instantly search for Pokémon by name.
 - Partial matches work too: "chu" finds "pikachu"
 
 **Search Tips:**
-- Works with alternate forms: "rotom-heat", "darmanitan-zen"
 - Search clears when you select a new filter
 
 #### 3. **Filter Panels** (Left Sidebar)
 
 All filter panels work together - select multiple options across different panels to narrow results. You can combine all filters below:
 
-##### **Encounter Rarity Filter**
+##### **Encounter Type Filter**
 Filter Pokémon by how common they are to find:
 - **All Encounter Types** - Show everything (default)
 - **Very Common** - Easily found Pokemon (appears frequently)
@@ -60,15 +59,7 @@ Filter Pokémon by how common they are to find:
 - **Horde** - Only found in hordes
 - **Lure** - Only from lure encounters
 
-**Example:** Select "Very Rare" to see only challenging Pokémon
-
-##### **Type Filter**
-Filter by Pokémon type(s):
-- Select one or more types (Fire, Water, Electric, etc.)
-- Pokémon matching ALL selected types will be shown
-- **Example:** Select "Water" + "Flying" = shows only Water/Flying types like Pelipper
-
-**Note:** Selecting multiple types uses AND logic (not OR)
+**Example:** Select "Horde" to see only horde huntable Pokémon
 
 ##### **Tier (Rarity) Filter**
 Filter by overall rarity tier:
@@ -78,17 +69,33 @@ Filter by overall rarity tier:
 - **Tier 6** - Very Rare
 - **Tier 7** - Legendary/Mythical (Mewtwo, Mew, Arceus, etc.)
 
-**Use Case:** Want to hunt only for rare Pokémon? Select Tier 6-7
+**Use Case:** Want to hunt only for rare Pokémon? Select Tier 2-0
+
 
 ##### **Egg Group Filter**
 Filter by breeding group:
-- **Dragon** - Dragon-type eggs
-- **Amorphous** - Blob-like creatures
-- **Mineral** - Rock-like Pokémon
-- **Flying** - Flying-type egg group
-- ... and more
+- **Dragon** - Dragon Egg-Group Pokemon
+- **Mineral** - Rock Egg-Group Pokemon
+- **Flying** - Flying Egg-Group Pokemon
+- ... etc
 
 **Use Case:** "I need to breed Dragon-types" → Select Dragon egg group
+
+##### **Type Filter**
+Filter by Pokémon type(s):
+- Select one or more types (Fire, Water, Electric, etc.)
+- Pokémon matching ALL selected types will be shown
+- **Example:** Select "Water" + "Flying" = shows only Water/Flying types like Pelipper
+
+**Note:** Selecting multiple types uses AND logic (not OR)
+
+##### **Move Filter**
+Search for Pokémon by move name:
+- Type move name in search box
+- Example: "Eruption", "Surf", "Grass Knot"
+- Searches Up to 4 Moves
+
+**Tip:** If you don't remember exact name, partial match works
 
 ##### **Ability Filter**
 Search for Pokémon by ability name:
@@ -107,17 +114,11 @@ Filter Pokémon by where they're found:
 **Example Uses:**
 - "ROUTE 3 - KANTO" shows all Pokémon on Route 3 in Kanto
 - "FOREST" alone won't work - need region too
+- Use AutoComplete in the input to quickly select desired routes
 
 **How it auto-populates:** When you click a location card on a Pokémon Detail page, the Pokédex will automatically open with that location pre-filled!
+For Example, if you click on Charmander, you can then click on the Route 3 card to quickly see the phases.
 
-##### **Generation Filter**
-Filter by Pokémon generation:
-- **Gen 1** - Original 151 (Kanto region)
-- **Gen 2** - Gold/Silver/Crystal additions (Johto)
-- **Gen 3-7** - Later generations
-- Select multiple generations to see evolution lines across generations
-
-**Example:** Select "Gen 1" to see only original Pokémon
 
 ##### **Stat Minimums Filter**
 Filter by base stats - set minimum values:
@@ -138,6 +139,10 @@ Filter by base stats - set minimum values:
 - 🟠 **Orange** - Below average
 - 🟡 **Yellow** - Average
 - 🟢 **Green** - High stat (good)
+
+All These filters work side by side, meaning you can search for specific moves, types, base stats at the same time.
+
+Unobtainable legendaries, such as Kyogre, are hidden as soon as you use a filter, unless the "Legendary" egg group is selected.
 
 ##### **Hide Complete Toggle**
 When enabled in Synergy Data mode, hides Pokémon your team has already fully collected.
@@ -187,6 +192,7 @@ The Pokémon Detail page shows comprehensive information about a single Pokémon
 - **Pokédex ID** - National Pokédex number (e.g., #025 for Pikachu)
 - **"Unobtainable" Label** (if applicable) - Red badge if not available in-game
 - **Back Button** - Arrow to return to previous page or Pokédex
+- **Navigation Arrows** - Arrows to go to previouis or next pokedex number.
 
 #### 2. **Basic Information Card**
 Shows core Pokémon data:
@@ -194,6 +200,7 @@ Shows core Pokémon data:
 - **Height** - in meters (m)
 - **Weight** - in kilograms (kg)
 - **Gender Ratio** - Visual breakdown of male/female distribution (if applicable)
+- **Generation** - Generation it originates from
 
 **Understanding Gender Ratio:**
 - Blue bar = Male percentage
@@ -206,7 +213,8 @@ Shows core Pokémon data:
 - **Normal Ability** - Regular ability this Pokémon can have
 - **Hidden Ability** - Special/rare ability (marked with ⭐)
 
-**What do abilities do?** Passive effects in battle
+**What do abilities do?** 
+- Hover over the abilities to see detailed explaination on what that ability does.
 - Example: Pikachu's "Static" paralyzes on contact
 
 #### 4. **Base Stats Chart** 
@@ -214,11 +222,11 @@ Compares this Pokémon's stats to others:
 
 **Stats Displayed:**
 - **HP** - Health points
-- **ATK** - Attack (physical damage)
-- **DEF** - Defense (physical resistance)
-- **SP.ATK** - Special Attack (special move damage)
-- **SP.DEF** - Special Defense (special resistance)
-- **SPD** - Speed (who goes first in battle)
+- **ATK** - Attack 
+- **DEF** - Defense 
+- **SP.ATK** - Special Attack 
+- **SP.DEF** - Special Defense 
+- **SPD** - Speed
 
 **Color Coding:**
 - 🔴 Red = Low stat (weak in this area)
@@ -232,32 +240,12 @@ Compares this Pokémon's stats to others:
 
 **Example:** Alakazam has high SP.ATK (green) but low DEF (red) - glass cannon!
 
-#### 5. **Description/Pokédex Entry**
-- Official Pokédex flavor text
-- Usually 1-2 sentences describing the Pokémon in-game
-- Changes between generations (scroll to see variants if available)
-
-**Fun Fact:** Some entries are weird or funny - read them!
 
 #### 6. **Breeding Information**
 - **Egg Groups** - Which egg groups this Pokémon belongs to
   - Determines which Pokémon it can breed with
   - Example: Both must share an Egg Group (or one must be Ditto)
-- **Hatch Counter** - Egg cycles needed to hatch
-  - Lower = Faster to breed
-  - One cycle ≈ 255 steps in some games
 
-#### 7. **Evolution Line**
-If this Pokémon evolves or is evolved:
-- Shows full evolution chain
-- Click alternate forms to view them
-- Example: Charmander → Charmeleon → Charizard
-
-**Understanding Evolution Methods:**
-- **Level** - Evolves at specific level (e.g., "Level 16")
-- **Stone** - Needs stone item (Fire Stone, etc.)
-- **Trade** - Needs to be traded to another player
-- **Friendship** - Needs high friendship/happiness
 
 #### 8. **Locations** 🎯
 Shows where to find this Pokémon in the game:
@@ -373,7 +361,7 @@ Shows which team members have caught this Pokémon as a shiny:
 ### General Questions
 
 **Q: What's the difference between Shiny and Living Dex modes?**
-A: Shiny = Rare color variants. Living Dex = Regular color forms. Switch modes to track which you need.
+A: Shiny = Shows caught shinies, once a shiny is caught it fills in the remaining evolution line, for example when Charmander is caught, so is Charmeleon and Charizard.. Living Dex = All pokedex IDs must be obtained and in a team members box, for example, catching Squirtle does not complete Wartortle or lastoise.
 
 **Q: Why can't I find a Pokémon?**
 A: Check if it's:
@@ -381,13 +369,7 @@ A: Check if it's:
 2. Available in PokeMMO (some Pokémon might be unobtainable)
 3. Spelled correctly in search
 4. Behind a tier filter set too high
-
-**Q: How do I get a specific Pokémon?**
-A:
-1. Find it on Pokédex via location filter
-2. Go to that location in-game
-3. Note the level range and rarity
-4. Catch it following the encounter details shown
+If none of these are the case, please contact Hyper on discord.
 
 ### Pokédex Questions
 
@@ -423,7 +405,7 @@ A: Pokémon normally have one of two abilities. Hidden ability is rarer and ofte
 A: Routes typically have 5-10 Pokémon that spawn randomly. Location card shows where to find a specific one.
 
 **Q: What does "Horde" mean?**
-A: Engage Multiple Pokémon at once. Useful for grinding levels or catching/training multiple at once.
+A: Engage Multiple Pokémon at once. Useful for grinding levels or shiny hunting
 
 **Q: What does "Fishing" mean?**
 A: Use fishing rod. Different rods sometimes show different Pokémon (Old Rod, Good Rod, Super Rod).
@@ -445,6 +427,7 @@ A: No, page requires internet to fetch Pokémon data from servers.
 
 **Q: Why is the page slow to load?**
 A: First load fetches Pokémon database. Refresh or filter to load faster (data cached).
+1. Future loads may be faster due to image caching on first load.
 
 **Q: Is there dark mode?**
 A: Page uses dark theme by default. Browser dark mode extensions might also work.
@@ -464,10 +447,10 @@ A: Page uses dark theme by default. Browser dark mode extensions might also work
 
 ## Need Help?
 
-- **Bug Report:** Click report button (if available) or contact support
-- **Suggestion:** Send feedback through contact form
-- **Pokémon Data Question:** Cross-reference official PokéAPI
-- **Location Help:** Check in-game guidebook or online wiki
+- **Bug Report:** Contact ohypers on discord
+- **Suggestion:** Contact ohypers on discord
+- **Pokémon Data Question:** Contact ohypers on discord
+- **Location Help:** Check in-game PokeDex
 
 ---
 
