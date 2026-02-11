@@ -400,7 +400,7 @@ function renderEvolutionChainLinear(chainLink, navigate, currentPokemonName, hov
         const evolutionId = `linear-${index}-${link.species?.name}`
         
         return (
-          <div key={link.species?.name} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', position: 'relative' }}>
+          <div key={link.species?.name} className={styles.linearEvolutionRow}>
             <button
               onClick={() => navigate(`/pokemon/${link.species.name}`, { state: { fromPokemon: true } })}
               className={`${styles.chainPokemon} ${isCurrent ? styles.chainPokemonCurrent : ''}`}
@@ -426,7 +426,7 @@ function renderEvolutionChainLinear(chainLink, navigate, currentPokemonName, hov
             
             {hasSimpleBranch ? (
               <>
-                <span style={{ fontSize: '1.5rem', color: 'rgba(102, 126, 234, 0.6)', fontWeight: 'bold', margin: '0 0.25rem' }}>→</span>
+                <span className={styles.evolutionArrow}>→</span>
                 <div className={styles.simpleBranchedEvolutions}>
                   {link.evolves_to.map((branch) => {
                     const branchIsCurrent = branch.species?.name === currentPokemonName?.toLowerCase()
@@ -460,7 +460,7 @@ function renderEvolutionChainLinear(chainLink, navigate, currentPokemonName, hov
                 </div>
               </>
             ) : index < branchingIndex || (branchingIndex === -1 && index < chainArray.length - 1) ? (
-              <span style={{ fontSize: '1.5rem', color: 'rgba(102, 126, 234, 0.6)', fontWeight: 'bold', margin: '0 0.25rem' }}>→</span>
+              <span className={styles.evolutionArrow}>→</span>
             ) : null}
           </div>
         )
@@ -529,7 +529,7 @@ function renderEvolutionChainHorizontal(chainLink, navigate, currentPokemonName,
             
             {hasBranches ? (
               <>
-                <span style={{ fontSize: '1.5rem', color: 'rgba(102, 126, 234, 0.6)', fontWeight: 'bold', margin: '0 0.25rem' }}>→</span>
+                <span className={styles.evolutionArrow}>→</span>
                 <div className={styles.branchedEvolutions}>
                   {link.evolves_to.map((branch) => {
                     const branchIsCurrent = branch.species?.name === currentPokemonName?.toLowerCase()
@@ -563,7 +563,7 @@ function renderEvolutionChainHorizontal(chainLink, navigate, currentPokemonName,
                 </div>
               </>
             ) : index < chainArray.length - 1 && branchingIndex === -1 ? (
-              <span style={{ fontSize: '1.5rem', color: 'rgba(102, 126, 234, 0.6)', fontWeight: 'bold', margin: '0 0.25rem' }}>→</span>
+              <span className={styles.evolutionArrow}>→</span>
             ) : null}
           </div>
         )
@@ -630,6 +630,9 @@ export default function PokemonDetail() {
   // Calculate and resize evolution cards to fit in container without overflow (only for branching Pokemon)
   useEffect(() => {
     if (!hasBranchingEvolutions(pokemon?.name) || !evolutionContainerRef.current || branchCount === 0) return
+    
+    // Skip height calculation on mobile - let content flow naturally
+    if (window.innerWidth <= 480) return
     
     const container = evolutionContainerRef.current
     const evolutionSection = container.parentElement
