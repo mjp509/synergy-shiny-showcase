@@ -1603,6 +1603,23 @@
     grid-template-columns: 1fr;
   }
 
+  .locationDetail {
+    font-size: 0.75rem;
+  }
+
+  .locationDetail strong {
+    font-size: 0.75rem;
+  }
+
+  .locationName {
+    font-size: 0.85rem;
+  }
+
+  .locationRegion {
+    font-size: 0.65rem;
+    padding: 0.2rem 0.4rem;
+  }
+
   .spriteButton {
     width: 32px;
     height: 32px;
