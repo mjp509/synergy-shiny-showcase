@@ -136,7 +136,8 @@ export default function Pokedex() {
     const descriptions = {
       'Horde': 'All Pokemon found within Hordes on the route',
       'Lure Encounters': 'Any Pokemon using a lure',
-      'Singles': 'All Pokemon found in singles (Very Common, Common, Uncommon, Rare, Very Rare)',
+      'Rares': 'Rare tier Pokemon (Tier 0-2) found in singles',
+      'Singles': 'Common Pokemon (Tier 3+) found in singles (Very Common, Common, Uncommon, Rare, Very Rare)',
       'Fishing Encounters': 'Any Pokemon caught within "Fishing"',
       'Headbutt': 'Any Pokemon found by using Headbutt on trees',
       'Special': 'Any Pokemon caught within "Special"'
@@ -1600,7 +1601,7 @@ export default function Pokedex() {
           // Render grouped by Encounter Type when location search is active
           (() => {
             const encounterTypeMap = {}
-            const encounterTypeOrder = ['Lure Encounters', 'Horde', 'Singles', 'Fishing Encounters', 'Headbutt', 'Special']
+            const encounterTypeOrder = ['Lure Encounters', 'Rares', 'Horde', 'Singles', 'Fishing Encounters', 'Headbutt', 'Special']
             
             Object.entries(generationData).forEach(([gen, speciesGroups]) => {
               const flatPokemon = speciesGroups.flat()
@@ -1680,11 +1681,19 @@ export default function Pokedex() {
 
                 const encounterTypes = getEncounterTypeForPokemon(normalized, locationSearch)
                 encounterTypes.forEach(type => {
-                  if (!encounterTypeMap[type]) {
-                    encounterTypeMap[type] = []
+                  // For Singles encounters, split into Rares (Tier 0-2) and Singles (Tier 3+)
+                  let targetType = type
+                  if (type === 'Singles') {
+                    const tierMatch = pokemonTier.match(/Tier\s*(\d+)/)
+                    const tierNumber = tierMatch ? parseInt(tierMatch[1], 10) : -1
+                    targetType = (tierNumber >= 0 && tierNumber <= 2) ? 'Rares' : 'Singles'
+                  }
+                  
+                  if (!encounterTypeMap[targetType]) {
+                    encounterTypeMap[targetType] = []
                   }
                   const details = getEncounterDetailsForPokemon(normalized, locationSearch, type)
-                  encounterTypeMap[type].push({
+                  encounterTypeMap[targetType].push({
                     name: pokemon,
                     rarities: details.rarities,
                     primaryRarity: details.primaryRarity,
@@ -1707,9 +1716,9 @@ export default function Pokedex() {
               ...encounterTypeOrder
                 .filter(type => encounterTypeMap[type] && encounterTypeMap[type].length > 0)
                 .map(type => {
-                // Sort Singles by rarity (Very Common → Very Rare)
+                // Sort Singles and Rares by rarity (Very Common → Very Rare)
                 let pokemonList = encounterTypeMap[type]
-                if (type === 'Singles') {
+                if (type === 'Singles' || type === 'Rares') {
                   const rarityOrder = ['very common', 'common', 'uncommon', 'rare', 'very rare']
                   pokemonList = [...pokemonList].sort((a, b) => {
                     const aRarity = (a.primaryRarity || '').toLowerCase()
@@ -1735,8 +1744,8 @@ export default function Pokedex() {
                       const lowerName = pokemon.toLowerCase()
                       const isComplete = globalShinies.has(lowerName)
                       
-                      // For Singles section, show rarity info
-                      const showRarityInfo = type === 'Singles'
+                      // For Singles and Rares sections, show rarity info
+                      const showRarityInfo = type === 'Singles' || type === 'Rares'
                       const primaryRarity = pokemonData.rarities && pokemonData.rarities[0]
                       const hasMultipleGrassTypes = pokemonData.grassTypes && pokemonData.grassTypes.length > 1
                       
