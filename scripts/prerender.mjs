@@ -23,6 +23,7 @@ const STATIC_ROUTES = [
   '/counter-generator',
   '/random-pokemon-generator',
   '/shiny-war-2025',
+  '/about',
 ];
 
 
@@ -264,6 +265,12 @@ async function prerender() {
       ogTitle: 'Shiny Wars 2025 Results | Team Synergy - PokeMMO',
       ogDescription: 'Team Synergy placed #25 in the Official PokeMMO Shiny Wars 2025 with 1060 points and 111 shinies. View every catch with tier breakdowns and point totals.',
       ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_1/leafeon.gif',
+    },
+    '/about': {
+      route: '/about',
+      ogTitle: 'About SynergyMMO | Team Synergy - PokeMMO',
+      ogDescription: 'Learn about Team Synergy, a PokeMMO shiny hunting community. Discover our story, how to apply, and recent updates.',
+      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_7/reuniclus.gif',
     },
   };
 

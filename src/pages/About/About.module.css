@@ -1,0 +1,195 @@
+.aboutContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  color: #fff;
+}
+
+.aboutContainer h1 {
+  font-size: 3rem;
+  margin-bottom: 2rem;
+  text-align: center;
+  color: #ffffff;
+  font-weight: bold;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.section {
+  margin-bottom: 3rem;
+  padding: 1.5rem;
+  background: rgba(60, 60, 60, 0.85);
+  border: 1px solid rgba(100, 100, 100, 0.6);
+  border-radius: 8px;
+  backdrop-filter: blur(10px);
+}
+
+.section h2 {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  color: #ffffff;
+  border-bottom: 2px solid rgba(102, 126, 234, 0.8);
+  padding-bottom: 0.5rem;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.section p {
+  font-size: 1rem;
+  line-height: 1.8;
+  margin-bottom: 1rem;
+  color: #ffffff;
+}
+
+.showcaseButton {
+  display: block;
+  padding: 1rem 2rem;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+  width: fit-content;
+  background: #764ba2;
+  color: #ffffff;
+  text-decoration: none;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  cursor: pointer;
+}
+
+.showcaseButton:hover {
+  background: #ea66ea;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+.showcaseButton:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.section ol {
+  list-style: decimal;
+  padding-left: 2rem;
+  margin-bottom: 1rem;
+}
+
+.section ul {
+  list-style: disc;
+  padding-left: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.section h3 {
+  font-size: 1.3rem;
+  color: #ffffff;
+  margin: 1.5rem 0 0.75rem 0;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.section h3:first-child {
+  margin-top: 0;
+}
+
+.section li {
+  margin-bottom: 0.5rem;
+  color: #ffffff;
+  line-height: 1.8;
+}
+
+.section a {
+  color: #339aff;
+  text-decoration: none;
+  transition: color 0.3s ease;
+  font-weight: 500;
+}
+
+.section a:hover {
+  color: #66b3ff;
+  text-decoration: underline;
+}
+
+.section .showcaseButton,
+.section .showcaseButton:hover {
+  color: #ffffff !important;
+  text-decoration: none;
+}
+
+.changelog {
+  margin-bottom: 1.5rem;
+  max-height: 800px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+.changelog::-webkit-scrollbar {
+  width: 8px;
+}
+
+.changelog::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+}
+
+.changelog::-webkit-scrollbar-thumb {
+  background: rgba(102, 126, 234, 0.5);
+  border-radius: 10px;
+  transition: background 0.3s ease;
+}
+
+.changelog::-webkit-scrollbar-thumb:hover {
+  background: rgba(102, 126, 234, 0.8);
+}
+
+.changelogEntry {
+  margin-bottom: 1.5rem;
+}
+
+.changelogEntry h3 {
+  font-size: 1.3rem;
+  color: #ffffff;
+  margin-bottom: 0.5rem;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.changelogEntry p {
+  color: #e0e0e0;
+  font-style: italic;
+}
+
+.metadata {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(200, 200, 200, 0.3);
+  color: #e0e0e0;
+}
+
+.metadata p {
+  margin: 0.5rem 0;
+  font-size: 0.95rem;
+  color: #ffffff;
+}
+
+.metadata strong {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .aboutContainer h1 {
+    font-size: 2rem;
+  }
+
+  .section {
+    padding: 1rem;
+  }
+
+  .section h2 {
+    font-size: 1.5rem;
+  }
+
+  .section p {
+    font-size: 0.95rem;
+  }
+}

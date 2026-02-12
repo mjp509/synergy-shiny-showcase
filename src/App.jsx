@@ -16,6 +16,7 @@ const CounterGenerator = lazy(() => import('./pages/CounterGenerator/CounterGene
 const RandomPokemon = lazy(() => import('./pages/RandomPokemon/RandomPokemon'))
 const ShinyWar2025 = lazy(() => import('./pages/ShinyWar2025/ShinyWar2025'))
 const PokemonDetail = lazy(() => import('./pages/PokemonDetail/PokemonDetail'))
+const About = lazy(() => import('./pages/About/About'))
 const AdminLogin = lazy(() => import('./pages/Admin/AdminLogin'))
 const AdminPanel = lazy(() => import('./pages/Admin/AdminPanel'))
 const NotFound = lazy(() => import('./pages/NotFound/NotFound'))
@@ -63,6 +64,7 @@ export default function App() {
             <Route path="/counter-generator" element={<CounterGenerator />} />
             <Route path="/random-pokemon-generator" element={<RandomPokemon />} />
             <Route path="/shiny-war-2025" element={<ShinyWar2025 />} />
+            <Route path="/about" element={<About />} />
             <Route path="/admin" element={<AdminLogin />} />
             <Route path="/admin/panel" element={<AdminPanel />} />
             <Route path="*" element={<NotFound />} />

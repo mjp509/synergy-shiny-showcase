@@ -1222,6 +1222,65 @@
   }
 }
 
+/* EV Yields in Basic Info */
+.basicInfoEVSection {
+  flex: 1;
+  min-width: 200px;
+  box-sizing: border-box;
+}
+
+@media (max-width: 480px) {
+  .basicInfoEVSection {
+    width: 100%;
+    min-width: unset;
+  }
+}
+
+.basicInfoEVLabel {
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.8rem;
+  display: block;
+}
+
+.basicInfoEVs {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.basicInfoEVRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  column-gap: 0.8rem;
+  font-size: 0.9rem;
+  padding: 0.5rem 0.8rem;
+  background: rgba(102, 126, 234, 0.08);
+  border-radius: 6px;
+  border: 1px solid rgba(102, 126, 234, 0.15);
+}
+
+@media (max-width: 480px) {
+  .basicInfoEVRow {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.basicInfoEVStat {
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 600;
+}
+
+.basicInfoEVValue {
+  color: rgba(102, 194, 255, 0.9);
+  font-weight: 700;
+  text-align: right;
+}
+
 /* Details Section */
 .detailsSection {
   display: flex;

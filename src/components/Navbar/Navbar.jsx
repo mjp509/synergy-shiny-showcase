@@ -13,6 +13,7 @@ const NAV_ITEMS = [
   { to: '/shiny-war-2025', label: 'Shiny Wars 2025' },
   { to: '/counter-generator', label: 'Counter Generator' },
   { to: '/random-pokemon-generator', label: 'Random Pokemon Generator' },
+  { to: '/about', label: 'About' },
 ]
 
 export default function Navbar() {

@@ -119,6 +119,31 @@ export function usePokemonDetails(pokemonName) {
           return defaultValue
         }
       }
+
+      // Extract EV yields from stats
+      const getEVYields = () => {
+        const evMap = {
+          'hp': 'HP',
+          'attack': 'ATK',
+          'defense': 'DEF',
+          'special-attack': 'SP.ATK',
+          'special-defense': 'SP.DEF',
+          'speed': 'SPD'
+        }
+        
+        const evYields = []
+        if (Array.isArray(pokemon.stats)) {
+          pokemon.stats.forEach(stat => {
+            if (stat.effort && stat.effort > 0) {
+              evYields.push({
+                stat: evMap[stat.stat_name] || stat.stat_name,
+                value: stat.effort
+              })
+            }
+          })
+        }
+        return evYields
+      }
       
       // Format moves with learning methods
       const formattedMoves = (pokemon.moves || [])
@@ -228,6 +253,7 @@ export function usePokemonDetails(pokemonName) {
           spDef: getStatValue('special-defense'),
           speed: getStatValue('speed'),
         },
+        evYields: getEVYields(),
         moves: formattedMoves,
         sprite: sprite,
         generation: getGeneration(pokedexId, normalizedName),

@@ -1317,6 +1317,20 @@ useDocumentHead({
                 )}
               </div>
             )}
+            {/* EV Yields */}
+            {pokemon.evYields && pokemon.evYields.length > 0 && (
+              <div className={styles.basicInfoEVSection}>
+                <span className={styles.basicInfoEVLabel}>EV Yields</span>
+                <div className={styles.basicInfoEVs}>
+                  {pokemon.evYields.map((ev, index) => (
+                    <div key={index} className={styles.basicInfoEVRow}>
+                      <span className={styles.basicInfoEVStat}>{ev.stat}</span>
+                      <span className={styles.basicInfoEVValue}>+{ev.value}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
           
           {/* Evolution Line */}

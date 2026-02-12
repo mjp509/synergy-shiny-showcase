@@ -1,0 +1,159 @@
+import { useDocumentHead } from '../../hooks/useDocumentHead'
+import { Link } from 'react-router-dom'
+import styles from './About.module.css'
+
+export default function About() {
+  useDocumentHead({
+    title: 'About SynergyMMO',
+    description: 'Learn about Team Synergy, a PokeMMO shiny hunting community. How to apply, and recent updates.',
+    canonicalPath: '/about',
+  })
+
+  return (
+    <div className={styles.aboutContainer}>
+      {/* About SynergyMMO Section */}
+      <section className={styles.section}>
+        <h2>About SynergyMMO</h2>
+        <p>
+          Team Synergy is PokeMMO community dedicated to shiny hunting, Our members Shiny hunt together, create fun events and share our excitement for PokeMMO.
+        </p>
+        <p>
+          With streamers, competitive events, and an expanding community website, Team Synergy brings together players from all over the world to enjoy PokeMMO together. Whether you're a casual hunter or a competitive shiny chaser, there's a place for you in Team Synergy.
+        </p>
+        <Link to="/" className={styles.showcaseButton}>
+          Check Out Our Shiny Showcase
+        </Link> 
+      </section>
+
+            {/* Streamers Section */}
+      <section className={styles.section}>
+        <h2>Our Streamers</h2>
+        <p>
+          We are incredibly proud to house some of the most passionate and dedicated PokeMMO streamers in the community. Our streaming team brings excitement, skill, and enthusiasm to their broadcasts, entertaining and inspiring viewers every day.
+        </p>
+        <p>
+          From intense shiny hunts to competitive battles, our streamers showcase the very best of PokeMMO gameplay. Whether you're looking for entertainment, hunting tips, or just want to hang out with awesome people, our streamers have something for everyone.
+        </p>
+        <Link to="/streamers" className={styles.showcaseButton}>
+          Meet Our Streamers
+        </Link>
+      </section>
+
+      {/* How to Apply Section */}
+      <section className={styles.section}>
+        <h2>How to Apply</h2>
+        <p>
+          Interested in joining Team Synergy? We're always looking for dedicated and friendly PokeMMO players to join our ranks. Here's how you can apply:
+        </p>
+        <h3>Requirements</h3>
+        <ul>
+          <li><strong>Age:</strong> 18+</li>
+          <li><strong>All 5 Regions completed</strong></li>
+          <li><strong>Minimum of 200 hours playtime</strong></li>
+        </ul>
+        <h3>How to Apply</h3>
+        <ol>
+          <li>Join our <a href="https://discord.gg/2BEUq6fWAj" target="_blank" rel="noopener noreferrer">Discord server</a></li>
+          <li>Check the #applications channel and check if our applications are currently Open</li>
+          <li>Fill out the application form</li>
+          <li>Our staff team will review your application</li>
+        </ol>
+        <p>
+          If you meet the requirements above and share our passion for PokeMMO, we'd love to hear from you!
+        </p>
+      </section>
+
+
+      <section className={styles.section}>
+        <h2>Changelog</h2>
+        <div className={styles.changelog}>
+          <div className={styles.changelogEntry}>
+            <h3>February 12, 2026</h3>
+            <ul>
+              <li>New Rare Pokemon section in location search</li>
+              <li>Fixed sprite rendering issues</li>
+              <li>Mobile layouts no longer overlapping (finally)</li>
+              <li>"Special" Pokemon forms (Tornadus, Thundurus, Landorus) now working</li>
+              <li>Fixed Meloetta and Keldeo forms</li>
+              <li>Wormadam display fixed</li>
+              <li>Mobile responsiveness improvements across the board</li>
+              <li>Added About page</li>
+              <li>Added EV Yields to Pokemon Pages</li>
+              <li>Fixed Pokemon Pages displaying incorrectly on Mobile Devices</li>
+            </ul>
+          </div>
+          <div className={styles.changelogEntry}>
+            <h3>February 11, 2026</h3>
+            <ul>
+              <li>Rewrote sprite system with better JSON data</li>
+              <li>Added form and gender selector</li>
+              <li>Pokedex now matches SHOTM style</li>
+              <li>Fixed Pokemon GIF scaling issues</li>
+              <li>Added Quick Ball to the catch calculator</li>
+              <li>Mobile filter menu is now collapsible</li>
+              <li>Stat bars look way better</li>
+              <li>Pokemon time display with seasons</li>
+              <li>Evolution lines and ability tooltips added</li>
+              <li>Branch evolutions actually work now</li>
+              <li>Click location cards to filter the Pokedex</li>
+            </ul>
+          </div>
+          <div className={styles.changelogEntry}>
+            <h3>February 10, 2026</h3>
+            <ul>
+              <li>Dropped the Pokemon Detail Pages!</li>
+              <li>Search by location and encounters</li>
+              <li>Type effectiveness and stat search tools</li>
+              <li>Full Pokedex redesign with way better filtering</li>
+              <li>Legendaries and special encounters now tracked</li>
+              <li>Genderless Pokemon handling fixed</li>
+              <li>Female-only Pokemon now showing up correctly</li>
+              <li>Gender ratios and ordering added</li>
+              <li>Fossil Pokemon tracking</li>
+              <li>Pokedex pages added to sitemap</li>
+            </ul>
+          </div>
+          <div className={styles.changelogEntry}>
+            <h3>February 9, 2026</h3>
+            <ul>
+              <li>Trophy Pages are here</li>
+              <li>Shiny Wars 2025 page with all the results of the 2025 OSW</li>
+              <li>Secret shiny glow effect on hover</li>
+              <li>New Streamers page for the team</li>
+              <li>Embedded links everywhere for easy navigation</li>
+              <li>Custom info boxes for events and achievements</li>
+              <li>Fixed deployment crashes</li>
+              <li>Sold/fled Pokemon now show on SHOTM, but do not add points</li>
+              <li>Mobile live preview working again</li>
+            </ul>
+          </div>
+          <div className={styles.changelogEntry}>
+            <h3>February 8, 2026</h3>
+            <ul>
+              <li>Events system</li>
+              <li>Switched to Puppeteer for prerendering</li>
+              <li>Faster prerendering overall</li>
+              <li>Event type settings added for different event type creation (obviously)</li>
+            </ul>
+          </div>
+          <div className={styles.changelogEntry}>
+            <h3>February 6-7, 2026</h3>
+            <ul>
+              <li>Streamers page now using Twitch directly</li>
+              <li>Fixed admin streamers tab issues</li>
+              <li>Counter Generator button styling fixed</li>
+              <li>Admin tabs now wrap on mobile</li>
+              <li>Reduced crazy hover scales on mobile</li>
+              <li>Better touch interactions overall</li>
+              <li>InfoBox positioning fixed on mobile</li>
+            </ul>
+          </div>
+        </div>
+        <div className={styles.metadata}>
+          <p><strong>Last Updated:</strong> February 12, 2026</p>
+          <p><strong>Contact:</strong> oHypers on Discord</p>
+        </div>
+      </section>
+    </div>
+  )
+}
