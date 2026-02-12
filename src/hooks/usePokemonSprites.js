@@ -2,12 +2,13 @@ import { useMemo } from 'react'
 import spritesData from '../data/pokemmo_data/pokemon-sprites.json'
 
 /**
- * Hook to get available sprites for a Pokemon
- * Returns animated shiny sprite as default, then other variants
+ * Hook to get available sprites for a Pokemon organized by generation
+ * Returns an object with generations as keys and arrays of sprites as values
+ * { "generation-i": [...], "generation-ii": [...], ... }
  */
 export function usePokemonSprites(pokemonName) {
   return useMemo(() => {
-    if (!pokemonName) return []
+    if (!pokemonName) return {}
 
     const pokemonLower = pokemonName.toLowerCase()
     const aliasMap = {
@@ -16,141 +17,181 @@ export function usePokemonSprites(pokemonName) {
       'shellos-west': 'shellos'
     }
     const lookupName = aliasMap[pokemonLower] || pokemonLower
-    const femaleOverrides = {
-      'frillish-f': {
-        animated: {
-          shiny: 'https://img.pokemondb.net/sprites/black-white/anim/shiny/frillish-f.gif',
-          normal: 'https://img.pokemondb.net/sprites/black-white/anim/normal/frillish-f.gif',
-        },
-        official: {
-          shiny: 'https://img.pokemondb.net/sprites/home/shiny/frillish-f.png',
-          normal: 'https://img.pokemondb.net/sprites/home/normal/frillish-f.png',
-        },
-      },
-      'jellicent-f': {
-        animated: {
-          shiny: 'https://img.pokemondb.net/sprites/black-white/anim/shiny/jellicent-f.gif',
-          normal: 'https://img.pokemondb.net/sprites/black-white/anim/normal/jellicent-f.gif',
-        },
-        official: {
-          shiny: 'https://img.pokemondb.net/sprites/home/shiny/jellicent-f.png',
-          normal: 'https://img.pokemondb.net/sprites/home/normal/jellicent-f.png',
-        },
-      },
-      'unfezant-f': {
-        animated: {
-          shiny: 'https://img.pokemondb.net/sprites/black-white/anim/shiny/unfezant-f.gif',
-          normal: 'https://img.pokemondb.net/sprites/black-white/anim/normal/unfezant-f.gif',
-        },
-        official: {
-          shiny: 'https://img.pokemondb.net/sprites/home/shiny/unfezant-f.png',
-          normal: 'https://img.pokemondb.net/sprites/home/normal/unfezant-f.png',
-        },
-      },
-    }
-    const femaleOverride = femaleOverrides[lookupName]
-    if (femaleOverride) {
-      const sprites = []
 
-      if (femaleOverride.animated?.shiny) {
-        sprites.push({
-          url: femaleOverride.animated.shiny,
-          label: 'Animated Shiny',
-          type: 'gif'
-        })
-      }
-
-      if (femaleOverride.animated?.normal) {
-        sprites.push({
-          url: femaleOverride.animated.normal,
-          label: 'Animated',
-          type: 'gif'
-        })
-      }
-
-      if (femaleOverride.official?.shiny) {
-        sprites.push({
-          url: femaleOverride.official.shiny,
-          label: 'Official Artwork Shiny',
-          type: 'image'
-        })
-      }
-
-      if (femaleOverride.official?.normal) {
-        sprites.push({
-          url: femaleOverride.official.normal,
-          label: 'Official Artwork',
-          type: 'image'
-        })
-      }
-
-      return sprites
-    }
     const spriteData = spritesData[lookupName]
 
-    if (!spriteData) return []
+    if (!spriteData) {
+      console.warn(`No sprite data found for: ${lookupName}`)
+      return {}
+    }
 
-    const sprites = []
+    const generationSprites = {}
+    const generations = ['generation-i', 'generation-ii', 'generation-iii', 'generation-iv', 'generation-v']
     
-    // Extract sprite URLs from new JSON structure
-    // Animated sprites from Generation V (Black-White) with animations
-    const animatedGen5 = spriteData.versions?.['generation-v']?.['black-white']?.animated
-    const otherSprites = spriteData.other
-    
-    // Animated Shiny (DEFAULT - comes first)
-    if (animatedGen5?.front_shiny) {
-      sprites.push({
-        url: animatedGen5.front_shiny,
-        label: 'Animated Shiny',
-        type: 'gif'
-      })
+    try {
+      // Iterate through each generation
+      for (const gen of generations) {
+        const genData = spriteData.sprites?.versions?.[gen]
+        if (!genData) continue
+
+        const genSprites = []
+        const versions = Object.keys(genData)
+
+        // For each version in the generation (e.g., 'red-blue', 'yellow', 'gold', etc.)
+        for (const version of versions) {
+          const versionData = genData[version]
+          if (!versionData) continue
+
+          // Use transparent sprites for Generation I and II
+          const isGenIOrII = gen === 'generation-i' || gen === 'generation-ii'
+
+          // Handle animated versions (generation-v has animated sprites)
+          if (versionData.animated) {
+            const animatedData = versionData.animated
+            if (animatedData.front_shiny) {
+              genSprites.push({
+                url: animatedData.front_shiny,
+                label: `${version.replace('-', ' ').toUpperCase()} - Animated Shiny`,
+                type: 'gif'
+              })
+            }
+            if (animatedData.front_default) {
+              genSprites.push({
+                url: animatedData.front_default,
+                label: `${version.replace('-', ' ').toUpperCase()} - Animated`,
+                type: 'gif'
+              })
+            }
+            // Add female variants if they exist
+            if (animatedData.front_shiny_female) {
+              genSprites.push({
+                url: animatedData.front_shiny_female,
+                label: `${version.replace('-', ' ').toUpperCase()} - Animated Shiny (Female)`,
+                type: 'gif'
+              })
+            }
+            if (animatedData.front_female) {
+              genSprites.push({
+                url: animatedData.front_female,
+                label: `${version.replace('-', ' ').toUpperCase()} - Animated (Female)`,
+                type: 'gif'
+              })
+            }
+          } else {
+            // Static sprites
+            if (isGenIOrII) {
+              // For Generation I and II, use transparent variants
+              if (versionData.front_shiny_transparent) {
+                genSprites.push({
+                  url: versionData.front_shiny_transparent,
+                  label: `${version.replace('-', ' ').toUpperCase()} - Shiny`,
+                  type: 'png'
+                })
+              }
+              if (versionData.front_transparent) {
+                genSprites.push({
+                  url: versionData.front_transparent,
+                  label: `${version.replace('-', ' ').toUpperCase()} - Normal`,
+                  type: 'png'
+                })
+              }
+              // Add female variants if they exist
+              if (versionData.front_shiny_transparent_female) {
+                genSprites.push({
+                  url: versionData.front_shiny_transparent_female,
+                  label: `${version.replace('-', ' ').toUpperCase()} - Shiny (Female)`,
+                  type: 'png'
+                })
+              }
+              if (versionData.front_transparent_female) {
+                genSprites.push({
+                  url: versionData.front_transparent_female,
+                  label: `${version.replace('-', ' ').toUpperCase()} - Normal (Female)`,
+                  type: 'png'
+                })
+              }
+            } else {
+              // For other generations, use regular sprites
+              if (versionData.front_shiny) {
+                genSprites.push({
+                  url: versionData.front_shiny,
+                  label: `${version.replace('-', ' ').toUpperCase()} - Shiny`,
+                  type: 'png'
+                })
+              }
+              if (versionData.front_default) {
+                genSprites.push({
+                  url: versionData.front_default,
+                  label: `${version.replace('-', ' ').toUpperCase()} - Normal`,
+                  type: 'png'
+                })
+              }
+              // Add female variants if they exist
+              if (versionData.front_shiny_female) {
+                genSprites.push({
+                  url: versionData.front_shiny_female,
+                  label: `${version.replace('-', ' ').toUpperCase()} - Shiny (Female)`,
+                  type: 'png'
+                })
+              }
+              if (versionData.front_female) {
+                genSprites.push({
+                  url: versionData.front_female,
+                  label: `${version.replace('-', ' ').toUpperCase()} - Normal (Female)`,
+                  type: 'png'
+                })
+              }
+            }
+          }
+        }
+
+        if (spriteData.sprites?.other?.['official-artwork']) {
+          const official = spriteData.sprites.other['official-artwork']
+          if (gen === 'generation-v') { 
+            if (official.front_shiny) {
+              genSprites.push({
+                url: official.front_shiny,
+                label: 'Official Artwork - Shiny',
+                type: 'png'
+              })
+            }
+            if (official.front_default) {
+              genSprites.push({
+                url: official.front_default,
+                label: 'Official Artwork - Normal',
+                type: 'png'
+              })
+            }
+            // Add female variants if they exist
+            if (official.front_shiny_female) {
+              genSprites.push({
+                url: official.front_shiny_female,
+                label: 'Official Artwork - Shiny (Female)',
+                type: 'png'
+              })
+            }
+            if (official.front_female) {
+              genSprites.push({
+                url: official.front_female,
+                label: 'Official Artwork - Normal (Female)',
+                type: 'png'
+              })
+            }
+          }
+        }
+
+        if (genSprites.length > 0) {
+          generationSprites[gen] = genSprites
+        }
+      }
+
+      if (Object.keys(generationSprites).length === 0) {
+        console.warn(`No sprites found for ${lookupName}`)
+      }
+    } catch (error) {
+      console.error(`Error processing sprites for ${lookupName}:`, error)
     }
 
-    // Animated Normal
-    if (animatedGen5?.front_default) {
-      sprites.push({
-        url: animatedGen5.front_default,
-        label: 'Animated',
-        type: 'gif'
-      })
-    }
-
-    // Official Artwork Shiny
-    if (otherSprites?.['official-artwork']?.front_shiny) {
-      sprites.push({
-        url: otherSprites['official-artwork'].front_shiny,
-        label: 'Official Artwork Shiny',
-        type: 'image'
-      })
-    }
-
-    // Official Artwork Normal
-    if (otherSprites?.['official-artwork']?.front_default) {
-      sprites.push({
-        url: otherSprites['official-artwork'].front_default,
-        label: 'Official Artwork',
-        type: 'image'
-      })
-    }
-
-    // Home (newer official artwork) Shiny
-    if (otherSprites?.home?.front_shiny) {
-      sprites.push({
-        url: otherSprites.home.front_shiny,
-        label: 'Home Shiny',
-        type: 'image'
-      })
-    }
-
-    // Home (newer official artwork) Normal
-    if (otherSprites?.home?.front_default) {
-      sprites.push({
-        url: otherSprites.home.front_default,
-        label: 'Home Artwork',
-        type: 'image'
-      })
-    }
-
-    return sprites
+    return generationSprites
   }, [pokemonName])
 }

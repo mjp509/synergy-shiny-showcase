@@ -1,28 +1,45 @@
 import { useMemo } from 'react'
-import generationData from '../data/generation.json'
+import spriteData from '../data/pokemmo_data/pokemon-sprites.json'
 
 /**
- * Creates a flat, ordered list of all Pokemon from generation data
+ * Creates an ordered list of all Pokemon by Pokedex number (ID)
+ * Only includes base Pokemon (no forms) for navigation
  * Returns object with all pokemon names and helper functions for navigation
  */
 export function usePokemonOrder() {
   return useMemo(() => {
-    // Flatten all pokemon from generation data into a single ordered array
-    const allPokemon = []
-    
-    Object.values(generationData).forEach(generationArray => {
-      generationArray.forEach(evolutionLine => {
-        evolutionLine.forEach(pokemonName => {
-          if (!allPokemon.includes(pokemonName)) {
-            allPokemon.push(pokemonName)
-          }
-        })
-      })
-    })
+    // Create array of base pokemon only (exclude forms - those with hyphens)
+    // Sort by Pokedex ID
+    const allPokemon = Object.entries(spriteData)
+      .filter(([name]) => !name.includes('-')) // Only base forms, no variants
+      .map(([name, data]) => ({
+        name,
+        id: data.id
+      }))
+      .sort((a, b) => a.id - b.id) // Sort by Pokedex number
+      .map(p => p.name) // Extract just the names
 
-    // Find index of a pokemon
+    // Get base form name (strip off form suffixes)
+    const getBasePokemonName = (pokemonName) => {
+      const lower = pokemonName.toLowerCase()
+      // If it's a form (contains hyphen), try to find the base form
+      if (lower.includes('-')) {
+        // Check if base exists by progressively removing suffixes
+        const parts = lower.split('-')
+        for (let i = parts.length - 1; i > 0; i--) {
+          const potentialBase = parts.slice(0, i).join('-')
+          if (allPokemon.find(p => p.toLowerCase() === potentialBase)) {
+            return potentialBase
+          }
+        }
+      }
+      return lower
+    }
+
+    // Find index of a pokemon (maps forms to their base for navigation)
     const getPokemonIndex = (pokemonName) => {
-      return allPokemon.findIndex(p => p.toLowerCase() === pokemonName.toLowerCase())
+      const baseName = getBasePokemonName(pokemonName)
+      return allPokemon.findIndex(p => p.toLowerCase() === baseName)
     }
 
     // Get next pokemon in order

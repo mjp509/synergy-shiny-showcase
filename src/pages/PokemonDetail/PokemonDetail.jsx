@@ -701,10 +701,12 @@ export default function PokemonDetail() {
   const { data: pokemon, isLoading, error } = usePokemonDetails(pokemonName)
   const { data: databaseData } = useDatabase()
   const { getNextPokemon, getPreviousPokemon } = usePokemonOrder()
-  const sprites = usePokemonSprites(pokemonName)
+  const spritesByGeneration = usePokemonSprites(pokemonName)
   const availableForms = usePokemonForms(pokemonName)
+  const [selectedGeneration, setSelectedGeneration] = useState('generation-v')
   const [currentSpriteIndex, setCurrentSpriteIndex] = useState(0)
   const [selectedForm, setSelectedForm] = useState(null)
+  const [selectedGender, setSelectedGender] = useState('male')
   const [loadedSpriteUrl, setLoadedSpriteUrl] = useState('')
   const [wildLevel, setWildLevel] = useState('')
   const [routeSearch, setRouteSearch] = useState('')
@@ -837,7 +839,15 @@ export default function PokemonDetail() {
   useEffect(() => {
     setCurrentSpriteIndex(0)
     setSelectedForm(pokemonName)
+    setSelectedGeneration('generation-v')
+    setSelectedGender('male')
   }, [pokemonName])
+  
+  // Reset sprite index when generation changes
+  useEffect(() => {
+    setCurrentSpriteIndex(0)
+    setSelectedGender('male')
+  }, [selectedGeneration])
   
   useEffect(() => {
     setLoadedSpriteUrl('')
@@ -901,12 +911,17 @@ export default function PokemonDetail() {
     return ownerMap
   }, [databaseData, pokemonName])
 
-  // Get animated shiny GIF for OG image
+  // Get animated shiny sprite for OG image (from JSON data)
   const animatedShinyGif = useMemo(() => {
-    if (!spriteName) return 'https://synergymmo.com/favicon.png'
-    const name = spriteName.toLowerCase().replace(/\s/g, '-')
-    return `https://img.pokemondb.net/sprites/black-white/anim/shiny/${name}.gif`
-  }, [spriteName])
+    const allGenerations = Object.keys(spritesByGeneration).sort()
+    if (allGenerations.length > 0) {
+      const firstGen = spritesByGeneration[allGenerations[0]]
+      if (firstGen && firstGen.length > 0 && firstGen[0]?.url) {
+        return firstGen[0].url
+      }
+    }
+    return 'https://synergymmo.com/favicon.png'
+  }, [spritesByGeneration])
 
 // Capitalize first letter helper
 const capitalize = (str) =>
@@ -1000,11 +1015,37 @@ useDocumentHead({
   const primaryType = pokemon.types[0]
   const typeColor = TYPE_COLORS[primaryType] || '#777'
   
+  // Get available generations and determine active generation
+  const availableGenerations = Object.keys(spritesByGeneration).sort()
+  // Use selectedGeneration if available, otherwise prefer generation-v, fallback to first available
+  let activeGeneration = selectedGeneration
+  if (!availableGenerations.includes(activeGeneration)) {
+    activeGeneration = availableGenerations.includes('generation-v') 
+      ? 'generation-v'
+      : availableGenerations[0]
+  }
+  
+  const currentGenerationSprites = spritesByGeneration[activeGeneration] || []
+  
+  // Filter sprites by gender
+  const filteredSprites = currentGenerationSprites.filter(sprite => {
+    if (selectedGender === 'female') {
+      return sprite.label.includes('(Female)')
+    }
+    return !sprite.label.includes('(Female)')
+  })
+  
+  // Check if female variants are available in current generation
+  const hasFemaleVariants = currentGenerationSprites.some(sprite => sprite.label.includes('(Female)'))
+  
+  // Reset sprite index if it's out of bounds after filtering
+  const validSpriteIndex = Math.min(currentSpriteIndex, filteredSprites.length - 1) 
+  
   // Get next/previous pokemon for navigation
   const nextPokemon = getNextPokemon(pokemonName)
   const prevPokemon = getPreviousPokemon(pokemonName)
-  const currentSprite = sprites.length > 0
-    ? sprites[currentSpriteIndex]
+  const currentSprite = (filteredSprites.length > 0 && filteredSprites[validSpriteIndex])
+    ? filteredSprites[validSpriteIndex]
     : { url: pokemon.sprite, label: pokemon.displayName, type: 'png' }
   const currentSpriteUrl = currentSprite?.url
   const isSpriteLoaded = loadedSpriteUrl === currentSpriteUrl
@@ -1071,7 +1112,7 @@ useDocumentHead({
         <section className={styles.imageSection}>
           <div className={styles.imageContainer}>
             <div className={styles.imageWrapper}>
-              {sprites.length > 0 ? (
+              {filteredSprites.length > 0 ? (
                 <picture>
                   {currentSprite.type === 'gif' ? (
                     <source srcSet={currentSpriteUrl} type="image/gif" />
@@ -1122,7 +1163,7 @@ useDocumentHead({
             </div>
             {availableForms.length > 1 && (
               <div className={styles.formSelector}>
-                <label className={styles.formSelectorLabel}>Form/Gender:</label>
+                <label className={styles.formSelectorLabel}>Available Forms:</label>
                 <div className={styles.formOptions}>
                   {availableForms.map((form) => (
                     <button
@@ -1141,27 +1182,70 @@ useDocumentHead({
                 </div>
               </div>
             )}
-            {sprites.length > 1 && (
-              <div className={styles.spriteNavigation}>
-                <button
-                  className={styles.spriteButton}
-                  onClick={() => setCurrentSpriteIndex((prev) => (prev === 0 ? sprites.length - 1 : prev - 1))}
-                  title="Previous sprite"
-                  aria-label="Previous sprite"
-                >
-                  ❮
-                </button>
-                <span className={styles.spriteLabel}>
-                  {sprites[currentSpriteIndex].label} ({currentSpriteIndex + 1}/{sprites.length})
-                </span>
-                <button
-                  className={styles.spriteButton}
-                  onClick={() => setCurrentSpriteIndex((prev) => (prev === sprites.length - 1 ? 0 : prev + 1))}
-                  title="Next sprite"
-                  aria-label="Next sprite"
-                >
-                  ❯
-                </button>
+            {availableGenerations.length > 0 && (
+              <div className={styles.spriteNavigationContainer}>
+                {availableGenerations.length > 1 && (
+                  <div className={styles.generationSelector}>
+                    <label className={styles.generationLabel}>Generation:</label>
+                    <select 
+                      value={activeGeneration} 
+                      onChange={(e) => setSelectedGeneration(e.target.value)}
+                      className={styles.generationSelect}
+                    >
+                      {availableGenerations.map((gen) => (
+                        <option key={gen} value={gen}>
+                          {gen.replace('generation-', 'Gen ').toUpperCase()}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+                
+                {hasFemaleVariants && (
+                  <div className={styles.genderSelector}>
+                    <label className={styles.genderLabel}>Gender:</label>
+                    <div className={styles.genderButtons}>
+                      <button
+                        className={`${styles.genderButton} ${selectedGender === 'male' ? styles.genderButtonActive : ''}`}
+                        onClick={() => setSelectedGender('male')}
+                        title="Male variants"
+                      >
+                        ♂ Male
+                      </button>
+                      <button
+                        className={`${styles.genderButton} ${selectedGender === 'female' ? styles.genderButtonActive : ''}`}
+                        onClick={() => setSelectedGender('female')}
+                        title="Female variants"
+                      >
+                        ♀ Female
+                      </button>
+                    </div>
+                  </div>
+                )}
+                
+                {filteredSprites.length > 1 && (
+                  <div className={styles.spriteNavigation}>
+                    <button
+                      className={styles.spriteButton}
+                      onClick={() => setCurrentSpriteIndex((prev) => (prev === 0 ? filteredSprites.length - 1 : prev - 1))}
+                      title="Previous sprite"
+                      aria-label="Previous sprite"
+                    >
+                      ❮
+                    </button>
+                    <span className={styles.spriteLabel}>
+                      {filteredSprites[validSpriteIndex]?.label} ({validSpriteIndex + 1}/{filteredSprites.length})
+                    </span>
+                    <button
+                      className={styles.spriteButton}
+                      onClick={() => setCurrentSpriteIndex((prev) => (prev === filteredSprites.length - 1 ? 0 : prev + 1))}
+                      title="Next sprite"
+                      aria-label="Next sprite"
+                    >
+                      ❯
+                    </button>
+                  </div>
+                )}
               </div>
             )}
           </div>

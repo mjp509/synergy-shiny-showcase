@@ -364,6 +364,25 @@
   }
 }
 
+/* Dynamically increase height when Pokemon has more than 5 forms */
+@media (max-width: 768px) {
+  .imageContainerManyForms {
+    height: 480px;
+  }
+}
+
+@media (max-width: 600px) {
+  .imageContainerManyForms {
+    height: 380px;
+  }
+}
+
+@media (max-width: 480px) {
+  .imageContainerManyForms {
+    height: 350px;
+  }
+}
+
 .imageContainer::before {
   content: '';
   position: absolute;
@@ -403,21 +422,68 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%) scale(var(--image-scale, 1));
+  transform: translate(-50%, -50%);
   image-rendering: pixelated;
   image-rendering: crisp-edges;
   z-index: 1;
   width: auto;
   height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  object-position: center;
   opacity: 0;
-  transition: opacity 0.12s ease, transform 0.12s ease;
-  will-change: transform, opacity;
+  transition: opacity 0.12s ease;
+  will-change: opacity;
 }
 
 .pokemonImage[src*="img.pokemondb.net"] {
   max-width: 100%;
-  max-height: 900px;
-  --image-scale: 2;
+  max-height: 1800px;
+}
+
+.pokemonImage[src*=".gif"] {
+  max-width: 500px;
+  max-height: 500px;
+  transform: translate(-50%, -50%) scale(2);
+}
+
+@media (max-width: 768px) {
+  .pokemonImage[src*=".gif"] {
+    max-width: 320px;
+    max-height: 320px;
+    transform: translate(-50%, -50%) scale(1.5);
+  }
+}
+
+@media (max-width: 480px) {
+  .pokemonImage[src*=".gif"] {
+    max-width: 220px;
+    max-height: 220px;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+.pokemonImage[src*=".png"] {
+  max-width: 500px;
+  max-height: 500px;
+  transform: translate(-50%, -50%) scale(2);
+}
+
+@media (max-width: 768px) {
+  .pokemonImage[src*=".png"] {
+    max-width: 320px;
+    max-height: 320px;
+    transform: translate(-50%, -50%) scale(1.5);
+  }
+}
+
+@media (max-width: 480px) {
+  .pokemonImage[src*=".png"] {
+    max-width: 220px;
+    max-height: 220px;
+    transform: translate(-50%, -50%) scale(1);
+  }
 }
 
 .pokemonImageLoading {
@@ -482,45 +548,26 @@
 }
 
 .pokemonImage[src*="raw.githubusercontent.com"] {
-  max-width: 60%;
-  max-height: 480px;
+  max-width: 100%;
+  max-height: 1200px;
 }
 
-.formSelector {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.3rem;
-  margin-top: 0.25rem;
-  padding: 0.5rem;
-  background: rgba(102, 126, 234, 0.1);
-  border-radius: 8px;
-  border: 1px solid rgba(102, 126, 234, 0.2);
-}
-
-.formSelectorLabel {
-  font-size: 0.7rem;
-  color: rgba(255, 255, 255, 0.8);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
 
 .formOptions {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.2rem;
+  gap: 0.4rem;
   justify-content: center;
   width: 100%;
 }
 
 .formButton {
-  padding: 0.25rem 0.5rem;
+  padding: 0.35rem 0.7rem;
   background: #1a1a1a;
   color: rgba(255, 255, 255, 0.7);
   border: 2px solid rgba(102, 126, 234, 0.3);
-  border-radius: 20px;
-  font-size: 0.72rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
   cursor: pointer;
   transition: all 0.3s ease;
   font-weight: 500;
@@ -539,15 +586,77 @@
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
 }
 
-@media (max-width: 480px) {
+.formSelector {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.formSelectorLabel {
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
   .formSelector {
-    padding: 0.75rem;
-    margin-top: 0.75rem;
+    padding: 0.35rem;
+    margin-top: 0.3rem;
+    gap: 0.2rem;
+  }
+
+  .formSelectorLabel {
+    font-size: 0.65rem;
+    text-align: center;
+  }
+
+  .formOptions {
+    gap: 0.2rem;
   }
 
   .formButton {
-    padding: 0.4rem 0.8rem;
-    font-size: 0.85rem;
+    padding: 0.15rem 0.3rem;
+    font-size: 0.6rem;
+    border-radius: 3px;
+    min-width: 24px;
+    height: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .formSelector {
+    padding: 0.3rem;
+    margin-top: 0.25rem;
+    gap: 0.15rem;
+  }
+
+  .formSelectorLabel {
+    font-size: 0.55rem;
+    letter-spacing: 0.25px;
+    text-align:  center;
+  }
+
+  .formOptions {
+    gap: 0.15rem;
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    padding: 0.2rem 0;
+  }
+
+  .formButton {
+    padding: 0.1rem 0.25rem;
+    font-size: 0.55rem;
+    border-radius: 2px;
+    border: 1px solid rgba(102, 126, 234, 0.3);
+    white-space: nowrap;
+    flex-shrink: 0;
+    min-width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }
 
@@ -566,12 +675,204 @@
   min-height: 60px;
 }
 
+@media (max-width: 768px) {
+  .spriteNavigation {
+    gap: 0.75rem;
+    padding: 0.75rem 0 0 0;
+    min-height: 50px;
+  }
+}
+
 @media (max-width: 480px) {
   .spriteNavigation {
     gap: 0.5rem;
-    padding: 0.75rem 0 0 0;
-    min-height: auto;
+    padding: 0.5rem 0 0 0;
+    min-height: 45px;
   }
+}
+
+.spriteNavigationContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: auto;
+  width: 100%;
+  padding: 1rem 0 0 0;
+  border-top: 1px solid rgba(102, 126, 234, 0.2);
+}
+
+@media (max-width: 768px) {
+  .spriteNavigationContainer {
+    gap: 0.75rem;
+    padding: 0.75rem 0 0 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .spriteNavigationContainer {
+    gap: 0.5rem;
+    padding: 0.5rem 0 0 0;
+  }
+}
+
+.generationSelector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+  .generationSelector {
+    gap: 0.5rem;
+    padding: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .generationSelector {
+    flex-direction: column;
+    gap: 0.3rem;
+    padding: 0.4rem 0;
+    width: 100%;
+  }
+}
+
+.generationLabel {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 600;
+}
+
+@media (max-width: 480px) {
+  .generationLabel {
+    font-size: 0.8rem;
+    width: 100%;
+    text-align: center;
+  }
+}
+
+.generationSelect {
+  background: rgba(102, 126, 234, 0.15);
+  color: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(102, 126, 234, 0.3);
+  border-radius: 6px;
+  padding: 0.5rem 0.8rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  min-width: 120px;
+}
+
+@media (max-width: 480px) {
+  .generationSelect {
+    width: 100%;
+    padding: 0.4rem 0.6rem;
+    font-size: 0.8rem;
+    min-width: unset;
+  }
+}
+
+.generationSelect:hover {
+  background: rgba(102, 126, 234, 0.25);
+  border-color: rgba(102, 126, 234, 0.5);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+}
+
+.generationSelect:focus {
+  outline: none;
+  background: rgba(102, 126, 234, 0.25);
+  border-color: rgba(102, 126, 234, 0.6);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.generationSelect option {
+  background: #14142a;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.genderSelector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+  .genderSelector {
+    gap: 0.5rem;
+    padding: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .genderSelector {
+    gap: 0.4rem;
+    padding: 0.4rem 0;
+    width: 100%;
+  }
+}
+
+.genderLabel {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 600;
+}
+
+@media (max-width: 480px) {
+  .genderLabel {
+    font-size: 0.8rem;
+    width: 100%;
+    text-align: center;
+  }
+}
+
+.genderButtons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+@media (max-width: 480px) {
+  .genderButtons {
+    gap: 0.4rem;
+    width: 100%;
+  }
+}
+
+.genderButton {
+  background: rgba(102, 126, 234, 0.15);
+  color: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(102, 126, 234, 0.3);
+  border-radius: 6px;
+  padding: 0.5rem 0.8rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+}
+
+@media (max-width: 480px) {
+  .genderButton {
+    flex: 1;
+    padding: 0.4rem 0.6rem;
+    font-size: 0.8rem;
+  }
+}
+
+.genderButton:hover {
+  background: rgba(102, 126, 234, 0.25);
+  border-color: rgba(102, 126, 234, 0.5);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+}
+
+.genderButtonActive {
+  background: rgba(74, 144, 226, 0.4);
+  border-color: rgba(74, 144, 226, 0.8);
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.4);
+  color: rgba(255, 255, 255, 1);
 }
 
 .spriteButton {
@@ -588,6 +889,22 @@
   justify-content: center;
   transition: all 0.3s ease;
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+@media (max-width: 768px) {
+  .spriteButton {
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .spriteButton {
+    width: 28px;
+    height: 28px;
+    font-size: 0.9rem;
+  }
 }
 
 .spriteButton:hover {
@@ -608,18 +925,25 @@
   white-space: nowrap;
   border: 1px solid rgba(102, 126, 234, 0.3);
   font-weight: 600;
-  min-width: 180px;
+  width: 240px;
   text-align: center;
-  max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
+@media (max-width: 768px) {
+  .spriteLabel {
+    width: 160px;
+    font-size: 0.75rem;
+    padding: 0.35rem 0.6rem;
+  }
+}
+
 @media (max-width: 480px) {
   .spriteLabel {
-    min-width: 120px;
-    font-size: 0.7rem;
-    padding: 0.3rem 0.5rem;
+    width: 120px;
+    font-size: 0.65rem;
+    padding: 0.3rem 0.4rem;
   }
 }
 
@@ -924,6 +1248,7 @@
   margin: 0 0 1rem;
   color: rgba(255, 255, 255, 0.95);
   letter-spacing: 0.5px;
+  text-align: center;
 }
 
 @media (max-width: 768px) {

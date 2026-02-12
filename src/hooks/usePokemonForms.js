@@ -90,11 +90,6 @@ export function usePokemonForms(pokemonName) {
 
     // Collect all variants for this base Pokemon
     const variants = []
-    const femaleOverrides = [
-      'frillish-f',
-      'jellicent-f',
-      'unfezant-f'
-    ]
     
     // Add the base form first
     variants.push({
@@ -128,23 +123,6 @@ export function usePokemonForms(pokemonName) {
         }
       }
     })
-
-    // Add female variants
-    femaleOverrides.forEach(variant => {
-      const variantLower = variant.toLowerCase()
-      if (variantLower.startsWith(baseName)) {
-        const existing = variants.find(v => v.name === variantLower)
-        if (!existing) {
-          variants.push({
-            name: variantLower,
-            label: getFormDisplayLabel(variantLower) + ' (Female)',
-            type: 'gender',
-            displayLabel: getFormDisplayLabel(variantLower) + ' ♀'
-          })
-        }
-      }
-    })
-
     // Sort: base first, then forms alphabetically, then female, special chars (! ?) at end
     variants.sort((a, b) => {
       // Base form first

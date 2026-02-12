@@ -18,11 +18,21 @@ export function usePokemonLocations(pokemonName) {
 
     if (!pokemon) return []
 
+    // Get the correct ID for this Pokemon
+    // For forms, use the ID from the default variety (base pokemon)
+    let pokedexId = pokemon.id
+    if (pokemon.varieties && Array.isArray(pokemon.varieties)) {
+      const defaultVariety = pokemon.varieties.find(v => v.is_default)
+      if (defaultVariety && defaultVariety.id) {
+        pokedexId = defaultVariety.id
+      }
+    }
+
     // Get locations from the pokemon's location_area_encounters
     const locations = (pokemon.location_area_encounters || [])
       .map(location => ({
         pokemon: pokemonLower,
-        pokemon_id: pokemon.id,
+        pokemon_id: pokedexId,
         type: location.type || '',
         region_id: location.region_id,
         region_name: location.region_name || '',

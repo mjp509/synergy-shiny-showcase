@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import pokemonData from '../data/pokemmo_data/pokemon-data.json'
+import spriteDataMap from '../data/pokemmo_data/pokemon-sprites.json'
 
 /**
  * Hook to fetch detailed Pokémon information from local JSON files
@@ -154,10 +155,20 @@ export function usePokemonDetails(pokemonName) {
         })
       }
       
+      // Get the correct ID for this Pokemon
+      // For forms, use the ID from the default variety (base pokemon)
+      let pokedexId = pokemon.id
+      if (pokemon.varieties && Array.isArray(pokemon.varieties)) {
+        const defaultVariety = pokemon.varieties.find(v => v.is_default)
+        if (defaultVariety && defaultVariety.id) {
+          pokedexId = defaultVariety.id
+        }
+      }
+      
       // Format location data from pokemon's location_area_encounters
       const locations = (pokemon.location_area_encounters || []).map(loc => ({
         pokemon: normalizedName,
-        pokemon_id: pokemon.id,
+        pokemon_id: pokedexId,
         type: loc.type || '',
         region_id: loc.region_id,
         region_name: loc.region_name || '',
@@ -183,19 +194,26 @@ export function usePokemonDetails(pokemonName) {
         return 'Generation V'
       }
       
-      const femaleSpriteOverrides = {
-        'frillish-f': 'https://img.pokemondb.net/sprites/home/normal/frillish-f.png',
-        'jellicent-f': 'https://img.pokemondb.net/sprites/home/normal/jellicent-f.png'
+      // Get sprite from new JSON structure with animated sprites as priority
+      let sprite = null
+      const spriteData = spriteDataMap[lookupName]
+      if (spriteData) {
+        // Try animated Gen V sprites first
+        sprite = spriteData.versions?.['generation-v']?.['black-white']?.animated?.front_default
+          // Fall back to official artwork
+          || spriteData.other?.['official-artwork']?.front_default
+          // Finally use the basic front_default
+          || spriteData.front_default
       }
-
-      // Get sprite from sprites
-      const sprite = femaleSpriteOverrides[normalizedName]
-        || pokemon.sprites?.front_default 
-        || `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png`
+      
+      // Last resort fallback
+      if (!sprite) {
+        sprite = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokedexId}.png`
+      }
       
       // Format the data for component use
       const formattedData = {
-        id: pokemon.id,
+        id: pokedexId,
         name: pokemon.name,
         displayName: displayNameMap[normalizedName] || pokemonName,
         height: 0.7, // Default fallback - height not in data
@@ -212,8 +230,8 @@ export function usePokemonDetails(pokemonName) {
         },
         moves: formattedMoves,
         sprite: sprite,
-        generation: getGeneration(pokemon.id, normalizedName),
-        description: `Pokémon ID: ${pokemon.id}. Base happiness: ${pokemon.base_happiness}. ${pokemon.is_legendary ? 'Legendary Pokémon.' : ''} ${pokemon.is_mythical ? 'Mythical Pokémon.' : ''}`,
+        generation: getGeneration(pokedexId, normalizedName),
+        description: `Pokémon ID: ${pokedexId}. Base happiness: ${pokemon.base_happiness}. ${pokemon.is_legendary ? 'Legendary Pokémon.' : ''} ${pokemon.is_mythical ? 'Mythical Pokémon.' : ''}`,
         color: 'unknown',
         baseExperience: pokemon.base_experience || 0,
         eggGroups: (pokemon.egg_groups || []).filter(Boolean),
