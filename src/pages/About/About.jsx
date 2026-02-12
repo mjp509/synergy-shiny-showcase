@@ -15,10 +15,10 @@ export default function About() {
       <section className={styles.section}>
         <h2>About SynergyMMO</h2>
         <p>
-          Team Synergy is PokeMMO community dedicated to shiny hunting, Our members Shiny hunt together, create fun events and share our excitement for PokeMMO.
+          Team Synergy is PokeMMO community dedicated to shiny hunting. Our members Shiny hunt together, create fun events and share our excitement for PokeMMO!
         </p>
         <p>
-          With streamers, competitive events, and an expanding community website, Team Synergy brings together players from all over the world to enjoy PokeMMO together. Whether you're a casual hunter or a competitive shiny chaser, there's a place for you in Team Synergy.
+          With streamers, competitive events, and an expanding community website, Team Synergy brings together players from all over the world to enjoy PokeMMO as a community. Whether you're a casual hunter or a competitive shiny chaser, there's a place for you in Team Synergy!
         </p>
         <Link to="/" className={styles.showcaseButton}>
           Check Out Our Shiny Showcase
@@ -32,7 +32,7 @@ export default function About() {
           We are incredibly proud to house some of the most passionate and dedicated PokeMMO streamers in the community. Our streaming team brings excitement, skill, and enthusiasm to their broadcasts, entertaining and inspiring viewers every day.
         </p>
         <p>
-          From intense shiny hunts to competitive battles, our streamers showcase the very best of PokeMMO gameplay. Whether you're looking for entertainment, hunting tips, or just want to hang out with awesome people, our streamers have something for everyone.
+          From intense shiny hunts to competitive battles, our streamers showcase the very best of PokeMMO gameplay. Whether you're looking for hunting tips, or just want to hang out with awesome people, check them out!
         </p>
         <Link to="/streamers" className={styles.showcaseButton}>
           Meet Our Streamers
