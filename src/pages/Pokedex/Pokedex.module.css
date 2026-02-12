@@ -436,6 +436,70 @@
   }
 }
 
+/* Location lookup grid - designed for items with additional labels below */
+.locationGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, 100px);
+  grid-auto-rows: 100px;
+  gap: 10px;
+  row-gap: 20px;
+  width: 100%;
+  padding: 20px 0;
+  justify-content: center;
+}
+
+@media (max-width: 1400px) {
+  .locationGrid {
+    grid-template-columns: repeat(auto-fit, 70px);
+    grid-auto-rows: 70px;
+    gap: 9px;
+    row-gap: 55px;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 1200px) {
+  .locationGrid {
+    grid-template-columns: repeat(auto-fit, 65px);
+    grid-auto-rows: 65px;
+    gap: 8px;
+    row-gap: 60px;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 900px) {
+  .locationGrid {
+    grid-template-columns: repeat(auto-fit, 100px);
+    grid-auto-rows: 75px;
+    gap: 7px;
+    row-gap: 50px;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 600px) {
+  .locationGrid {
+    grid-template-columns: repeat(5, 75px);
+    gap: 10px;
+    row-gap: 80px;
+    padding: 15px 0;
+    justify-content: center;
+    align-content: center;
+  }
+}
+
+@media (max-width: 400px) {
+  .locationGrid {
+    grid-template-columns: repeat(4, 70px);
+    gap: 8px;
+    row-gap: 35px;
+    padding: 10px 0;
+    justify-content: center;
+    align-content: center;
+  }
+}
+
 .pokemonContainer {
   width: 100%;
   height: 100%;
@@ -731,9 +795,9 @@
 
 @media (max-width: 600px) {
   .rarityLabel {
-    padding: 1px 2px;
-    font-size: 0.42rem;
-    min-width: 24px;
+    padding: 2px 4px;
+    font-size: 0.55rem;
+    min-width: 32px;
     top: -4px;
     right: -4px;
     border: 1px solid rgba(0, 0, 0, 0.4);
@@ -743,9 +807,9 @@
 
 @media (max-width: 400px) {
   .rarityLabel {
-    padding: 1px 1px;
-    font-size: 0.38rem;
-    min-width: 18px;
+    padding: 2px 3px;
+    font-size: 0.48rem;
+    min-width: 26px;
     top: -3px;
     right: -3px;
     border: 1px solid rgba(0, 0, 0, 0.3);
@@ -826,9 +890,6 @@
 
   /* Responsive sizing for location filter Pokemon containers */
   .locationPokemonItem {
-    width: 80px !important;
-    height: 80px !important;
-    margin: 6px !important;
     display: block !important;
   }
 
@@ -852,49 +913,30 @@
 
 @media (max-width: 1400px) {
   .locationPokemonItem {
-    width: 100px !important;
-    height: 100px !important;
     display: block !important;
   }
 }
 
 @media (max-width: 1200px) {
   .locationPokemonItem {
-    width: 90px !important;
     display: block !important;
-    height: 90px !important;
   }
 }
 
 @media (max-width: 900px) {
   .locationPokemonItem {
-    width: 80px !important;
     display: block !important;
-    height: 80px !important;
   }
 }
 
 @media (max-width: 600px) {
   .locationPokemonItem {
-    width: 45px !important;
-    height: 45px !important;
-    margin: 0 2px 20px 2px !important;
-  }
-
-  .locationPokemonItem > div[style*="bottom: -22px"] {
-    font-size: 0.55rem !important;
-    width: 55px !important;
-  }
-
-  .locationPokemonItem > div[style*="bottom: -22px"] > div {
-    font-size: 0.55rem !important;
+    display: block !important;
   }
 }
 
 @media (max-width: 400px) {
   .locationPokemonItem {
-    width: 25px !important;
-    height: 25px !important;
-    margin: 0 2px 20px 2px !important;
+    display: block !important;
   }
 }

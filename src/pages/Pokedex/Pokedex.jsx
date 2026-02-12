@@ -1728,7 +1728,7 @@ export default function Pokedex() {
                       {getEncounterTypeDesc(type)}
                     </p>
                   </div>
-                  <div className={styles.grid}>
+                  <div className={styles.locationGrid}>
                     {pokemonList.map((pokemonData, idx) => {
                       const pokemon = pokemonData.name
                       const normalized = normalizePokemonName(pokemon)
