@@ -419,6 +419,8 @@
     gap: 8px;
     row-gap: 20px;
     justify-content: center;
+    justify-items: center;
+    align-items: center;
     max-width: calc(100% - 20px);
     margin: 0 auto;
   }
@@ -431,6 +433,8 @@
     gap: 8px;
     row-gap: 20px;
     justify-content: center;
+    justify-items: center;
+    align-items: center;
     max-width: calc(100% - 16px);
     margin: 0 auto;
   }
@@ -731,25 +735,25 @@
 
 @media (max-width: 600px) {
   .rarityLabel {
-    padding: 2px 4px;
-    font-size: 0.55rem;
-    min-width: 35px;
-    top: -7px;
-    right: -7px;
+    padding: 1px 2px;
+    font-size: 0.42rem;
+    min-width: 24px;
+    top: -4px;
+    right: -4px;
     border: 1px solid rgba(0, 0, 0, 0.4);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
   }
 }
 
 @media (max-width: 400px) {
   .rarityLabel {
-    padding: 1.5px 3px;
-    font-size: 0.5rem;
-    min-width: 30px;
-    top: -5px;
-    right: -5px;
+    padding: 1px 1px;
+    font-size: 0.38rem;
+    min-width: 18px;
+    top: -3px;
+    right: -3px;
     border: 1px solid rgba(0, 0, 0, 0.3);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
   }
 }
 /* Mobile Collapsible Filter Menu */
@@ -876,18 +880,48 @@
 
 @media (max-width: 600px) {
   .locationPokemonItem {
-    width: 70px !important;
-    display: block !important;
-    height: 70px !important;
-    margin: 4px !important;
+    width: 35px !important;
+    height: 35px !important;
+    margin: 0 2px 20px 2px !important;
+  }
+
+  .locationPokemonItem > div[style*="bottom: -22px"] {
+    font-size: 0.55rem !important;
+    width: 55px !important;
+  }
+
+  .locationPokemonItem > div[style*="bottom: -22px"] > div {
+    font-size: 0.55rem !important;
+  }
+
+  .locationPokemonItem > div[style*="bottom: -30px"] {
+    font-size: 0.48rem !important;
+    padding: 2px 4px !important;
+    min-width: 40px !important;
+    max-width: 80px !important;
   }
 }
 
 @media (max-width: 400px) {
   .locationPokemonItem {
-    width: 60px !important;
-    display: block !important;
-    height: 60px !important;
-    margin: 3px !important;
+    width: 25px !important;
+    height: 25px !important;
+    margin: 0 2px 20px 2px !important;
+  }
+
+  .locationPokemonItem > div[style*="bottom: -22px"] {
+    font-size: 0.45rem !important;
+    width: 45px !important;
+  }
+
+  .locationPokemonItem > div[style*="bottom: -22px"] > div {
+    font-size: 0.45rem !important;
+  }
+
+  .locationPokemonItem > div[style*="bottom: -30px"] {
+    font-size: 0.4rem !important;
+    padding: 1px 3px !important;
+    min-width: 30px !important;
+    max-width: 60px !important;
   }
 }
