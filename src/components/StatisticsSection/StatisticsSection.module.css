@@ -15,6 +15,98 @@
   letter-spacing: 1px;
 }
 
+/* Main Stats Dropdown */
+.mainStatsDropdown {
+  margin-bottom: 1.5rem;
+  border-radius: 12px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #0a0e27 0%, #1a1a3e 100%);
+  border: 2px solid #DAA520;
+  box-shadow: 0 0 15px rgba(218, 165, 32, 0.3);
+  transition: all 0.3s ease;
+}
+
+.mainStatsDropdown:hover {
+  box-shadow: 0 0 25px rgba(255, 215, 0, 0.6);
+}
+
+.mainStatsButton {
+  width: 100%;
+  padding: 1.2rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: linear-gradient(90deg, rgba(218, 165, 32, 0.12) 0%, rgba(218, 165, 32, 0.06) 100%);
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-bottom: 2px solid #FFEB99;
+}
+
+.mainStatsButton:hover {
+  background: linear-gradient(90deg, rgba(218, 165, 32, 0.18) 0%, rgba(218, 165, 32, 0.1) 100%);
+}
+
+.mainStatsContent {
+  padding: 1.5rem;
+  animation: slideDown 0.3s ease;
+  max-height: 10000px;
+  transition: all 0.3s ease;
+}
+
+.mainStatsContent.closing {
+  animation: slideUp 0.3s ease forwards;
+}
+
+/* Nested Categories */
+.nestedCategory {
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  overflow: hidden;
+  background: rgba(218, 165, 32, 0.05);
+  border: 1px solid rgba(218, 165, 32, 0.3);
+  transition: all 0.3s ease;
+}
+
+.nestedCategory:hover {
+  border-color: rgba(218, 165, 32, 0.6);
+  background: rgba(218, 165, 32, 0.08);
+}
+
+.categoryHeader {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(218, 165, 32, 0.08);
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 500;
+  border-left: 3px solid #FFD700;
+}
+
+.categoryHeader:hover {
+  background: rgba(218, 165, 32, 0.12);
+}
+
+.categoryContent {
+  padding: 1rem;
+  animation: slideDown 0.3s ease;
+  max-height: 10000px;
+  transition: all 0.3s ease;
+}
+
+.categoryContent.closing {
+  animation: slideUp 0.3s ease forwards;
+}
+
 /* Collapsible Sections */
 .collapsibleSection {
   margin-bottom: 1.5rem;
@@ -85,6 +177,17 @@
   to {
     opacity: 1;
     max-height: 2000px;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 1;
+    max-height: 2000px;
+  }
+  to {
+    opacity: 0;
+    max-height: 0;
   }
 }
 

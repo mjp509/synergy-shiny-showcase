@@ -18,7 +18,10 @@ const TIER_POKEMON = {
 }
 
 export default function StatisticsSection({ playerData, playerName }) {
-  const [expandedSection, setExpandedSection] = useState(null)
+  const [statsExpanded, setStatsExpanded] = useState(false)
+  const [expandedCategory, setExpandedCategory] = useState(null)
+  const [closingCategory, setClosingCategory] = useState(null)
+  const [statsClosing, setStatsClosing] = useState(false)
   const [zoomModalOpen, setZoomModalOpen] = useState(false)
   const [zoomModalContent, setZoomModalContent] = useState(null)
   const [zoomModalTitle, setZoomModalTitle] = useState('')
@@ -140,24 +143,52 @@ export default function StatisticsSection({ playerData, playerName }) {
 
   if (!stats) return null
 
-  const toggleSection = section => {
-    setExpandedSection(expandedSection === section ? null : section)
+  const toggleStats = () => {
+    if (statsExpanded) {
+      // Closing - show animation then hide
+      setStatsClosing(true)
+      setTimeout(() => {
+        setStatsExpanded(false)
+        setStatsClosing(false)
+      }, 300)
+    } else {
+      setStatsExpanded(true)
+      setStatsClosing(false)
+    }
   }
 
-  // --- Component: Collapsible Section ---
-  const CollapsibleSection = ({ title, icon, section, children }) => (
-    <div className={styles.collapsibleSection}>
+  const toggleCategory = category => {
+    if (expandedCategory === category) {
+      // Closing category - show animation then hide
+      setClosingCategory(category)
+      setTimeout(() => {
+        setExpandedCategory(null)
+        setClosingCategory(null)
+      }, 300)
+    } else {
+      setExpandedCategory(category)
+      setClosingCategory(null)
+    }
+  }
+
+  // --- Component: Nested Category ---
+  const NestedCategory = ({ title, icon, category, children }) => (
+    <div className={styles.nestedCategory}>
       <button
-        className={styles.sectionHeader}
-        onClick={() => toggleSection(section)}
+        className={styles.categoryHeader}
+        onClick={() => toggleCategory(category)}
       >
         <span className={styles.icon}>{icon}</span>
         <span className={styles.title}>{title}</span>
-        <span className={`${styles.arrow} ${expandedSection === section ? styles.expanded : ''}`}>
+        <span className={`${styles.arrow} ${statsExpanded || expandedCategory === category ? styles.expanded : ''}`}>
           ▼
         </span>
       </button>
-      {expandedSection === section && <div className={styles.sectionContent}>{children}</div>}
+      {(statsExpanded || expandedCategory === category) && (
+        <div className={`${styles.categoryContent} ${closingCategory === category ? styles.closing : ''}`}>
+          {children}
+        </div>
+      )}
     </div>
   )
 
@@ -606,150 +637,129 @@ export default function StatisticsSection({ playerData, playerName }) {
     <div className={styles.statisticsSection}>
       <h2 className={styles.mainTitle}>📊 Shiny Statistics</h2>
 
-      {/* General Stats */}
-      <CollapsibleSection
-        title={
-          <HoverTooltip
-            content={
-              stats.missingPokemon.length > 0 ? (
-                <div>
-                  <div style={{ marginBottom: '0.5rem', fontWeight: '600' }}>
-                    {stats.missingPokemon.length} Pokemon without encounter data:
-                  </div>
-                  <div style={{ maxHeight: '200px', overflowY: 'auto' }}>
-                    {stats.missingPokemon.map((p, idx) => (
-                      <div key={idx} style={{ marginBottom: '0.25rem' }}>
-                        • {p.Pokemon}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ) : (
-                'All Pokemon have encounter data!'
-              )
-            }
-          >
-            General Statistics ({stats.shinyCount}/{stats.totalShinies})
-          </HoverTooltip>
-        }
-        icon="📈"
-        section="general"
-      >
-        <div className={styles.statsGrid}>
-          <StatCard label="Total Encounters" value={stats.totalEncounters.toLocaleString()} />
-          <StatCard 
-            label="Average per Shiny" 
-            value={stats.avgEncounters.toLocaleString()} 
-            subtext={`with ${stats.shinyCount}/${stats.totalShinies} data`} 
-          />
-          <StatCard
-            label="Most Encounters"
-            value={stats.maxEncounterPokemon?.Pokemon ? stats.maxEncounterPokemon.Pokemon.charAt(0).toUpperCase() + stats.maxEncounterPokemon.Pokemon.slice(1) : 'N/A'}
-            subtext={`${stats.maxEncounterPokemon?.encounter_count.toLocaleString() || 0} encounters`}
-          />
-          <StatCard
-            label="Least Encounters"
-            value={stats.minEncounterPokemon?.Pokemon ? stats.minEncounterPokemon.Pokemon.charAt(0).toUpperCase() + stats.minEncounterPokemon.Pokemon.slice(1) : 'N/A'}
-            subtext={`${stats.minEncounterPokemon?.encounter_count.toLocaleString() || 0} encounters`}
-          />
-          <StatCard
-            label="Top Region"
-            value={stats.topRegion?.[0] || 'N/A'}
-            subtext={`${stats.topRegion?.[1] || 0} shinies`}
-          />
-        </div>
-      </CollapsibleSection>
-
-      {/* Hunting Methods */}
-      <CollapsibleSection title="Hunting Methods" icon="🎣" section="methods">
-        <div className={styles.methodsTable}>
-          <div className={styles.methodsHeader}>
-            <div className={styles.methodsHeaderCell}>Method</div>
-            <div className={styles.methodsHeaderCell}>Count</div>
-            <div className={styles.methodsHeaderCell}>Percentage</div>
-            <div className={styles.methodsHeaderCell}>Total Encounters</div>
-            <div className={styles.methodsHeaderCell}>Avg Encounter/Shiny</div>
-          </div>
-          {Object.entries(stats.methodCounts)
-            .sort((a, b) => b[1].count - a[1].count)
-            .map(([method, data]) => (
-              <div key={method} className={styles.methodsRow}>
-                <div className={styles.methodsCell}>{method}</div>
-                <div className={styles.methodsCell}>{data.count}</div>
-                <div className={styles.methodsCell}>{((data.count / stats.totalShinies) * 100).toFixed(1)}%</div>
-                <div className={styles.methodsCell}>{data.totalEncounters.toLocaleString()}</div>
-                <div className={styles.methodsCell}>{data.avgEncounters.toLocaleString()}</div>
-              </div>
-            ))}
-        </div>
-      </CollapsibleSection>
-
-      {/* Region Stats */}
-      <CollapsibleSection title="Region Distribution" icon="🗺️" section="regions">
-        <PieChart data={stats.regionCounts} title="Shinies by Region" />
-      </CollapsibleSection>
-
-      {/* Encounter Charts */}
-      {stats.shiniesWithEncounters.length > 0 && (
-        <CollapsibleSection
-          title={`Encounter Analysis (${stats.shinyCount} Pokémon)`}
-          icon="📉"
-          section="encounters"
+      {/* Main Statistics Dropdown */}
+      <div className={styles.mainStatsDropdown}>
+        <button
+          className={styles.mainStatsButton}
+          onClick={toggleStats}
         >
-          <div className={styles.encounterGraphsDesktop}>
-            <div 
-              onClick={() => openZoomModal(
-                <ZoomableChart>
-                  <BarChart
-                    data={stats.shiniesWithEncounters.reduce((acc, s) => {
-                      acc[s.nickname || s.Pokemon] = s.encounter_count
-                      return acc
-                    }, {})}
-                    maxValue={Math.max(...stats.shiniesWithEncounters.map(s => s.encounter_count))}
-                    title="Encounters per Pokémon"
-                    pokemonData={stats.shiniesWithEncounters}
-                  />
-                </ZoomableChart>,
-                'Encounters per Pokémon'
-              )}
-              style={{ cursor: 'pointer', position: 'relative' }}
-            >
-              <BarChart
-                data={stats.shiniesWithEncounters.reduce((acc, s) => {
-                  acc[s.nickname || s.Pokemon] = s.encounter_count
-                  return acc
-                }, {})}
-                maxValue={Math.max(...stats.shiniesWithEncounters.map(s => s.encounter_count))}
-                title="Encounters per Pokémon"
-                pokemonData={stats.shiniesWithEncounters}
-              />
-              <div className={styles.zoomIndicator}>
-                👆 Click to zoom
-              </div>
-            </div>
+          <span className={styles.icon}>📈</span>
+          <span className={styles.title}>Statistics Dashboard</span>
+          <span className={`${styles.arrow} ${statsExpanded ? styles.expanded : ''}`}>
+            ▼
+          </span>
+        </button>
 
-            <div 
-              onClick={() => openZoomModal(
-                <ZoomableChart>
-                  <LineChart data={stats.shiniesWithEncounters} title="Encounter Progression" />
-                </ZoomableChart>,
-                'Encounter Progression'
-              )}
-              style={{ cursor: 'pointer', position: 'relative' }}
+        {statsExpanded && (
+          <div className={`${styles.mainStatsContent} ${statsClosing ? styles.closing : ''}`}>
+            {/* General Stats Category */}
+            <NestedCategory
+              title={
+                <HoverTooltip
+                  content={
+                    stats.missingPokemon.length > 0 ? (
+                      <div>
+                        <div style={{ marginBottom: '0.5rem', fontWeight: '600' }}>
+                          {stats.missingPokemon.length} Pokemon without encounter data:
+                        </div>
+                        <div style={{ maxHeight: '200px', overflowY: 'auto' }}>
+                          {stats.missingPokemon.map((p, idx) => (
+                            <div key={idx} style={{ marginBottom: '0.25rem' }}>
+                              • {p.Pokemon}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ) : (
+                      'All Pokemon have encounter data!'
+                    )
+                  }
+                >
+                  General Statistics ({stats.shinyCount}/{stats.totalShinies})
+                </HoverTooltip>
+              }
+              icon="📊"
+              category="general"
             >
-              <LineChart data={stats.shiniesWithEncounters} title="Encounter Progression" />
-              <div className={styles.zoomIndicator}>
-                👆 Click to zoom
+              <div className={styles.statsGrid}>
+                <StatCard label="Total Encounters" value={stats.totalEncounters.toLocaleString()} />
+                <StatCard 
+                  label="Average per Shiny" 
+                  value={stats.avgEncounters.toLocaleString()} 
+                  subtext={`with ${stats.shinyCount}/${stats.totalShinies} data`} 
+                />
+                <StatCard
+                  label="Most Encounters"
+                  value={stats.maxEncounterPokemon?.Pokemon ? stats.maxEncounterPokemon.Pokemon.charAt(0).toUpperCase() + stats.maxEncounterPokemon.Pokemon.slice(1) : 'N/A'}
+                  subtext={`${stats.maxEncounterPokemon?.encounter_count.toLocaleString() || 0} encounters`}
+                />
+                <StatCard
+                  label="Least Encounters"
+                  value={stats.minEncounterPokemon?.Pokemon ? stats.minEncounterPokemon.Pokemon.charAt(0).toUpperCase() + stats.minEncounterPokemon.Pokemon.slice(1) : 'N/A'}
+                  subtext={`${stats.minEncounterPokemon?.encounter_count.toLocaleString() || 0} encounters`}
+                />
+                <StatCard
+                  label="Top Region"
+                  value={stats.topRegion?.[0] || 'N/A'}
+                  subtext={`${stats.topRegion?.[1] || 0} shinies`}
+                />
               </div>
-            </div>
-          </div>
+            </NestedCategory>
 
-          <div className={styles.encounterTableMobile}>
-            <div className={styles.graphsButtonContainer}>
-              <button 
-                className={styles.graphsZoomButton}
-                onClick={() => openZoomModal(
-                  <ZoomableChart>
+            {/* Hunting Methods Category */}
+            <NestedCategory title="Hunting Methods" icon="🎣" category="methods">
+              <div className={styles.methodsTable}>
+                <div className={styles.methodsHeader}>
+                  <div className={styles.methodsHeaderCell}>Method</div>
+                  <div className={styles.methodsHeaderCell}>Count</div>
+                  <div className={styles.methodsHeaderCell}>Percentage</div>
+                  <div className={styles.methodsHeaderCell}>Total Encounters</div>
+                  <div className={styles.methodsHeaderCell}>Avg Encounter/Shiny</div>
+                </div>
+                {Object.entries(stats.methodCounts)
+                  .sort((a, b) => b[1].count - a[1].count)
+                  .map(([method, data]) => (
+                    <div key={method} className={styles.methodsRow}>
+                      <div className={styles.methodsCell}>{method}</div>
+                      <div className={styles.methodsCell}>{data.count}</div>
+                      <div className={styles.methodsCell}>{((data.count / stats.totalShinies) * 100).toFixed(1)}%</div>
+                      <div className={styles.methodsCell}>{data.totalEncounters.toLocaleString()}</div>
+                      <div className={styles.methodsCell}>{data.avgEncounters.toLocaleString()}</div>
+                    </div>
+                  ))}
+              </div>
+            </NestedCategory>
+
+            {/* Region Stats Category */}
+            <NestedCategory title="Region Distribution" icon="🗺️" category="regions">
+              <PieChart data={stats.regionCounts} title="Shinies by Region" />
+            </NestedCategory>
+
+            {/* Encounter Charts Category */}
+            {stats.shiniesWithEncounters.length > 0 && (
+              <NestedCategory
+                title={`Encounter Analysis (${stats.shinyCount} Pokémon)`}
+                icon="📉"
+                category="encounters"
+              >
+                <div className={styles.encounterGraphsDesktop}>
+                  <div 
+                    onClick={() => openZoomModal(
+                      <ZoomableChart>
+                        <BarChart
+                          data={stats.shiniesWithEncounters.reduce((acc, s) => {
+                            acc[s.nickname || s.Pokemon] = s.encounter_count
+                            return acc
+                          }, {})}
+                          maxValue={Math.max(...stats.shiniesWithEncounters.map(s => s.encounter_count))}
+                          title="Encounters per Pokémon"
+                          pokemonData={stats.shiniesWithEncounters}
+                        />
+                      </ZoomableChart>,
+                      'Encounters per Pokémon'
+                    )}
+                    style={{ cursor: 'pointer', position: 'relative' }}
+                  >
                     <BarChart
                       data={stats.shiniesWithEncounters.reduce((acc, s) => {
                         acc[s.nickname || s.Pokemon] = s.encounter_count
@@ -759,50 +769,89 @@ export default function StatisticsSection({ playerData, playerName }) {
                       title="Encounters per Pokémon"
                       pokemonData={stats.shiniesWithEncounters}
                     />
-                  </ZoomableChart>,
-                  'Encounters per Pokémon'
-                )}
-              >
-                📊 Bar Graph
-              </button>
-              <button 
-                className={styles.graphsZoomButton}
-                onClick={() => openZoomModal(
-                  <ZoomableChart>
+                    <div className={styles.zoomIndicator}>
+                      👆 Click to zoom
+                    </div>
+                  </div>
+
+                  <div 
+                    onClick={() => openZoomModal(
+                      <ZoomableChart>
+                        <LineChart data={stats.shiniesWithEncounters} title="Encounter Progression" />
+                      </ZoomableChart>,
+                      'Encounter Progression'
+                    )}
+                    style={{ cursor: 'pointer', position: 'relative' }}
+                  >
                     <LineChart data={stats.shiniesWithEncounters} title="Encounter Progression" />
-                  </ZoomableChart>,
-                  'Encounter Progression'
+                    <div className={styles.zoomIndicator}>
+                      👆 Click to zoom
+                    </div>
+                  </div>
+                </div>
+
+                <div className={styles.encounterTableMobile}>
+                  <div className={styles.graphsButtonContainer}>
+                    <button 
+                      className={styles.graphsZoomButton}
+                      onClick={() => openZoomModal(
+                        <ZoomableChart>
+                          <BarChart
+                            data={stats.shiniesWithEncounters.reduce((acc, s) => {
+                              acc[s.nickname || s.Pokemon] = s.encounter_count
+                              return acc
+                            }, {})}
+                            maxValue={Math.max(...stats.shiniesWithEncounters.map(s => s.encounter_count))}
+                            title="Encounters per Pokémon"
+                            pokemonData={stats.shiniesWithEncounters}
+                          />
+                        </ZoomableChart>,
+                        'Encounters per Pokémon'
+                      )}
+                    >
+                      📊 Bar Graph
+                    </button>
+                    <button 
+                      className={styles.graphsZoomButton}
+                      onClick={() => openZoomModal(
+                        <ZoomableChart>
+                          <LineChart data={stats.shiniesWithEncounters} title="Encounter Progression" />
+                        </ZoomableChart>,
+                        'Encounter Progression'
+                      )}
+                    >
+                      📈 Line Graph
+                    </button>
+                  </div>
+                  <EncounterDataTable data={stats.shiniesWithEncounters} />
+                </div>
+
+                {/* Encounter Distribution with Ranges */}
+                {stats.maxEncounterPokemon && (
+                  <div className={styles.chartContainer}>
+                    <h4 className={styles.chartTitle}>How Encounters Spread Out (Low to High)</h4>
+                    <EnterpriseDistributionPie 
+                      shinies={stats.shiniesWithEncounters}
+                      maxEncounters={stats.maxEncounterPokemon.encounter_count}
+                    />
+                  </div>
                 )}
+              </NestedCategory>
+            )}
+
+            {/* Tier Distribution Category */}
+            {Object.values(stats.tierCounts).some(count => count > 0) && (
+              <NestedCategory
+                title="Tier Distribution"
+                icon="⭐"
+                category="tiers"
               >
-                📈 Line Graph
-              </button>
-            </div>
-            <EncounterDataTable data={stats.shiniesWithEncounters} />
+                <PieChart data={stats.tierCounts} title="Pokémon by Tier" />
+              </NestedCategory>
+            )}
           </div>
-
-          {/* Encounter Distribution with Ranges */}
-          {stats.maxEncounterPokemon && (
-            <div className={styles.chartContainer}>
-              <h4 className={styles.chartTitle}>How Encounters Spread Out (Low to High)</h4>
-              <EnterpriseDistributionPie 
-                shinies={stats.shiniesWithEncounters}
-                maxEncounters={stats.maxEncounterPokemon.encounter_count}
-              />
-            </div>
-          )}
-        </CollapsibleSection>
-      )}
-
-      {/* Tier Distribution */}
-      {Object.values(stats.tierCounts).some(count => count > 0) && (
-        <CollapsibleSection
-          title="Tier Distribution"
-          icon="⭐"
-          section="tiers"
-        >
-          <PieChart data={stats.tierCounts} title="Pokémon by Tier" />
-        </CollapsibleSection>
-      )}
+        )}
+      </div>
 
       <GraphZoomModal
         isOpen={zoomModalOpen}
