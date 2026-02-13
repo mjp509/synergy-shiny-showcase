@@ -88,8 +88,10 @@ export default function ZoomableChart({ children }) {
       e.preventDefault()
       const currentDistance = getTouchDistance(e.touches)
       const zoomRatio = currentDistance / stateRef.current.touchDistance
+      // Dampen the zoom ratio to prevent too-fast zooming (0.3 power makes changes more gradual)
+      const dampenedRatio = Math.pow(zoomRatio, 0.3)
       const currentZoom = stateRef.current.zoom
-      const newZoom = Math.max(1, Math.min(10, currentZoom * zoomRatio))
+      const newZoom = Math.max(1, Math.min(10, currentZoom * dampenedRatio))
       setZoom(newZoom)
     } else if (e.touches.length === 1 && stateRef.current.isPanning) {
       // Single finger pan
