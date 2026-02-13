@@ -19,8 +19,6 @@ const TIER_POKEMON = {
 
 export default function StatisticsSection({ playerData, playerName }) {
   const [statsExpanded, setStatsExpanded] = useState(false)
-  const [expandedCategory, setExpandedCategory] = useState(null)
-  const [closingCategory, setClosingCategory] = useState(null)
   const [statsClosing, setStatsClosing] = useState(false)
   const [zoomModalOpen, setZoomModalOpen] = useState(false)
   const [zoomModalContent, setZoomModalContent] = useState(null)
@@ -157,38 +155,19 @@ export default function StatisticsSection({ playerData, playerName }) {
     }
   }
 
-  const toggleCategory = category => {
-    if (expandedCategory === category) {
-      // Closing category - show animation then hide
-      setClosingCategory(category)
-      setTimeout(() => {
-        setExpandedCategory(null)
-        setClosingCategory(null)
-      }, 300)
-    } else {
-      setExpandedCategory(category)
-      setClosingCategory(null)
-    }
-  }
-
   // --- Component: Nested Category ---
-  const NestedCategory = ({ title, icon, category, children }) => (
+  const NestedCategory = ({ title, icon, children }) => (
     <div className={styles.nestedCategory}>
-      <button
-        className={styles.categoryHeader}
-        onClick={() => toggleCategory(category)}
-      >
+      <div className={styles.categoryHeader}>
         <span className={styles.icon}>{icon}</span>
         <span className={styles.title}>{title}</span>
-        <span className={`${styles.arrow} ${statsExpanded || expandedCategory === category ? styles.expanded : ''}`}>
+        <span className={`${styles.arrow} ${statsExpanded ? styles.expanded : ''}`}>
           ▼
         </span>
-      </button>
-      {(statsExpanded || expandedCategory === category) && (
-        <div className={`${styles.categoryContent} ${closingCategory === category ? styles.closing : ''}`}>
-          {children}
-        </div>
-      )}
+      </div>
+      <div className={styles.categoryContent}>
+        {children}
+      </div>
     </div>
   )
 
@@ -679,7 +658,6 @@ export default function StatisticsSection({ playerData, playerName }) {
                 </HoverTooltip>
               }
               icon="📊"
-              category="general"
             >
               <div className={styles.statsGrid}>
                 <StatCard label="Total Encounters" value={stats.totalEncounters.toLocaleString()} />
@@ -707,7 +685,7 @@ export default function StatisticsSection({ playerData, playerName }) {
             </NestedCategory>
 
             {/* Hunting Methods Category */}
-            <NestedCategory title="Hunting Methods" icon="🎣" category="methods">
+            <NestedCategory title="Hunting Methods" icon="🎣">
               <div className={styles.methodsTable}>
                 <div className={styles.methodsHeader}>
                   <div className={styles.methodsHeaderCell}>Method</div>
@@ -731,7 +709,7 @@ export default function StatisticsSection({ playerData, playerName }) {
             </NestedCategory>
 
             {/* Region Stats Category */}
-            <NestedCategory title="Region Distribution" icon="🗺️" category="regions">
+            <NestedCategory title="Region Distribution" icon="🗺️">
               <PieChart data={stats.regionCounts} title="Shinies by Region" />
             </NestedCategory>
 
@@ -740,7 +718,6 @@ export default function StatisticsSection({ playerData, playerName }) {
               <NestedCategory
                 title={`Encounter Analysis (${stats.shinyCount} Pokémon)`}
                 icon="📉"
-                category="encounters"
               >
                 <div className={styles.encounterGraphsDesktop}>
                   <div 
@@ -844,7 +821,6 @@ export default function StatisticsSection({ playerData, playerName }) {
               <NestedCategory
                 title="Tier Distribution"
                 icon="⭐"
-                category="tiers"
               >
                 <PieChart data={stats.tierCounts} title="Pokémon by Tier" />
               </NestedCategory>

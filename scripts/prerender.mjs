@@ -193,7 +193,7 @@ async function prerenderRoute(templateHtml, outPath, meta = {}) {
 
   const title = meta.ogTitle || 'Team Synergy - PokeMMO';
   const description = meta.ogDescription || 'Team Synergy is a PokeMMO shiny hunting team.';
-  const image = meta.ogImage || 'https://synergymmo.com/images/pokemon_gifs/tier_7/pikachu.gif';
+  const image = meta.ogImage || 'https://synergymmo.com/images/pokemon_gifs/tier_7/reuniclus.gif';
   const url = meta.route ? `https://synergymmo.com${meta.route}` : 'https://synergymmo.com/';
 
   // Inject OG tags

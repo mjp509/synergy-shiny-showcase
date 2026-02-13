@@ -84,8 +84,7 @@
   gap: 0.75rem;
   background: rgba(218, 165, 32, 0.08);
   border: none;
-  cursor: pointer;
-  transition: all 0.3s ease;
+  cursor: default;
   color: #fff;
   font-size: 1rem;
   font-weight: 500;
@@ -93,7 +92,7 @@
 }
 
 .categoryHeader:hover {
-  background: rgba(218, 165, 32, 0.12);
+  background: rgba(218, 165, 32, 0.08);
 }
 
 .categoryContent {
