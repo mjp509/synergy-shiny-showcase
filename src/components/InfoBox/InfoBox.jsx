@@ -69,7 +69,7 @@ function formatEncounterCount(count) {
   return count.toLocaleString()
 }
 
-export default function InfoBox({ shiny, points, customText, localizeDates = true }) {
+export default function InfoBox({ shiny, points, customText, localizeDates = true, showOnMobile = false }) {
   const boxRef = useRef(null)
 
   useEffect(() => {
@@ -114,9 +114,33 @@ export default function InfoBox({ shiny, points, customText, localizeDates = tru
       box.style.top = top + 'px'
     }
 
-    span.addEventListener('mouseenter', handleMouseEnter)
-    return () => span.removeEventListener('mouseenter', handleMouseEnter)
-  }, [])
+    // Only attach hover listener if not showing on mobile
+    if (!showOnMobile) {
+      span.addEventListener('mouseenter', handleMouseEnter)
+      return () => span.removeEventListener('mouseenter', handleMouseEnter)
+    }
+
+    // For mobile, position the box at the center when showOnMobile is true
+    if (showOnMobile) {
+      const spanRect = span.getBoundingClientRect()
+      const viewportWidth = document.documentElement.clientWidth
+      const viewportHeight = document.documentElement.clientHeight
+      const boxWidth = 180
+      const boxHeight = box.offsetHeight
+
+      let left = spanRect.right + 8
+      const fitsRight = spanRect.right + boxWidth + 8 <= viewportWidth
+      if (!fitsRight) {
+        left = Math.max(8, spanRect.left - boxWidth - 8)
+      }
+
+      let top = spanRect.top + spanRect.height / 2 - boxHeight / 2
+      top = Math.max(8, Math.min(top, viewportHeight - boxHeight - 8))
+
+      box.style.left = left + 'px'
+      box.style.top = top + 'px'
+    }
+  }, [showOnMobile])
 
   const activeTraits = TRAIT_CHECKS.filter(
     t => shiny[t.key]?.toLowerCase() === 'yes'
@@ -144,7 +168,11 @@ export default function InfoBox({ shiny, points, customText, localizeDates = tru
   }
 
   return (
-    <div className={styles.infoBox} ref={boxRef}>
+    <div 
+      className={`${styles.infoBox} ${showOnMobile ? styles.showMobile : ''}`} 
+      ref={boxRef}
+      data-show-mobile={showOnMobile}
+    >
       <strong>{customText || shiny.Pokemon}</strong>
       {points !== undefined && (
         <div className={styles.detail}>({points} pts)</div>

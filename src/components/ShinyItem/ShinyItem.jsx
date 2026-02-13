@@ -23,9 +23,30 @@ const ICON_MAP = {
   Favourite: [`${BASE}images/Shiny Showcase/heart.png`, 'favouriteHeart'],
 }
 
+// Detect if device is mobile
+function isMobileDevice() {
+  const userAgent = navigator.userAgent || navigator.vendor || window.opera
+  // Check for common mobile user agents
+  const isMobile = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent.toLowerCase())
+  // Also check for touch capability
+  const hasTouch = () => {
+    return (
+      ('ontouchstart' in window) ||
+      (navigator.maxTouchPoints > 0) ||
+      (navigator.msMaxTouchPoints > 0)
+    )
+  }
+  return isMobile || hasTouch()
+}
+
 function ShinyItem({ shiny, points, userName, localizeDates = true }) {
   const navigate = useNavigate()
   const shinyGifPath = useMemo(() => getLocalPokemonGif(shiny.Pokemon), [shiny.Pokemon])
+  const [isMobile] = useState(isMobileDevice())
+  const [showInfoBoxMobile, setShowInfoBoxMobile] = useState(false)
+  const wrapperRef = useRef(null)
+  const lastTapTimeRef = useRef(0)
+  const tapTimeoutRef = useRef(null)
 
   // Container CSS classes based on traits
   const containerClasses = useMemo(() => {
@@ -90,8 +111,65 @@ function ShinyItem({ shiny, points, userName, localizeDates = true }) {
     ? 'Never forget reactive gas...'
     : shiny.infoText
 
+  // Handle gif click for mobile and desktop
+  const handleGifClick = (e) => {
+    // On mobile, prevent default click behavior to avoid double navigation
+    if (isMobile) {
+      e.preventDefault()
+      return
+    }
+    // Desktop: navigate immediately
+    navigate(`/pokemon/${shiny.Pokemon.toLowerCase()}`)
+  }
+
+  // Handle double-tap on mobile
+  const handleGifTouchEnd = () => {
+    if (!isMobile) return
+
+    const now = Date.now()
+    const timeSinceLastTap = now - lastTapTimeRef.current
+
+    if (timeSinceLastTap < 300) {
+      // Double tap detected - navigate
+      if (tapTimeoutRef.current) clearTimeout(tapTimeoutRef.current)
+      lastTapTimeRef.current = 0
+      setShowInfoBoxMobile(false) // Close the InfoBox before navigating
+      navigate(`/pokemon/${shiny.Pokemon.toLowerCase()}`)
+    } else {
+      // First tap - show InfoBox
+      lastTapTimeRef.current = now
+      setShowInfoBoxMobile(true)
+      
+      if (tapTimeoutRef.current) clearTimeout(tapTimeoutRef.current)
+      tapTimeoutRef.current = setTimeout(() => {
+        lastTapTimeRef.current = 0
+      }, 300)
+    }
+  }
+
+  // Close InfoBox on outside click for mobile
+  useEffect(() => {
+    if (!isMobile || !showInfoBoxMobile) return
+
+    const handleOutsideClick = (e) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
+        setShowInfoBoxMobile(false)
+      }
+    }
+
+    // Add slight delay to prevent the triggering click from immediately closing
+    const timeoutId = setTimeout(() => {
+      document.addEventListener('click', handleOutsideClick)
+    }, 100)
+
+    return () => {
+      clearTimeout(timeoutId)
+      document.removeEventListener('click', handleOutsideClick)
+    }
+  }, [isMobile, showInfoBoxMobile])
+
   return (
-    <span className={styles.wrapper}>
+    <span className={styles.wrapper} ref={wrapperRef} data-mobile={isMobile} data-show-infobox={isMobile && showInfoBoxMobile}>
       <div className={containerClasses}>
         {icons}
         <img
@@ -102,7 +180,8 @@ function ShinyItem({ shiny, points, userName, localizeDates = true }) {
           height="80"
           loading="lazy"
           onError={onGifError(shiny.Pokemon)}
-          onClick={() => navigate(`/pokemon/${shiny.Pokemon.toLowerCase()}`)}
+          onClick={handleGifClick}
+          onTouchEnd={handleGifTouchEnd}
           role="button"
           tabIndex={0}
           onKeyDown={(e) => {
@@ -112,7 +191,7 @@ function ShinyItem({ shiny, points, userName, localizeDates = true }) {
           }}
         />
       </div>
-      <InfoBox shiny={shiny} points={points} customText={infoText} localizeDates={localizeDates} />
+      <InfoBox shiny={shiny} points={points} customText={infoText} localizeDates={localizeDates} showOnMobile={isMobile && showInfoBoxMobile} />
     </span>
   )
 }

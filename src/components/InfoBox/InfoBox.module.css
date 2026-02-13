@@ -164,6 +164,14 @@ span:hover .infoBox {
   pointer-events: auto;
 }
 
+/* Mobile: Show InfoBox when showMobile class is applied */
+.infoBox.showMobile {
+  opacity: 1;
+  pointer-events: auto;
+  top: auto;
+  left: auto;
+}
+
 /* Hide InfoBox while scrolling */
 :global(body.is-scrolling) span:hover .infoBox {
   opacity: 0;
