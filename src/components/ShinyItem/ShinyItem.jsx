@@ -129,7 +129,7 @@ function ShinyItem({ shiny, points, userName, localizeDates = true }) {
     const now = Date.now()
     const timeSinceLastTap = now - lastTapTimeRef.current
 
-    if (timeSinceLastTap < 300) {
+    if (timeSinceLastTap < 500) {
       // Double tap detected - navigate
       if (tapTimeoutRef.current) clearTimeout(tapTimeoutRef.current)
       lastTapTimeRef.current = 0
@@ -143,7 +143,7 @@ function ShinyItem({ shiny, points, userName, localizeDates = true }) {
       if (tapTimeoutRef.current) clearTimeout(tapTimeoutRef.current)
       tapTimeoutRef.current = setTimeout(() => {
         lastTapTimeRef.current = 0
-      }, 300)
+      }, 500)
     }
   }
 

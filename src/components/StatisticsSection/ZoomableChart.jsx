@@ -43,17 +43,15 @@ export default function ZoomableChart({ children }) {
     if (e.button !== 0) return // Left mouse button
     stateRef.current.isPanning = true
     const currentPan = stateRef.current.pan
-    const currentZoom = stateRef.current.zoom
-    stateRef.current.panStart = { x: e.clientX - currentPan.x * currentZoom, y: e.clientY - currentPan.y * currentZoom }
+    stateRef.current.panStart = { x: e.clientX - currentPan.x, y: e.clientY - currentPan.y }
   }, [])
 
   const handleMouseMove = useCallback((e) => {
     if (!stateRef.current.isPanning) return
     const panStart = stateRef.current.panStart
-    const currentZoom = stateRef.current.zoom
     setPan({
-      x: (e.clientX - panStart.x) / currentZoom,
-      y: (e.clientY - panStart.y) / currentZoom,
+      x: e.clientX - panStart.x,
+      y: e.clientY - panStart.y,
     })
   }, [])
 
@@ -77,8 +75,7 @@ export default function ZoomableChart({ children }) {
       // Single finger panning
       stateRef.current.isPanning = true
       const currentPan = stateRef.current.pan
-      const currentZoom = stateRef.current.zoom
-      stateRef.current.panStart = { x: e.touches[0].clientX - currentPan.x * currentZoom, y: e.touches[0].clientY - currentPan.y * currentZoom }
+      stateRef.current.panStart = { x: e.touches[0].clientX - currentPan.x, y: e.touches[0].clientY - currentPan.y }
     }
   }, [])
 
@@ -95,10 +92,9 @@ export default function ZoomableChart({ children }) {
       // Single finger pan
       e.preventDefault()
       const panStart = stateRef.current.panStart
-      const currentZoom = stateRef.current.zoom
       setPan({
-        x: (e.touches[0].clientX - panStart.x) / currentZoom,
-        y: (e.touches[0].clientY - panStart.y) / currentZoom,
+        x: e.touches[0].clientX - panStart.x,
+        y: e.touches[0].clientY - panStart.y,
       })
     }
   }, [])
