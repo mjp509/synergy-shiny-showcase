@@ -7,7 +7,7 @@ export default function ZoomableChart({ children }) {
   const [pan, setPan] = useState({ x: 0, y: 0 })
   
   // Use refs to track state during events without causing re-renders
-  const stateRef = useRef({ zoom: 1, pan: { x: 0, y: 0 }, isPanning: false, panStart: { x: 0, y: 0 }, isTouchZooming: false, touchDistance: 0 })
+  const stateRef = useRef({ zoom: 1, pan: { x: 0, y: 0 }, isPanning: false, panStart: { x: 0, y: 0 }, isTouchZooming: false, touchDistance: 0, touchStartZoom: 1 })
 
   // Update refs whenever state changes
   useEffect(() => {
@@ -73,6 +73,7 @@ export default function ZoomableChart({ children }) {
       // Pinch zoom
       stateRef.current.isTouchZooming = true
       stateRef.current.touchDistance = getTouchDistance(e.touches)
+      stateRef.current.touchStartZoom = stateRef.current.zoom
     } else if (e.touches.length === 1) {
       // Single finger panning
       stateRef.current.isPanning = true
@@ -87,16 +88,14 @@ export default function ZoomableChart({ children }) {
       // Pinch zoom
       e.preventDefault()
       const currentDistance = getTouchDistance(e.touches)
-      // Calculate ratio based on current distance vs previous distance for incremental zoom
-      // This prevents massive jumps when user spreads fingers quickly
-      const incrementalRatio = currentDistance / stateRef.current.touchDistance
-      // Very aggressive dampening: only apply 5% of the calculated change
-      const limitedRatio = 1 + (incrementalRatio - 1) * 0.05
-      const currentZoom = stateRef.current.zoom
-      const newZoom = Math.max(1, Math.min(10, currentZoom * limitedRatio))
+      // Calculate ratio from the start of the pinch gesture (not incremental)
+      const zoomRatio = currentDistance / stateRef.current.touchDistance
+      // Very aggressive dampening: only apply 5% of the change
+      const dampedRatio = 1 + (zoomRatio - 1) * 0.05
+      // Always calculate from the zoom level at pinch start, not current zoom
+      const baseZoom = stateRef.current.touchStartZoom
+      const newZoom = Math.max(1, Math.min(10, baseZoom * dampedRatio))
       setZoom(newZoom)
-      // Update the reference distance for next frame
-      stateRef.current.touchDistance = currentDistance
     } else if (e.touches.length === 1 && stateRef.current.isPanning) {
       // Single finger pan
       e.preventDefault()
@@ -177,6 +176,28 @@ export default function ZoomableChart({ children }) {
           title="Reset"
         >
           ↺
+        </button>
+        <button
+          className={styles.zoomButton}
+          onClick={() => {
+            const elem = containerRef.current
+            if (!elem) return
+            
+            // Request fullscreen
+            if (elem.requestFullscreen) {
+              elem.requestFullscreen().catch(() => {})
+            } else if (elem.webkitRequestFullscreen) {
+              elem.webkitRequestFullscreen()
+            }
+            
+            // Try to request landscape orientation
+            if (screen.orientation && screen.orientation.lock) {
+              screen.orientation.lock('landscape').catch(() => {})
+            }
+          }}
+          title="Fullscreen (Landscape)"
+        >
+          ⛶
         </button>
       </div>
       <div className={styles.zoomHint}>
