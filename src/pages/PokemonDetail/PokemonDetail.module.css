@@ -2811,6 +2811,28 @@
   border-radius: 10px;
 }
 
+/* Catch Rate Calculator Section */
+.catchRateCalculatorSection {
+  margin: 2rem 0;
+  padding: 2rem;
+  background: linear-gradient(135deg, rgba(20,20,30,0.5) 0%, rgba(30,25,45,0.5) 100%);
+  border: 1px solid rgba(102, 126, 234, 0.3);
+  border-radius: 12px;
+}
+
+.calculatorContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.catchRateInfo {
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  border: 1px solid rgba(102, 126, 234, 0.2);
+}
+
 /* Catch Rate Tooltip */
 .catchRateTooltip {
   position: absolute;
@@ -2830,6 +2852,17 @@
   backdrop-filter: blur(4px);
 }
 
+/* Catch Rate Calculator Section - always visible */
+.catchRateCalculatorSection .catchRateTooltip {
+  position: static;
+  bottom: auto;
+  left: auto;
+  transform: none;
+  margin-bottom: 0;
+  margin-top: 1.5rem;
+  min-width: auto;
+}
+
 /* Tooltip position variants */
 .tooltipTop {
   bottom: 100% !important;
@@ -2838,6 +2871,16 @@
   top: auto !important;
   transform: translateX(-50%) !important;
   margin-bottom: 0.5rem !important;
+  margin-left: 0 !important;
+}
+
+.catchRateCalculatorSection .tooltipTop {
+  bottom: auto !important;
+  left: auto !important;
+  right: auto !important;
+  top: auto !important;
+  transform: none !important;
+  margin-bottom: 0 !important;
   margin-left: 0 !important;
 }
 
@@ -2988,6 +3031,33 @@
   font-size: 1.1rem;
 }
 
+.secondBestMethodRow {
+  background: linear-gradient(135deg, rgba(70, 130, 180, 0.25) 0%, rgba(70, 130, 180, 0.15) 100%) !important;
+  border: 2px solid rgba(70, 130, 180, 0.6) !important;
+  margin-top: 0.5rem !important;
+  padding: 0.4rem 0.6rem !important;
+  gap: 0.5rem !important;
+  display: grid !important;
+  grid-template-columns: auto 1fr 1fr 1fr 1fr !important;
+  align-items: center !important;
+}
+
+.secondBestMethodRow > div {
+  color: rgba(70, 130, 180, 0.95) !important;
+  font-weight: 600 !important;
+  padding: 0.2rem 0.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.secondBestMethodRow > div:first-child {
+  color: rgba(135, 206, 235, 0.95) !important;
+  font-weight: 700 !important;
+  font-size: 1.1rem;
+}
+
 .tooltipNote {
   display: block;
   font-size: 0.75rem;
@@ -3051,6 +3121,22 @@
     opacity: 1 !important;
   }
 
+  /* Keep calculator section version as static */
+  .catchRateCalculatorSection .catchRateTooltip {
+    position: static !important;
+    bottom: auto !important;
+    left: auto !important;
+    right: auto !important;
+    top: auto !important;
+    transform: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: 50vh !important;
+    padding: 0.5rem !important;
+    margin: 0 !important;
+    z-index: 1000 !important;
+  }
+
   .tooltipTable {
     gap: 0.15rem;
   }
@@ -3073,6 +3159,20 @@
     right: auto !important;
     top: 10vh !important;
     transform: translateX(-50%) !important;
+    margin: 0 !important;
+  }
+
+  /* Keep calculator variants as static */
+  .catchRateCalculatorSection .catchRateTooltip.tooltipTop,
+  .catchRateCalculatorSection .catchRateTooltip.tooltipBottom,
+  .catchRateCalculatorSection .catchRateTooltip.tooltipLeft,
+  .catchRateCalculatorSection .catchRateTooltip.tooltipRight {
+    position: static !important;
+    bottom: auto !important;
+    left: auto !important;
+    right: auto !important;
+    top: auto !important;
+    transform: none !important;
     margin: 0 !important;
   }
 
@@ -3120,6 +3220,22 @@
 
   .bestMethodRow > div:first-child {
     font-size: 0.8rem;
+  }
+
+  .secondBestMethodRow {
+    grid-template-columns: 45px 1fr 1fr 1fr 1fr !important;
+    padding: 0.3rem 0.15rem !important;
+    gap: 0.1rem !important;
+    margin-top: 0.2rem !important;
+  }
+
+  .secondBestMethodRow > div {
+    font-size: 0.65rem;
+    padding: 0.1rem 0.05rem;
+  }
+
+  .secondBestMethodRow > div:first-child {
+    font-size: 0.75rem;
   }
 
   .highlightedCell {

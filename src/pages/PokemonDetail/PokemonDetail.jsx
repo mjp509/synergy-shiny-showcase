@@ -718,57 +718,15 @@ export default function PokemonDetail() {
   const [audioRef] = useState(new Audio())
   const [hoveredAbility, setHoveredAbility] = useState(null)
   const [hoveredEvolution, setHoveredEvolution] = useState(null)
-  const [showCatchRateTooltip, setShowCatchRateTooltip] = useState(false)
-  const [catchRateTooltipPos, setCatchRateTooltipPos] = useState('top')
   const [maxWildLevel, setMaxWildLevel] = useState(0)
   const [branchCount, setBranchCount] = useState(0)
   const evolutionContainerRef = useRef(null)
-  const catchRateContainerRef = useRef(null)
   const spriteAliasMap = useMemo(() => ({
     wormadam: 'wormadam-plant',
     'gastrodon-west': 'gastrodon',
     'shellos-west': 'shellos'
   }), [])
   const spriteName = spriteAliasMap[pokemonName?.toLowerCase()] || pokemonName
-
-  // Calculate best tooltip position based on viewport space
-  useEffect(() => {
-    if (!showCatchRateTooltip || !catchRateContainerRef.current) return
-
-    const rect = catchRateContainerRef.current.getBoundingClientRect()
-    const spaceAbove = rect.top
-    const spaceBelow = window.innerHeight - rect.bottom
-    const spaceLeft = rect.left
-    const spaceRight = window.innerWidth - rect.right
-    const tooltipHeight = 400 // approximate max height
-
-    let position = 'top'
-    if (spaceAbove < tooltipHeight && spaceBelow > tooltipHeight) {
-      position = 'bottom'
-    } else if (spaceAbove < tooltipHeight && spaceBelow < tooltipHeight) {
-      // Not enough space above or below, try sides
-      if (spaceRight > spaceLeft) {
-        position = 'right'
-      } else {
-        position = 'left'
-      }
-    }
-    setCatchRateTooltipPos(position)
-  }, [showCatchRateTooltip])
-
-  // Close tooltip when clicking outside
-  useEffect(() => {
-    if (!showCatchRateTooltip) return
-
-    const handleClickOutside = (e) => {
-      if (catchRateContainerRef.current && !catchRateContainerRef.current.contains(e.target)) {
-        setShowCatchRateTooltip(false)
-      }
-    }
-
-    document.addEventListener('click', handleClickOutside, true)
-    return () => document.removeEventListener('click', handleClickOutside, true)
-  }, [showCatchRateTooltip])
 
   // Calculate branch count from evolution chain (only for branching Pokemon)
   useEffect(() => {
@@ -1576,206 +1534,7 @@ useDocumentHead({
                   <span className={styles.eggGroupNone}>None</span>
                 )}
               </div>
-              <div 
-                className={styles.infoGroup}
-                style={{ cursor: 'pointer' }}
-                onMouseEnter={() => setShowCatchRateTooltip(true)}
-                onMouseLeave={() => setShowCatchRateTooltip(false)}
-                onClick={(e) => {
-                  e.preventDefault()
-                  e.stopPropagation()
-                  setShowCatchRateTooltip(prev => !prev)
-                }}
-                onTouchEnd={(e) => {
-                  e.preventDefault()
-                  e.stopPropagation()
-                  setShowCatchRateTooltip(prev => !prev)
-                }}
-              >
-                <span className={styles.label}>Catch Rate</span>
-                <div 
-                  ref={catchRateContainerRef}
-                  style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', position: 'relative' }}
-                  onClick={(e) => e.stopPropagation()}
-                  onTouchEnd={(e) => e.stopPropagation()}
-                >
-                  <span className={styles.value}>{pokemon.catchRate}/255</span>
-                  <div className={styles.catchBar}>
-                    <div 
-                      className={styles.catchBarFill}
-                      style={{ 
-                        width: `${(pokemon.catchRate / 255) * 100}%`,
-                        background: pokemon.catchRate > 200 ? '#4ade80' : pokemon.catchRate > 100 ? '#60a5fa' : pokemon.catchRate > 50 ? '#fb923c' : '#ef4444',
-                        cursor: 'pointer'
-                      }}
-                    />
-                  </div>
-                  <span className={styles.catchDifficulty} style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.7)' }}>
-                    {pokemon.catchRate > 200 ? 'Very Easy' : pokemon.catchRate > 100 ? 'Easy' : pokemon.catchRate > 50 ? 'Moderate' : 'Hard to catch'}
-                  </span>
-                  {showCatchRateTooltip && (
-                    <div className={`${styles.catchRateTooltip} ${styles[`tooltip${catchRateTooltipPos.charAt(0).toUpperCase() + catchRateTooltipPos.slice(1)}`]}`}>
-                      <div className={styles.tooltipTitle}>Catch Rate by Ball & HP</div>
-                      {maxWildLevel > 0 && (
-                        <div className={styles.tooltipLevelInfo}>
-                          Max Wild Level: <strong>{maxWildLevel}</strong>
-                        </div>
-                      )}
-                      <div className={styles.tooltipContent}>
-                        <div className={styles.tooltipTable}>
-                          <div className={styles.tooltipRow}>
-                            <div className={styles.tooltipHeader}>Ball</div>
-                            <div className={styles.tooltipHeader}>100% HP</div>
-                            <div className={styles.tooltipHeader}>1% HP</div>
-                            <div className={styles.tooltipHeader}>Sleep 100% HP</div>
-                            <div className={styles.tooltipHeader}>Sleep 1% HP</div>
-                          </div>
-                          {(() => {
-                            const pokeBall100 = calculateCatchChance(pokemon.catchRate, 1.0, 100).toFixed(1)
-                            const pokeBall1 = calculateCatchChance(pokemon.catchRate, 1.0, 1).toFixed(1)
-                            const pokeBallSleep100 = calculateCatchChance(pokemon.catchRate, 1.0, 100, 2.0).toFixed(1)
-                            const pokeBallSleep1 = calculateCatchChance(pokemon.catchRate, 1.0, 1, 2.0).toFixed(1)
-                            return (
-                              <div className={styles.tooltipRow}>
-                                <div>Pokéball</div>
-                                <div className={pokeBall100 === "100.0" ? styles.highlightedCell : ""}>{pokeBall100}%</div>
-                                <div className={pokeBall1 === "100.0" ? styles.highlightedCell : ""}>{pokeBall1}%</div>
-                                <div className={pokeBallSleep100 === "100.0" ? styles.highlightedCell : ""}>{pokeBallSleep100}%</div>
-                                <div className={pokeBallSleep1 === "100.0" ? styles.highlightedCell : ""}>{pokeBallSleep1}%</div>
-                              </div>
-                            )
-                          })()}
-                          {(() => {
-                            const greatBall100 = calculateCatchChance(pokemon.catchRate, 1.5, 100).toFixed(1)
-                            const greatBall1 = calculateCatchChance(pokemon.catchRate, 1.5, 1).toFixed(1)
-                            const greatBallSleep100 = calculateCatchChance(pokemon.catchRate, 1.5, 100, 2.0).toFixed(1)
-                            const greatBallSleep1 = calculateCatchChance(pokemon.catchRate, 1.5, 1, 2.0).toFixed(1)
-                            return (
-                              <div className={styles.tooltipRow}>
-                                <div>Great Ball</div>
-                                <div className={greatBall100 === "100.0" ? styles.highlightedCell : ""}>{greatBall100}%</div>
-                                <div className={greatBall1 === "100.0" ? styles.highlightedCell : ""}>{greatBall1}%</div>
-                                <div className={greatBallSleep100 === "100.0" ? styles.highlightedCell : ""}>{greatBallSleep100}%</div>
-                                <div className={greatBallSleep1 === "100.0" ? styles.highlightedCell : ""}>{greatBallSleep1}%</div>
-                              </div>
-                            )
-                          })()}
-                          {(() => {
-                            const ultraBall100 = calculateCatchChance(pokemon.catchRate, 2.0, 100).toFixed(1)
-                            const ultraBall1 = calculateCatchChance(pokemon.catchRate, 2.0, 1).toFixed(1)
-                            const ultraBallSleep100 = calculateCatchChance(pokemon.catchRate, 2.0, 100, 2.0).toFixed(1)
-                            const ultraBallSleep1 = calculateCatchChance(pokemon.catchRate, 2.0, 1, 2.0).toFixed(1)
-                            return (
-                              <div className={styles.tooltipRow}>
-                                <div>Ultra Ball</div>
-                                <div className={ultraBall100 === "100.0" ? styles.highlightedCell : ""}>{ultraBall100}%</div>
-                                <div className={ultraBall1 === "100.0" ? styles.highlightedCell : ""}>{ultraBall1}%</div>
-                                <div className={ultraBallSleep100 === "100.0" ? styles.highlightedCell : ""}>{ultraBallSleep100}%</div>
-                                <div className={ultraBallSleep1 === "100.0" ? styles.highlightedCell : ""}>{ultraBallSleep1}%</div>
-                              </div>
-                            )
-                          })()}
-                          {(() => {
-                            const quickBall100 = calculateCatchChance(pokemon.catchRate, 5.0, 100).toFixed(1)
-                            const quickBall1 = calculateCatchChance(pokemon.catchRate, 1.0, 1).toFixed(1)
-                            const quickBallSleep100 = calculateCatchChance(pokemon.catchRate, 1.0, 100, 2.0).toFixed(1)
-                            const quickBallSleep1 = calculateCatchChance(pokemon.catchRate, 1.0, 1, 2.0).toFixed(1)
-                            return (
-                              <div className={styles.tooltipRow}>
-                                <div>Quick Ball<span className={styles.tooltipNote}>(Turn 1)</span></div>
-                                <div className={quickBall100 === "100.0" ? styles.highlightedCell : ""}>{quickBall100}%</div>
-                                <div className={quickBall1 === "100.0" ? styles.highlightedCell : ""}>{quickBall1}%</div>
-                                <div className={quickBallSleep100 === "100.0" ? styles.highlightedCell : ""}>{quickBallSleep100}%</div>
-                                <div className={quickBallSleep1 === "100.0" ? styles.highlightedCell : ""}>{quickBallSleep1}%</div>
-                              </div>
-                            )
-                          })()}
-                          {(() => {
-                            const duskBall100 = calculateCatchChance(pokemon.catchRate, 3.5, 100).toFixed(1)
-                            const duskBall1 = calculateCatchChance(pokemon.catchRate, 3.5, 1).toFixed(1)
-                            const duskBallSleep100 = calculateCatchChance(pokemon.catchRate, 3.5, 100, 2.0).toFixed(1)
-                            const duskBallSleep1 = calculateCatchChance(pokemon.catchRate, 3.5, 1, 2.0).toFixed(1)
-                            return (
-                              <div className={styles.tooltipRow}>
-                                <div>Dusk Ball<span className={styles.tooltipNote}>(Night)</span></div>
-                                <div className={duskBall100 === "100.0" ? styles.highlightedCell : ""}>{duskBall100}%</div>
-                                <div className={duskBall1 === "100.0" ? styles.highlightedCell : ""}>{duskBall1}%</div>
-                                <div className={duskBallSleep100 === "100.0" ? styles.highlightedCell : ""}>{duskBallSleep100}%</div>
-                                <div className={duskBallSleep1 === "100.0" ? styles.highlightedCell : ""}>{duskBallSleep1}%</div>
-                              </div>
-                            )
-                          })()}
-                          {(() => {
-                            const timerBall100 = calculateCatchChance(pokemon.catchRate, 4.0, 100).toFixed(1)
-                            const timerBall1 = calculateCatchChance(pokemon.catchRate, 4.0, 1).toFixed(1)
-                            const timerBallSleep100 = calculateCatchChance(pokemon.catchRate, 4.0, 100, 2.0).toFixed(1)
-                            const timerBallSleep1 = calculateCatchChance(pokemon.catchRate, 4.0, 1, 2.0).toFixed(1)
-                            return (
-                              <div className={styles.tooltipRow}>
-                                <div>Timer Ball<span className={styles.tooltipNote}>(Turn 11+)</span></div>
-                                <div className={timerBall100 === "100.0" ? styles.highlightedCell : ""}>{timerBall100}%</div>
-                                <div className={timerBall1 === "100.0" ? styles.highlightedCell : ""}>{timerBall1}%</div>
-                                <div className={timerBallSleep100 === "100.0" ? styles.highlightedCell : ""}>{timerBallSleep100}%</div>
-                                <div className={timerBallSleep1 === "100.0" ? styles.highlightedCell : ""}>{timerBallSleep1}%</div>
-                              </div>
-                            )
-                          })()}
-                          {(() => {
-                            const safariPercent = calculateCatchChance(pokemon.catchRate, 1.5, 100).toFixed(1)
-                            const isSafari100 = safariPercent === "100.0"
-                            return (
-                              <div className={`${styles.tooltipRow} ${isSafari100 ? styles.safariRow : ""}`}>
-                                <div>Safari Ball<span className={styles.tooltipNote}>(100% HP Only)</span></div>
-                                <div className={isSafari100 ? styles.highlightedCell : ""}>{safariPercent}%</div>
-                                <div className={styles.safariPercent}>—</div>
-                                <div className={styles.safariPercent}>—</div>
-                                <div className={styles.safariPercent}>—</div>
-                              </div>
-                            )
-                          })()}
-                          {(() => {
-                            const { bestMethod, secondBestMethod } = calculateBestCatchMethod(pokemon.catchRate)
-                            return (
-                              <>
-                                <div className={`${styles.tooltipRow} ${styles.bestMethodRow}`}>
-                                  <div><strong>✓ Best</strong></div>
-                                  <div><strong>{bestMethod.ball}</strong></div>
-                                  <div>
-                                    {bestMethod.hp === 100 ? '100% HP' : '1% HP'}
-                                    {bestMethod.statusMod === 2.0 ? ' + Sleep' : ''}
-                                  </div>
-                                  <div><strong>{bestMethod.catchChance.toFixed(1)}%</strong></div>
-                                  <div style={{ fontSize: '0.8rem', color: 'rgba(255, 255, 255, 0.7)' }}>
-                                    {bestMethod.turns} turn{bestMethod.turns !== 1 ? 's' : ''}
-                                  </div>
-                                </div>
-                                <div className={styles.tooltipRow} style={{ backgroundColor: 'rgba(70, 130, 180, 0.15)', borderLeft: '2px solid rgba(135, 206, 235, 0.5)' }}>
-                                  <div>2nd Best</div>
-                                  <div><strong>{secondBestMethod.ball}</strong></div>
-                                  <div>
-                                    {secondBestMethod.hp === 100 ? '100% HP' : '1% HP'}
-                                    {secondBestMethod.statusMod === 2.0 ? ' + Sleep' : ''}
-                                  </div>
-                                  <div><strong>{secondBestMethod.catchChance.toFixed(1)}%</strong></div>
-                                  <div style={{ fontSize: '0.8rem', color: 'rgba(255, 255, 255, 0.7)' }}>
-                                    {secondBestMethod.turns} turn{secondBestMethod.turns !== 1 ? 's' : ''}
-                                  </div>
-                                </div>
-                              </>
-                            )
-                          })()}
-                        </div>
-                        <div className={styles.tooltipNote2}>
-                          Formula: A = [(3×MaxHP - 2×CurrentHP) / (3×MaxHP)] × Ball × CatchRate × Status
-                        </div>
-                        <div className={styles.tooltipNote2} style={{ marginTop: '0.5rem', borderTop: '1px solid rgba(102, 126, 234, 0.2)', paddingTop: '0.5rem' }}>
-                          <strong>Best Method:</strong> Selected by balancing catch chance, turns needed (0-2), and ball cost. Prefers cheaper balls when effectiveness is similar.
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
+
               <div className={styles.infoGroup}>
                 <span className={styles.label}>Exp Group</span>
                 <span className={styles.value}>{pokemon.growthRate ? pokemon.growthRate.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') : 'Unknown'}</span>
@@ -1811,6 +1570,190 @@ useDocumentHead({
           </div>
         </section>
       )}
+
+      {/* Catch Rate Calculator */}
+      <section className={styles.catchRateCalculatorSection}>
+        <h2 className={styles.cardTitle}>Catch Rate Calculator</h2>
+        <div className={styles.calculatorContainer}>
+          <div className={styles.catchRateInfo}>
+            <span className={styles.label}>Base Catch Rate</span>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', position: 'relative' }}>
+              <span className={styles.value}>{pokemon.catchRate}/255</span>
+              <div className={styles.catchBar}>
+                <div 
+                  className={styles.catchBarFill}
+                  style={{ 
+                    width: `${(pokemon.catchRate / 255) * 100}%`,
+                    background: pokemon.catchRate > 200 ? '#4ade80' : pokemon.catchRate > 100 ? '#60a5fa' : pokemon.catchRate > 50 ? '#fb923c' : '#ef4444'
+                  }}
+                />
+              </div>
+              <span className={styles.catchDifficulty} style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.7)' }}>
+                {pokemon.catchRate > 200 ? 'Very Easy' : pokemon.catchRate > 100 ? 'Easy' : pokemon.catchRate > 50 ? 'Moderate' : 'Hard to catch'}
+              </span>
+            </div>
+          </div>
+          <div className={styles.catchRateTooltip} style={{ position: 'static', marginTop: '1.5rem' }}>
+            <div className={styles.tooltipTitle}>Catch Rate by Ball & HP</div>
+            {maxWildLevel > 0 && (
+              <div className={styles.tooltipLevelInfo}>
+                Max Wild Level: <strong>{maxWildLevel}</strong>
+              </div>
+            )}
+            <div className={styles.tooltipContent}>
+              <div className={styles.tooltipTable}>
+                <div className={styles.tooltipRow}>
+                  <div className={styles.tooltipHeader}>Ball</div>
+                  <div className={styles.tooltipHeader}>100% HP</div>
+                  <div className={styles.tooltipHeader}>1% HP</div>
+                  <div className={styles.tooltipHeader}>Sleep 100% HP</div>
+                  <div className={styles.tooltipHeader}>Sleep 1% HP</div>
+                </div>
+                {(() => {
+                  const pokeBall100 = calculateCatchChance(pokemon.catchRate, 1.0, 100).toFixed(1)
+                  const pokeBall1 = calculateCatchChance(pokemon.catchRate, 1.0, 1).toFixed(1)
+                  const pokeBallSleep100 = calculateCatchChance(pokemon.catchRate, 1.0, 100, 2.0).toFixed(1)
+                  const pokeBallSleep1 = calculateCatchChance(pokemon.catchRate, 1.0, 1, 2.0).toFixed(1)
+                  return (
+                    <div className={styles.tooltipRow}>
+                      <div>Pokéball</div>
+                      <div className={pokeBall100 === "100.0" ? styles.highlightedCell : ""}>{pokeBall100}%</div>
+                      <div className={pokeBall1 === "100.0" ? styles.highlightedCell : ""}>{pokeBall1}%</div>
+                      <div className={pokeBallSleep100 === "100.0" ? styles.highlightedCell : ""}>{pokeBallSleep100}%</div>
+                      <div className={pokeBallSleep1 === "100.0" ? styles.highlightedCell : ""}>{pokeBallSleep1}%</div>
+                    </div>
+                  )
+                })()}
+                {(() => {
+                  const greatBall100 = calculateCatchChance(pokemon.catchRate, 1.5, 100).toFixed(1)
+                  const greatBall1 = calculateCatchChance(pokemon.catchRate, 1.5, 1).toFixed(1)
+                  const greatBallSleep100 = calculateCatchChance(pokemon.catchRate, 1.5, 100, 2.0).toFixed(1)
+                  const greatBallSleep1 = calculateCatchChance(pokemon.catchRate, 1.5, 1, 2.0).toFixed(1)
+                  return (
+                    <div className={styles.tooltipRow}>
+                      <div>Great Ball</div>
+                      <div className={greatBall100 === "100.0" ? styles.highlightedCell : ""}>{greatBall100}%</div>
+                      <div className={greatBall1 === "100.0" ? styles.highlightedCell : ""}>{greatBall1}%</div>
+                      <div className={greatBallSleep100 === "100.0" ? styles.highlightedCell : ""}>{greatBallSleep100}%</div>
+                      <div className={greatBallSleep1 === "100.0" ? styles.highlightedCell : ""}>{greatBallSleep1}%</div>
+                    </div>
+                  )
+                })()}
+                {(() => {
+                  const ultraBall100 = calculateCatchChance(pokemon.catchRate, 2.0, 100).toFixed(1)
+                  const ultraBall1 = calculateCatchChance(pokemon.catchRate, 2.0, 1).toFixed(1)
+                  const ultraBallSleep100 = calculateCatchChance(pokemon.catchRate, 2.0, 100, 2.0).toFixed(1)
+                  const ultraBallSleep1 = calculateCatchChance(pokemon.catchRate, 2.0, 1, 2.0).toFixed(1)
+                  return (
+                    <div className={styles.tooltipRow}>
+                      <div>Ultra Ball</div>
+                      <div className={ultraBall100 === "100.0" ? styles.highlightedCell : ""}>{ultraBall100}%</div>
+                      <div className={ultraBall1 === "100.0" ? styles.highlightedCell : ""}>{ultraBall1}%</div>
+                      <div className={ultraBallSleep100 === "100.0" ? styles.highlightedCell : ""}>{ultraBallSleep100}%</div>
+                      <div className={ultraBallSleep1 === "100.0" ? styles.highlightedCell : ""}>{ultraBallSleep1}%</div>
+                    </div>
+                  )
+                })()}
+                {(() => {
+                  const quickBall100 = calculateCatchChance(pokemon.catchRate, 5.0, 100).toFixed(1)
+                  const quickBall1 = calculateCatchChance(pokemon.catchRate, 1.0, 1).toFixed(1)
+                  const quickBallSleep100 = calculateCatchChance(pokemon.catchRate, 1.0, 100, 2.0).toFixed(1)
+                  const quickBallSleep1 = calculateCatchChance(pokemon.catchRate, 1.0, 1, 2.0).toFixed(1)
+                  return (
+                    <div className={styles.tooltipRow}>
+                      <div>Quick Ball<span className={styles.tooltipNote}>(Turn 1)</span></div>
+                      <div className={quickBall100 === "100.0" ? styles.highlightedCell : ""}>{quickBall100}%</div>
+                      <div className={quickBall1 === "100.0" ? styles.highlightedCell : ""}>{quickBall1}%</div>
+                      <div className={quickBallSleep100 === "100.0" ? styles.highlightedCell : ""}>{quickBallSleep100}%</div>
+                      <div className={quickBallSleep1 === "100.0" ? styles.highlightedCell : ""}>{quickBallSleep1}%</div>
+                    </div>
+                  )
+                })()}
+                {(() => {
+                  const duskBall100 = calculateCatchChance(pokemon.catchRate, 3.5, 100).toFixed(1)
+                  const duskBall1 = calculateCatchChance(pokemon.catchRate, 3.5, 1).toFixed(1)
+                  const duskBallSleep100 = calculateCatchChance(pokemon.catchRate, 3.5, 100, 2.0).toFixed(1)
+                  const duskBallSleep1 = calculateCatchChance(pokemon.catchRate, 3.5, 1, 2.0).toFixed(1)
+                  return (
+                    <div className={styles.tooltipRow}>
+                      <div>Dusk Ball<span className={styles.tooltipNote}>(Night)</span></div>
+                      <div className={duskBall100 === "100.0" ? styles.highlightedCell : ""}>{duskBall100}%</div>
+                      <div className={duskBall1 === "100.0" ? styles.highlightedCell : ""}>{duskBall1}%</div>
+                      <div className={duskBallSleep100 === "100.0" ? styles.highlightedCell : ""}>{duskBallSleep100}%</div>
+                      <div className={duskBallSleep1 === "100.0" ? styles.highlightedCell : ""}>{duskBallSleep1}%</div>
+                    </div>
+                  )
+                })()}
+                {(() => {
+                  const timerBall100 = calculateCatchChance(pokemon.catchRate, 4.0, 100).toFixed(1)
+                  const timerBall1 = calculateCatchChance(pokemon.catchRate, 4.0, 1).toFixed(1)
+                  const timerBallSleep100 = calculateCatchChance(pokemon.catchRate, 4.0, 100, 2.0).toFixed(1)
+                  const timerBallSleep1 = calculateCatchChance(pokemon.catchRate, 4.0, 1, 2.0).toFixed(1)
+                  return (
+                    <div className={styles.tooltipRow}>
+                      <div>Timer Ball<span className={styles.tooltipNote}>(Turn 11+)</span></div>
+                      <div className={timerBall100 === "100.0" ? styles.highlightedCell : ""}>{timerBall100}%</div>
+                      <div className={timerBall1 === "100.0" ? styles.highlightedCell : ""}>{timerBall1}%</div>
+                      <div className={timerBallSleep100 === "100.0" ? styles.highlightedCell : ""}>{timerBallSleep100}%</div>
+                      <div className={timerBallSleep1 === "100.0" ? styles.highlightedCell : ""}>{timerBallSleep1}%</div>
+                    </div>
+                  )
+                })()}
+                {(() => {
+                  const safariPercent = calculateCatchChance(pokemon.catchRate, 1.5, 100).toFixed(1)
+                  const isSafari100 = safariPercent === "100.0"
+                  return (
+                    <div className={`${styles.tooltipRow} ${isSafari100 ? styles.safariRow : ""}`}>
+                      <div>Safari Ball<span className={styles.tooltipNote}>(100% HP Only)</span></div>
+                      <div className={isSafari100 ? styles.highlightedCell : ""}>{safariPercent}%</div>
+                      <div className={styles.safariPercent}>—</div>
+                      <div className={styles.safariPercent}>—</div>
+                      <div className={styles.safariPercent}>—</div>
+                    </div>
+                  )
+                })()}
+                {(() => {
+                  const { bestMethod, secondBestMethod } = calculateBestCatchMethod(pokemon.catchRate)
+                  return (
+                    <>
+                      <div className={`${styles.tooltipRow} ${styles.bestMethodRow}`}>
+                        <div><strong>✓ Best</strong></div>
+                        <div><strong>{bestMethod.ball}</strong></div>
+                        <div>
+                          {bestMethod.hp === 100 ? '100% HP' : '1% HP'}
+                          {bestMethod.statusMod === 2.0 ? ' + Sleep' : ''}
+                        </div>
+                        <div><strong>{bestMethod.catchChance.toFixed(1)}%</strong></div>
+                        <div style={{ fontSize: '0.8rem', color: 'rgba(255, 255, 255, 0.7)' }}>
+                          {bestMethod.turns} turn{bestMethod.turns !== 1 ? 's' : ''}
+                        </div>
+                      </div>
+                      <div className={`${styles.tooltipRow} ${styles.secondBestMethodRow}`}>
+                        <div><strong>2nd Best</strong></div>
+                        <div><strong>{secondBestMethod.ball}</strong></div>
+                        <div>
+                          {secondBestMethod.hp === 100 ? '100% HP' : '1% HP'}
+                          {secondBestMethod.statusMod === 2.0 ? ' + Sleep' : ''}
+                        </div>
+                        <div><strong>{secondBestMethod.catchChance.toFixed(1)}%</strong></div>
+                        <div style={{ fontSize: '0.8rem', color: 'rgba(255, 255, 255, 0.7)' }}>
+                          {secondBestMethod.turns} turn{secondBestMethod.turns !== 1 ? 's' : ''}
+                        </div>
+                      </div>
+                    </>
+                  )
+                })()}
+              </div>
+              <div className={styles.tooltipNote2}>
+                Formula: A = [(3×MaxHP - 2×CurrentHP) / (3×MaxHP)] × Ball × CatchRate × Status
+              </div>
+              <div className={styles.tooltipNote2} style={{ marginTop: '0.5rem', borderTop: '1px solid rgba(102, 126, 234, 0.2)', paddingTop: '0.5rem' }}>
+                <strong>Best Method:</strong> Selected by balancing catch chance, turns needed (0-2), and ball cost. Prefers cheaper balls when effectiveness is similar.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Locations */}
       {pokemon?.locations && pokemon.locations.length > 0 && (() => {
