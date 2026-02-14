@@ -158,6 +158,8 @@
   padding: 8px 4px 6px;
   transition: transform 0.2s, border-color 0.2s;
   overflow: visible;
+  text-decoration: none;
+  color: inherit;
 }
 
 .pokemonCard:hover {

@@ -123,8 +123,9 @@ export default function ShinyWar2025() {
             <div className={styles.playerStats}>{player.totalPoints} pts</div>
             <div className={styles.pokemonGrid}>
               {player.catches.map((c, i) => (
-                <div
+                <Link
                   key={`${c.p}-${i}`}
+                  to={`/pokemon/${c.p.toLowerCase()}`}
                   className={`${styles.pokemonCard} ${c.f === 's' ? styles.secretGlow : ''}`}
                   style={{ '--tier-color': TIER_COLORS[c.t] ?? '#94a3b8' }}
                 >
@@ -160,7 +161,7 @@ export default function ShinyWar2025() {
                     <span className={styles.pokemonName}>{c.p}</span>
                     <span className={styles.pointsBadge}>{getPoints(c)} pts</span>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           </div>
