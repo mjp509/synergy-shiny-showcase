@@ -4,8 +4,9 @@
   z-index: 1;
 }
 
-.wrapper:hover {
-  z-index: 100;
+.wrapper:hover,
+.wrapper[data-show-infobox="true"] {
+  z-index: 9999;
 }
 
 .gifContainer {
