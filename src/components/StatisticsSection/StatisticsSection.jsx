@@ -684,11 +684,13 @@ export default function StatisticsSection({ playerData, playerName, sectionFlags
                   value={stats.minEncounterPokemon?.Pokemon ? stats.minEncounterPokemon.Pokemon.charAt(0).toUpperCase() + stats.minEncounterPokemon.Pokemon.slice(1) : 'N/A'}
                   subtext={`${stats.minEncounterPokemon?.encounter_count.toLocaleString() || 0} encounters`}
                 />
-                <StatCard
-                  label="Top Region"
-                  value={stats.topRegion?.[0] || 'N/A'}
-                  subtext={`${stats.topRegion?.[1] || 0} shinies`}
-                />
+                {showLocationSections && (
+                  <StatCard
+                    label="Top Region"
+                    value={stats.topRegion?.[0] || 'N/A'}
+                    subtext={`${stats.topRegion?.[1] || 0} shinies`}
+                  />
+                )}
               </div>
             </NestedCategory>
             )}

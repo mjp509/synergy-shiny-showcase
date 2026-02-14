@@ -78,6 +78,8 @@ export default function About() {
               <li>If you have 50% encounter data, you'll see General Statistics, Encounter Analysis, and Tier Distribution</li>
               <li>If you have 50% location data, you'll see Region Distribution</li>
               <li>If you have 50% hunting method data, you'll see Hunting Methods</li>
+              <li>Shiny Wars pokemon are now clickable links to their PokeDex pages</li>
+              <li>About page styling made consistent with the rest of the site</li>
             </ul>
           </div>
           <div className={styles.changelogEntry}>
