@@ -206,7 +206,7 @@ function generatePersonSchema(playerName) {
     "@context": "https://schema.org",
     "@type": "Person",
     "name": playerName,
-    "url": `https://synergymmo.com/player/${playerName.toLowerCase()}`,
+    "url": `https://synergymmo.com/player/${playerName.toLowerCase()}/`,
     "memberOf": {
       "@type": "Organization",
       "name": "Team Synergy",
@@ -220,7 +220,7 @@ function generatePokemonSchema(name, sanitized) {
     "@context": "https://schema.org",
     "@type": "Thing",
     "name": name,
-    "url": `https://synergymmo.com/pokemon/${sanitized}`,
+    "url": `https://synergymmo.com/pokemon/${sanitized}/`,
     "image": `https://img.pokemondb.net/sprites/black-white/anim/shiny/${sanitized}.gif`,
     "description": `${name} shiny form in PokeMMO`
   };
@@ -244,7 +244,7 @@ function generateBreadcrumbSchema(routePath, routeName) {
       "@type": "ListItem",
       "position": idx + 2,
       "name": segment.charAt(0).toUpperCase() + segment.slice(1),
-      "item": `https://synergymmo.com${currentPath}`
+      "item": `https://synergymmo.com${currentPath}/`
     });
   });
   
@@ -252,7 +252,7 @@ function generateBreadcrumbSchema(routePath, routeName) {
     "@type": "ListItem",
     "position": itemListElements.length + 1,
     "name": routeName,
-    "item": `https://synergymmo.com${routePath}`
+    "item": `https://synergymmo.com${routePath}/`
   });
 
   return {
@@ -401,7 +401,7 @@ async function prerender() {
     // Only add if we haven't seen this base form yet
     if (!pokemonLinkMap.has(baseForm)) {
       pokemonLinkMap.set(baseForm, {
-        href: `/pokemon/${sanitized}`,
+        href: `/pokemon/${sanitized}/`,
         title: pokemon.displayName || key
       });
     }
@@ -410,22 +410,22 @@ async function prerender() {
   console.log(`📊 Deduped Pokemon: ${Object.keys(pokemonData).length} forms → ${pokemonLinks.length} base forms`);
 
   const playerLinks = players.map(p => ({
-    href: p.route,
+    href: `${p.route}/`,
     title: p.route.split('/').pop()
   }));
 
   const streamerLinks = streamers.map(s => ({
-    href: s.route,
+    href: `${s.route}/`,
     title: s.title
   }));
 
   const eventLinks = events.map(e => ({
-    href: e.route,
+    href: `${e.route}/`,
     title: e.route.split('/').pop()
   }));
 
   const trophyLinks = trophies.map(t => ({
-    href: t.route,
+    href: `${t.route}/`,
     title: t.route.split('/').pop()
   }));
 
