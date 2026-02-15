@@ -5,6 +5,8 @@ const baseUrl = 'https://synergymmo.com';
 const databaseUrl = 'https://adminpage.hypersmmo.workers.dev/admin/database';
 const pokemonDataPath = new URL('../data/pokemmo_data/pokemon-data.json', import.meta.url);
 const pokemonData = JSON.parse(fs.readFileSync(pokemonDataPath, 'utf-8'));
+const trophiesPath = new URL('../data/trophies.json', import.meta.url);
+const trophiesData = JSON.parse(fs.readFileSync(trophiesPath, 'utf-8'));
 
 const staticRoutes = [
   { path: '/', changefreq: 'daily', priority: '1.0' },
@@ -119,23 +121,83 @@ async function buildSitemap() {
 
   generateSitemapFile('sitemap-pokemon.xml', pokemonRoutes);
 
-  // STEP 4: Create sitemap index
+  // STEP 4: Event pages
+  console.log('\n📅 Building event pages sitemap...');
+  let eventRoutes = [];
+  try {
+    const res = await fetch('https://adminpage.hypersmmo.workers.dev/admin/events');
+    const events = await res.json();
+    console.log(`   Found ${events.length} events`);
+
+    // Helper function to slugify
+    function slugify(title) {
+      return title
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+    }
+
+    eventRoutes = events.map(e => ({
+      path: `/event/${slugify(e.title)}`,
+      changefreq: 'weekly',
+      priority: '0.5',
+      lastmod: today,
+    }));
+
+    generateSitemapFile('sitemap-events.xml', eventRoutes);
+  } catch (err) {
+    console.error('   ⚠️  Failed to fetch events:', err.message);
+  }
+
+  // STEP 5: Trophy pages
+  console.log('\n🏆 Building trophy pages sitemap...');
+  let trophyRoutes = [];
+  try {
+    const { trophies } = trophiesData;
+    const trophyNames = Object.keys(trophies);
+    console.log(`   Found ${trophyNames.length} trophies`);
+
+    // Helper function to slugify
+    function slugify(title) {
+      return title
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+    }
+
+    trophyRoutes = trophyNames.map(name => ({
+      path: `/trophy/${slugify(name)}`,
+      changefreq: 'monthly',
+      priority: '0.4',
+      lastmod: today,
+    }));
+
+    generateSitemapFile('sitemap-trophies.xml', trophyRoutes);
+  } catch (err) {
+    console.error('   ⚠️  Failed to load trophies:', err.message);
+  }
+
+  // STEP 6: Create sitemap index
   console.log('\n📑 Creating sitemap index...');
   const sitemapFiles = [
     'sitemap-static.xml',
     'sitemap-players.xml',
-    'sitemap-pokemon.xml'
+    'sitemap-pokemon.xml',
+    'sitemap-events.xml',
+    'sitemap-trophies.xml'
   ];
   generateSitemapIndex(sitemapFiles);
 
   // Summary
-  const totalUrls = staticRoutes.length + playerRoutes.length + pokemonNames.length;
+  const totalUrls = staticRoutes.length + playerRoutes.length + pokemonNames.length + eventRoutes.length + trophyRoutes.length;
   console.log(
     `\n✅ Sitemap generation complete!\n` +
     `   Total URLs: ${totalUrls}\n` +
     `   Static: ${staticRoutes.length}\n` +
     `   Players: ${playerRoutes.length}\n` +
-    `   Pokemon: ${pokemonNames.length}`
+    `   Pokemon: ${pokemonNames.length}\n` +
+    `   Events: ${eventRoutes.length}\n` +
+    `   Trophies: ${trophyRoutes.length}`
   );
 }
 
