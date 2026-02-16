@@ -156,6 +156,7 @@ const STATIC_ROUTES = [
   '/counter-generator',
   '/random-pokemon-generator',
   '/shiny-war-2025',
+  '/safari-zones',
   '/about',
 ];
 
@@ -1155,6 +1156,12 @@ async function prerender() {
       ogDescription: 'Team Synergy placed #25 in the Official PokeMMO Shiny Wars 2025 with 1060 points and 111 shinies. View every catch with tier breakdowns and point totals.',
       ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_1/leafeon.gif',
       crawlerLinks: pokemonLinks,
+    },
+    '/safari-zones': {
+      route: '/safari-zones',
+      ogTitle: 'PokeMMO Safari Zone Guide - Catch Rates, Flee Rates & Best Strategies',
+      ogDescription: 'Complete PokeMMO Safari Zone guide with catch rates, flee rates, and optimal strategies for Johto and Sinnoh (Great Marsh). Find the best approach for every Safari Zone Pokemon.',
+      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_0/chansey.gif',
     },
     '/about': {
       route: '/about',
