@@ -6,14 +6,14 @@
 }
 
 .card {
-  background: linear-gradient(135deg, #0f3d4a 0%, #1a4d5a 100%);
-  border: 2px solid #2a8fa3;
+  background: linear-gradient(135deg, #0a0e27 0%, #1a1a3e 100%);
+  border: 2px solid #DAA520;
   border-radius: 12px;
   padding: 24px 32px;
   max-width: 400px;
   width: 100%;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4),
-              inset 0 1px 0 rgba(255, 255, 255, 0.1);
+              0 0 15px rgba(218, 165, 32, 0.3);
 }
 
 .header {
@@ -30,11 +30,11 @@
 }
 
 .title {
-  color: #ff4444;
+  color: #FFD700;
   font-size: 24px;
   font-weight: bold;
   margin: 0;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+  text-shadow: 0 0 10px rgba(255, 95, 109, 0.87);
   letter-spacing: 0.5px;
 }
 
@@ -44,13 +44,13 @@
 }
 
 .monthText {
-  color: #ff4444;
+  color: #FFD700;
   font-size: 14px;
   font-weight: bold;
   text-transform: uppercase;
   letter-spacing: 1px;
   display: block;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 0 10px rgba(218, 165, 32, 0.5);
 }
 
 .legendariesGrid {
@@ -68,17 +68,17 @@
   text-decoration: none;
   padding: 12px;
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(42, 143, 163, 0.4);
+  background: rgba(218, 165, 32, 0.08);
+  border: 1px solid rgba(218, 165, 32, 0.3);
   transition: all 0.3s ease;
   cursor: pointer;
 }
 
 .legendaryItem:hover {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: #2a8fa3;
+  background: rgba(218, 165, 32, 0.15);
+  border-color: #FFD700;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(42, 143, 163, 0.3);
+  box-shadow: 0 4px 12px rgba(218, 165, 32, 0.4);
 }
 
 .legendaryImage {
@@ -115,31 +115,31 @@
   justify-content: center;
   width: 100%;
   padding: 12px 16px;
-  background: linear-gradient(135deg, #2a7a8f, #1a5d6f);
+  background: linear-gradient(90deg, rgba(218, 165, 32, 0.12) 0%, rgba(218, 165, 32, 0.06) 100%);
   color: #ffffff;
   font-size: 14px;
   font-weight: bold;
   text-decoration: none;
-  border: 2px solid #2a8fa3;
+  border: 2px solid #DAA520;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
   text-transform: uppercase;
   letter-spacing: 1px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 15px rgba(218, 165, 32, 0.3);
   box-sizing: border-box;
 }
 
 .calendarButton:hover {
-  background: linear-gradient(135deg, #3a8aaf, #2a6d7f);
-  border-color: #3a9fb3;
+  background: linear-gradient(90deg, rgba(218, 165, 32, 0.18) 0%, rgba(218, 165, 32, 0.1) 100%);
+  border-color: #FFD700;
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(42, 143, 163, 0.4);
+  box-shadow: 0 0 25px rgba(255, 215, 0, 0.6);
 }
 
 .calendarButton:active {
   transform: translateY(0);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 15px rgba(218, 165, 32, 0.3);
 }
 
 @media (max-width: 768px) {

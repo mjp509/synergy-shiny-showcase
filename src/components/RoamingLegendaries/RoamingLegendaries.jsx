@@ -54,7 +54,7 @@ export default function RoamingLegendaries() {
           ))}
         </div>
 
-        <Link to="/roaming-legendaries" className={styles.calendarButton}>
+        <Link to="/roaming-legendaries/" className={styles.calendarButton}>
           Calendar
         </Link>
       </div>
