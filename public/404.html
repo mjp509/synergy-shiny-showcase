@@ -4,6 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Page Not Found - Team Synergy PokeMMO</title>
+  <!-- GitHub Pages SPA redirect: encodes the path into a query string and redirects to index.html -->
+  <script type="text/javascript">
+    var pathSegmentsToKeep = 0;
+    var l = window.location;
+    l.replace(
+      l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+      l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/?/' +
+      l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/').replace(/&/g, '~and~') +
+      (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
+      l.hash
+    );
+  </script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -25,8 +37,6 @@
     a { color: #4a9eff; text-decoration: none; font-weight: bold; }
     a:hover { text-decoration: underline; }
   </style>
-  <!-- GitHub Pages serves prerendered pages from dist/ -->
-  <!-- This 404.html only appears for actual missing pages -->
 </head>
 <body>
   <div class="container">
