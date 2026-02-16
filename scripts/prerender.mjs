@@ -887,7 +887,7 @@ async function prerender() {
       route: '/',
       ogTitle: 'Team Synergy - PokeMMO Shiny Hunting Team',
       ogDescription: 'Team Synergy is a PokeMMO shiny hunting team. Browse our shiny dex, view shiny collections, watch our streamers, and generate encounter counter themes.',
-      ogImage: 'images/openGraph.jpg',
+      ogImage: 'https://synergymmo.com/images/openGraph.jpg',
       crawlerLinks: playerLinks,
     },
     '/pokedex': {
@@ -934,7 +934,7 @@ async function prerender() {
       route: '/streamers',
       ogTitle: 'Team Synergy Streamers | Team Synergy - PokeMMO',
       ogDescription: 'Watch Team Synergy members stream PokeMMO live on Twitch. Check live status, find active streamers, join the community watching shiny hunts, encounters, and competitive gameplay.',
-      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_7/reuniclus.gif',
+      ogImage: 'https://synergymmo.com/images/openGraph.jpg',
       crawlerLinks: streamerLinks,
     },
     '/shiny-war-2025': {
