@@ -7,6 +7,7 @@ const NAV_ITEMS = [
   { to: '/', label: 'Shiny Showcase' },
   { to: '/shotm/', label: 'SHOTM' },
   { to: '/pokedex/', label: 'PokeDex' },
+  { to: '/safari-zones/', label: 'Safari Zones' },
   { to: '/streamers/', label: 'Streamers' },
   { to: '/trophy-board/', label: 'Trophy Board' },
   { to: '/events/', label: 'Events' },
