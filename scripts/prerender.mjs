@@ -117,6 +117,26 @@ const DYNAMIC_FAQS = {
 };
 // ================================================================
 
+// ================== CREATOR/AUTHOR ATTRIBUTION ==================
+// Define creators and contributors for structured data markup
+const CREATORS = {
+  primary: {
+    name: 'Team Synergy',
+    title: 'Community-Driven PokeMMO Project',
+    url: 'https://synergymmo.com',
+    sameAs: [
+      'https://www.youtube.com/@ohypers',
+      'https://discord.com/invite/2BEUq6fWAj'
+    ]
+  },
+  features: [
+    { name: 'Pokédex & Data', role: 'Content Development' },
+    { name: 'Shiny Showcase', role: 'Community Content' },
+    { name: 'Event Management', role: 'Community Events' }
+  ]
+};
+// ================================================================
+
 // ---------------- STATIC ROUTES ----------------
 const STATIC_ROUTES = [
   '/',
@@ -443,6 +463,29 @@ function generateFaqSchema(faqs) {
     }))
   };
 }
+// ---- CREATOR/AUTHOR SCHEMA ----
+// Adds author and creator attribution to all pages for proper content ownership
+function generateCreatorSchema(route = '/') {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Team Synergy",
+    "url": "https://synergymmo.com",
+    "creator": {
+      "@type": "Organization",
+      "name": CREATORS.primary.name,
+      "url": CREATORS.primary.url,
+      "sameAs": CREATORS.primary.sameAs
+    },
+    "description": "A PokeMMO shiny hunting community dedicated to shiny collection, PVP competition, and gaming events.",
+    "publisher": {
+      "@type": "Organization",
+      "name": "Team Synergy",
+      "url": "https://synergymmo.com",
+      "logo": "https://synergymmo.com/favicon.png"
+    }
+  };
+}
 
 // ---- GET FAQs FOR ROUTE ----
 function getFaqsForRoute(route) {
@@ -595,6 +638,39 @@ async function prerenderRoute(templateHtml, outPath, meta = {}) {
   const normalizedRoute = meta.route === '/' ? '' : meta.route;
   const url = `https://synergymmo.com${normalizedRoute}/`;
   
+  // ---- PERFORMANCE: ADD RESOURCE HINTS ----
+  // Preconnect to external image CDN for faster resource loading
+  if (!html.includes('rel="preconnect" href="https://img.pokemondb.net')) {
+    html = html.replace(/<\/head>/, `  <link rel="preconnect" href="https://img.pokemondb.net" crossorigin="anonymous">\n  <link rel="dns-prefetch" href="https://img.pokemondb.net">\n  <link rel="preconnect" href="https://discord.com" crossorigin="anonymous">\n</head>`);
+  }
+  
+  // ---- MOBILE OPTIMIZATION: ADD MOBILE-SPECIFIC META TAGS ----
+  // Ensure Apple touch icon is set for iOS
+  if (!html.includes('rel="apple-touch-icon')) {
+    html = html.replace(/<\/head>/, `  <link rel="apple-touch-icon" href="https://synergymmo.com/favicon.png">\n</head>`);
+  }
+  
+  // Add mobile web app meta tags for iOS
+  if (!html.includes('meta name="apple-mobile-web-app-capable')) {
+    html = html.replace(/<\/head>/, `  <meta name="apple-mobile-web-app-capable" content="yes">\n  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">\n  <meta name="apple-mobile-web-app-title" content="Team Synergy">\n</head>`);
+  }
+  
+  // Ensure proper viewport for responsive design (check if not already present)
+  if (!html.includes('name="viewport')) {
+    html = html.replace(/<\/head>/, `  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">\n</head>`);
+  }
+  
+  // Add theme color for mobile browser chrome
+  if (!html.includes('name="theme-color')) {
+    html = html.replace(/<\/head>/, `  <meta name="theme-color" content="#1a1a1a">\n</head>`);
+  }
+  
+  // ---- PERFORMANCE/ATTRIBUTION: ADD AUTHOR META TAG ----
+  // Proper attribution for content ownership
+  if (!html.includes('meta name="author')) {
+    html = html.replace(/<\/head>/, `  <meta name="author" content="Team Synergy - PokeMMO Community">\n</head>`);
+  }
+  
   // Validate description length
   const cleanDescription = description.replace(/<[^>]*>/g, '');
   if (cleanDescription.length > 160) {
@@ -707,6 +783,10 @@ async function prerenderRoute(templateHtml, outPath, meta = {}) {
   const breadcrumbScript = `<script type="application/ld+json">\n${JSON.stringify(breadcrumbSchema, null, 2)}\n</script>`;
   schemaScripts.push(breadcrumbScript);
 
+  // ---- CREATOR SCHEMA (attribution on all pages) ----
+  const creatorSchema = generateCreatorSchema(meta.route);
+  schemaScripts.push(`<script type="application/ld+json">\n${JSON.stringify(creatorSchema, null, 2)}\n</script>`);
+
   // Inject all schema tags before closing body
   const allSchemaScripts = schemaScripts.join('\n  ');
   html = html.replace(/<\/body>/, `  ${allSchemaScripts}\n</body>`);
@@ -715,6 +795,13 @@ async function prerenderRoute(templateHtml, outPath, meta = {}) {
   if (meta.crawlerLinks) {
     const navHtml = generateCrawlerNav(meta.crawlerLinks, meta.route || 'Navigation', meta.route);
     html = html.replace(/<\/body>/, `${navHtml}\n</body>`);
+  }
+  
+  // ---- PERFORMANCE: ADD AUTHOR/CREATOR META TAG ----
+  // HTML author tag for proper attribution
+  if (!html.includes('meta name="author')) {
+    html = html.replace(/<\/head>/, `  <meta name="author" content="Team Synergy - PokeMMO Community">
+</head>`);
   }
 
   await mkdir(join(outPath, '..'), { recursive: true });
