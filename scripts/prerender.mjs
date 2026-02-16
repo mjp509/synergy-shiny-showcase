@@ -113,6 +113,7 @@ const DYNAMIC_FAQS = {
     { question: 'What abilities does {pokemon} have?', answer: 'Check the abilities section on the {pokemon} page to see all available ability options.' },
     { question: 'What tier is {pokemon} in?', answer: 'The tier rank for {pokemon} is listed on the Pokédex page and reflects its rarity and hunt difficulty.' },
     { question: 'What is the best way to catch {pokemon}?', answer: 'Visit the Pokemon Specific Page to see the PokeMMO Catch Calculator for the most efficient way to catch them' },
+    { question: 'Best way to shiny hunt {pokemon} PokeMMO', answer: 'Visit the Pokemon Specific Page to see the PokeMMO Locations for shiny hunting.' },
   ],
   event: [
     { question: 'When does the {event} event start?', answer: 'Event dates and times are shown on the event details page. Check start and end dates carefully.' },
