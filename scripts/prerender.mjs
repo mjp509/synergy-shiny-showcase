@@ -440,16 +440,24 @@ function generateEventSchema(eventTitle, eventDescription) {
 }
 
 // ---- TROPHY SCHEMA ----
+// Enhanced schema with aggregation for better entity recognition
 function generateTrophySchema(trophyName) {
   return {
     "@context": "https://schema.org",
     "@type": "Award",
     "name": trophyName,
     "description": `${trophyName} achievement earned by Team Synergy members in PokeMMO`,
+    "url": `https://synergymmo.com/trophy/${trophyName.toLowerCase().replace(/\s+/g, '-')}/`,
     "awardedBy": {
       "@type": "Organization",
       "name": "Team Synergy",
       "url": "https://synergymmo.com"
+    },
+    "isPartOf": {
+      "@type": "AggregateOffer",
+      "priceCurrency": "USD",
+      "availability": "https://schema.org/InStock",
+      "offerCount": 1
     }
   };
 }
@@ -491,6 +499,127 @@ function generateCreatorSchema(route = '/') {
       "name": "Team Synergy",
       "url": "https://synergymmo.com",
       "logo": "https://synergymmo.com/favicon.png"
+    }
+  };
+}
+
+// ---- WEBPAGE SCHEMA ----
+// Comprehensive WebPage schema for better entity recognition and knowledge graph integration
+function generateWebPageSchema(route, title, description, image) {
+  const url = route === '/' ? 'https://synergymmo.com/' : `https://synergymmo.com${route}/`;
+  
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "url": url,
+    "name": title,
+    "description": description,
+    "image": image,
+    "datePublished": "2024-01-01",
+    "dateModified": new Date().toISOString().split('T')[0],
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "Team Synergy",
+      "url": "https://synergymmo.com"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Team Synergy",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://synergymmo.com/favicon.png"
+      }
+    },
+    "author": {
+      "@type": "Organization",
+      "name": "Team Synergy",
+      "url": "https://synergymmo.com"
+    }
+  };
+}
+
+// ---- COLLECTION PAGE SCHEMA ----
+// For Pokédex, Trophy Board, and other collection pages
+function generateCollectionPageSchema(route, title, description, image, itemCount) {
+  const url = route === '/' ? 'https://synergymmo.com/' : `https://synergymmo.com${route}/`;
+  
+  return {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "url": url,
+    "name": title,
+    "description": description,
+    "image": image,
+    "numberOfItems": itemCount,
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "Team Synergy",
+      "url": "https://synergymmo.com"
+    },
+    "author": {
+      "@type": "Organization",
+      "name": "Team Synergy",
+      "url": "https://synergymmo.com"
+    }
+  };
+}
+
+// ---- GAME SCHEMA ----
+// For Pokemon and gaming-related content
+function generateGameSchema(pokemonName) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Game",
+    "name": pokemonName,
+    "gamePlatform": "Web",
+    "applicationCategory": "GamingApplication",
+    "isPartOf": {
+      "@type": "Game",
+      "name": "PokeMMO"
+    }
+  };
+}
+
+// ---- SOCIAL MEDIA POSTING SCHEMA ----
+// To improve social sharing signals and discoverability
+function generateSocialMediaSchema(title, description, image, url) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "SocialMediaPosting",
+    "headline": title,
+    "description": description,
+    "image": image,
+    "url": url,
+    "datePublished": new Date().toISOString().split('T')[0],
+    "sharedContent": {
+      "@type": "CreativeWork",
+      "name": title,
+      "description": description,
+      "image": image
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Team Synergy",
+      "url": "https://synergymmo.com"
+    }
+  };
+}
+
+// ---- WEBSITE SEARCH ACTION SCHEMA ----
+// Enables search appearance in Google Search results
+function generateWebsiteSearchSchema() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Team Synergy",
+    "url": "https://synergymmo.com",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": "https://synergymmo.com/?search={search_term_string}"
+      },
+      "query-input": "required name=search_term_string"
     }
   };
 }
@@ -727,7 +856,8 @@ async function prerenderRoute(templateHtml, outPath, meta = {}) {
   // Generate page-specific hidden content with keywords for search engines
   function getHiddenSeoContent(route) {
     const pageDescriptions = {
-      '/': `<h1 style="display: none; visibility: hidden; position: absolute; width: 1px; height: 1px; overflow: hidden;">Team Synergy - PokeMMO Shiny Hunting Community</h1><section style="display: none; visibility: hidden; position: absolute; width: 1px; height: 1px; overflow: hidden;"><p>Team Synergy is a dedicated PokeMMO shiny hunting community where passionate players gather to catch and collect rare shiny Pokemon. Our team specializes in shiny hunting guides and strategies for catching shiny Pokemon across all generations in PokeMMO. Whether you're new to shiny hunting or an experienced hunter, Team Synergy offers comprehensive resources including Pokédex tracking, roaming legendaries calendars, and encounter guides. We feature livestreaming content from top PokeMMO players, trophy achievements, and competitive shiny wars. Our shiny hunting guides cover everything from basic shiny Pokemon catching techniques to advanced strategies for rare Pokemon. Team Synergy members share their shiny collections, showcase their best catches, and participate in community events. We provide tools for customizing encounter counters, generating random shiny hunt challenges, and tracking progress. Join our PokeMMO community to learn shiny hunting tips, discover new rare Pokemon locations, and compete in shiny catching challenges. Team Synergy brings together the best shiny hunters in PokeMMO for an inclusive gaming experience.</p></section>`,
+      '/': `<h1 style="display: none; visibility: hidden; position: absolute; width: 1px; height: 1px; overflow: hidden;">Team Synergy - PokeMMO Shiny Hunting Community</h1><section style="display: none; visibility: hidden; position: absolute; width: 1px; height: 1px; overflow: hidden;"><p>Team Synergy is a dedicated PokeMMO shiny hunting community where passionate players gather to catch and collect rare shiny Pokemon. Our team specializes in shiny hunting guides and strategies for catching shiny Pokemon across all generations in PokeMMO. Whether you're new to shiny hunting or an experienced hunter, Team Synergy offers comprehensive resources including Pokédex tracking, roaming legendaries calendars, and encounter guides. We feature livestreaming content from top PokeMMO players, trophy achievements, and competitive shiny wars. Our shiny hunting guides cover everything from basic shiny Pokemon catching techniques to advanced strategies for rare Pokemon. Team Synergy members share their shiny collections, showcase their best catches, and participate in community events. We provide tools for customizing encounter counters, generating random shiny hunt challenges, and tracking progress. Join our PokeMMO community to learn shiny hunting tips, discover new rare Pokemon locations, and compete in shiny catching challenges. Team Synergy brings together the best shiny hunters in PokeMMO for an inclusive gaming experience. Team Synergy is referenced in PokeMMO community forums and gaming communities as a premier shiny hunting resource.</p></section>`,
+      '/shotm': `<h1 style="display: none; visibility: hidden; position: absolute; width: 1px; height: 1px; overflow: hidden;">Shiny of the Month - Team Synergy</h1><section style="display: none; visibility: hidden; position: absolute; width: 1px; height: 1px; overflow: hidden;"><p>SHOTM stands for Shiny of the Month - a monthly feature highlighting exceptional shiny catches by Team Synergy members in PokeMMO. The SHOTM recognition program celebrates outstanding shiny hunting achievements and rare Pokemon catches. Each month, Team Synergy members compete for recognition based on the tier value and rarity of their shiny catches. The SHOTM selection system awards points based on Pokemon rarity, nature quality, and hunting difficulty. Winners receive community recognition, featured showcases, and special team acknowledgment. The Shiny of the Month tradition strengthens community engagement and motivates hunters to pursue rare targets. Team Synergy members view SHOTM as a prestigious award recognizing exceptional dedication to shiny hunting. The monthly recognition encourages sharing of hunt stories, strategies, and achievement updates. SHOTM winners become community role models inspiring other hunters to pursue ambitious shiny targets. The program tracks historical winners and maintains achievement records celebrating past accomplishments. Participate in monthly competitions to earn SHOTM recognition and community prestige within Team Synergy.</p></section>`,
       '/pokedex': `<h1 style="display: none; visibility: hidden; position: absolute; width: 1px; height: 1px; overflow: hidden;">PokeMMO Pokédex - Shiny Pokemon Database</h1><section style="display: none; visibility: hidden; position: absolute; width: 1px; height: 1px; overflow: hidden;"><p>The Team Synergy Pokédex is a comprehensive PokeMMO database featuring all Generation 1-5 Pokemon with detailed shiny variants and hunting information. Our Pokemon guide includes catch locations, rarity tiers, abilities, base stats, and type matchups for every Pokemon in PokeMMO. Use our advanced Pokédex tracker to filter shiny Pokemon by type, tier, generation, and location. Our shiny hunting guides provide exact spawn rates and encounter locations for each Pokemon. The Pokédex displays both normal and shiny forms of every Pokemon, helping hunters identify their targets. Team Synergy's Pokemon database includes rare find indicators and difficulty ratings for shiny hunting. Our guides explain Pokemon evolution, breeding mechanics, and nature-based advantages in PokeMMO. Discover the best shiny Pokemon to hunt based on difficulty and rarity. Use our Pokédex to plan your shiny hunting strategy and track which rare Pokemon you still need. The database includes expert tips for catching hard-to-find Pokemon and maximizing shiny encounter rates. Filter by tier to find beginner-friendly shiny hunts or challenge yourself with legendary tier Pokemon.</p></section>`,
       '/roaming-legendaries': `<h1 style="display: none; visibility: hidden; position: absolute; width: 1px; height: 1px; overflow: hidden;">Roaming Legendaries Calendar - PokeMMO Legendary Pokemon</h1><section style="display: none; visibility: hidden; position: absolute; width: 1px; height: 1px; overflow: hidden;"><p>The Team Synergy Roaming Legendaries Calendar tracks monthly spawns of rare legendary Pokemon in PokeMMO including Zapdos, Moltres, Articuno, Entei, Suicune, and Raikou. Our guide provides shiny hunting strategies specifically designed for roaming legendary Pokemon. Learn when and where each legendary spawns to plan your shiny hunting expeditions. The calendar shows availability for all roaming legendaries across monthly rotations, helping you schedule hunts efficiently. Our shiny hunting guides explain the unique challenges of catching roaming legends and advanced strategies for success. Team Synergy tracks legendary Pokemon locations and provides tips for efficient encounters. The roaming legendaries calendar is essential for shiny hunters seeking rare legendary shiny Pokemon. Our guides cover catch rates, recommended Pokemon teams, and optimal battle strategies for each legendary. Discover the best months to hunt specific legendary shiny Pokemon based on spawn schedules. Use our Pokédex data combined with the legendary calendar to plan year-round shiny hunting adventures. The roaming legendaries guide includes detailed location maps and encounter frequency data for all legendary Pokemon.</p></section>`,
       '/random-pokemon-generator': `<h1 style="display: none; visibility: hidden; position: absolute; width: 1px; height: 1px; overflow: hidden;">Random Pokemon Generator - Shiny Hunt Challenge</h1><section style="display: none; visibility: hidden; position: absolute; width: 1px; height: 1px; overflow: hidden;"><p>The Team Synergy Random Pokemon Generator is a shiny hunting tool that generates random Pokemon targets to break monotony and discover new shiny hunts. Our generator helps shiny hunters find exciting new challenges by randomly selecting Pokemon from specific tiers. Use our tool to create shiny bingo boards in 3x3, 4x4, or 5x5 grids for fun group shiny hunting challenges. The random Pokemon generator supports difficulty filtering to match your shiny hunting skill level. Our guide explains how to use randomization to discover lesser-known shiny Pokemon worth hunting. Team Synergy's generator includes nature randomization and IV weighting options for advanced shiny hunters. Create encounter challenges and compete with friends using our random Pokemon bingo system. The generator helps break the routine of planned hunts by introducing exciting randomness to shiny hunting. Use tier filters to challenge yourself or select beginner-friendly shiny hunts. Our tool includes completion tracking for bingo boards and statistics on your shiny hunting progress. The random Pokemon feature helps hunters expand their shiny collections by encouraging exploration of less popular Pokemon.</p></section>`,
@@ -743,11 +873,12 @@ async function prerenderRoute(templateHtml, outPath, meta = {}) {
   }
   
   const hiddenSeoContent = getHiddenSeoContent(meta.route);
+  let h1Title = meta.ogTitle?.split('|')[0]?.trim() || 'Team Synergy';
+  
   if (hiddenSeoContent) {
     html = html.replace(/<body[^>]*>/, `<body>\n  ${hiddenSeoContent}`);
   } else {
     // Fallback for pages without specific descriptions
-    let h1Title = meta.ogTitle?.split('|')[0]?.trim() || 'Team Synergy';
     const h1Html = `<h1 style="display: none; visibility: hidden; position: absolute; width: 1px; height: 1px; overflow: hidden;">${h1Title}</h1>`;
     html = html.replace(/<body[^>]*>/, `<body>\n  ${h1Html}`);
   }
@@ -767,7 +898,54 @@ async function prerenderRoute(templateHtml, outPath, meta = {}) {
   if (meta.route === '/') {
     const orgSchema = generateOrganizationSchema();
     schemaScripts.push(`<script type="application/ld+json">\n${JSON.stringify(orgSchema, null, 2)}\n</script>`);
+    
+    // Add website search schema for enhanced search appearance
+    const webSearchSchema = generateWebsiteSearchSchema();
+    schemaScripts.push(`<script type="application/ld+json">\n${JSON.stringify(webSearchSchema, null, 2)}\n</script>`);
+    
+    // Add social media posting schema for homepage
+    const socialSchema = generateSocialMediaSchema(
+      meta.ogTitle,
+      meta.ogDescription,
+      meta.ogImage,
+      'https://synergymmo.com/'
+    );
+    schemaScripts.push(`<script type="application/ld+json">\n${JSON.stringify(socialSchema, null, 2)}\n</script>`);
   }
+  
+  // ---- WEBPAGE SCHEMA (all pages) ----
+  const webPageSchema = generateWebPageSchema(meta.route, meta.ogTitle, meta.ogDescription, meta.ogImage);
+  schemaScripts.push(`<script type="application/ld+json">\n${JSON.stringify(webPageSchema, null, 2)}\n</script>`);
+  
+  // ---- COLLECTION PAGE SCHEMA (for Pokédex and Trophy Board) ----
+  if (meta.route === '/pokedex') {
+    const collectionSchema = generateCollectionPageSchema(
+      meta.route,
+      meta.ogTitle,
+      meta.ogDescription,
+      meta.ogImage,
+      1025  // ~1000+ Gen 1-5 Pokemon with variants
+    );
+    schemaScripts.push(`<script type="application/ld+json">\n${JSON.stringify(collectionSchema, null, 2)}\n</script>`);
+  } else if (meta.route === '/trophy-board') {
+    const collectionSchema = generateCollectionPageSchema(
+      meta.route,
+      meta.ogTitle,
+      meta.ogDescription,
+      meta.ogImage,
+      12  // 12 unique trophies
+    );
+    schemaScripts.push(`<script type="application/ld+json">\n${JSON.stringify(collectionSchema, null, 2)}\n</script>`);
+  }
+  
+  // ---- SOCIAL MEDIA SCHEMA (all pages) ----
+  const socialMediaSchema = generateSocialMediaSchema(
+    meta.ogTitle,
+    meta.ogDescription,
+    meta.ogImage,
+    `https://synergymmo.com${meta.route === '/' ? '' : meta.route}/`
+  );
+  schemaScripts.push(`<script type="application/ld+json">\n${JSON.stringify(socialMediaSchema, null, 2)}\n</script>`);
   
   // ---- PLAYER SCHEMA ----
   if (meta.route?.includes('/player/')) {
@@ -780,6 +958,10 @@ async function prerenderRoute(templateHtml, outPath, meta = {}) {
     const pokemonName = meta.route.split('/').pop();
     const pokemonSchema = generatePokemonSchema(pokemonName, pokemonName);
     schemaScript = `<script type="application/ld+json">\n${JSON.stringify(pokemonSchema, null, 2)}\n</script>`;
+    
+    // Add game schema for Pokemon pages
+    const gameSchema = generateGameSchema(pokemonName);
+    schemaScripts.push(`<script type="application/ld+json">\n${JSON.stringify(gameSchema, null, 2)}\n</script>`);
   }
   // ---- EVENT SCHEMA ----
   else if (meta.route?.includes('/event/')) {
@@ -913,6 +1095,13 @@ async function prerender() {
       ogImage: 'https://synergymmo.com/images/openGraph.jpg',
       crawlerLinks: playerLinks,
     },
+    '/shotm': {
+      route: '/shotm',
+      ogTitle: 'Shiny of the Month - Team Synergy - PokeMMO',
+      ogDescription: 'Team Synergy Shiny of the Month (SHOTM) showcases outstanding shiny catches and achievements by our community members each month.',
+      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_7/reuniclus.gif',
+      crawlerLinks: [...playerLinks, ...pokemonLinks],
+    },
     '/pokedex': {
       route: '/pokedex',
       ogTitle: 'Pokédex Tracker - Shiny & Living Dex | Team Synergy - PokeMMO',
@@ -965,12 +1154,14 @@ async function prerender() {
       ogTitle: 'Shiny Wars 2025 Results | Team Synergy - PokeMMO',
       ogDescription: 'Team Synergy placed #25 in the Official PokeMMO Shiny Wars 2025 with 1060 points and 111 shinies. View every catch with tier breakdowns and point totals.',
       ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_1/leafeon.gif',
+      crawlerLinks: pokemonLinks,
     },
     '/about': {
       route: '/about',
-      ogTitle: 'About SynergyMMO | Team Synergy - PokeMMO',
-      ogDescription: 'Learn about Team Synergy, a PokeMMO shiny hunting community. Learn how to apply, and recent updates.',
+      ogTitle: 'About Team Synergy | PokeMMO Shiny Hunting Community',
+      ogDescription: 'Learn about Team Synergy, a PokeMMO shiny hunting community. Learn how to apply, find team members, and join our Discord community for PokeMMO gaming.',
       ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_7/reuniclus.gif',
+      crawlerLinks: streamerLinks,
     },
   };
 
