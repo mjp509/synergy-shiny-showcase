@@ -214,7 +214,7 @@ async function getPlayers() {
   return Object.entries(data).map(([playerName, player]) => {
     const shinies = Object.values(player.shinies || {});
     const fav = shinies.find(s => s.Favourite?.toLowerCase() === 'yes') || shinies[0];
-    const ogImage = fav ? getLocalPokemonGif(fav.Pokemon) : '/favicon.png';
+    const ogImage = fav ? getLocalPokemonGif(fav.Pokemon) : '/images/openGraph.jpg';
 
     return {
       route: `/player/${encodeURIComponent(playerName.toLowerCase())}`,
@@ -248,7 +248,7 @@ async function getEvents() {
   const data = await res.json();
 
   return data.map(e => {
-    const ogImage = e.imageLink || '/favicon.png';
+    const ogImage = e.imageLink || '/images/openGraph.jpg';
     const slug = slugify(e.title);
 
     return {
@@ -320,7 +320,7 @@ export async function getTrophies() {
 
   return Object.keys(trophies).map(name => {
     const slug = slugify(name);
-    const img = trophies[name] || '/favicon.png';
+    const img = trophies[name] || '/images/openGraph.jpg';
     const DOMAIN = 'https://synergymmo.com';
 
     return {

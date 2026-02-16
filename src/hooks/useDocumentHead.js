@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 const DEFAULT_SITE_NAME = 'Team Synergy - PokeMMO';
 const DEFAULT_BASE_URL = 'https://synergymmo.com';
-const DEFAULT_IMAGE = `${DEFAULT_BASE_URL}/favicon.png`;
+const DEFAULT_IMAGE = `${DEFAULT_BASE_URL}/images/openGraph.jpg`;
 const DEFAULT_DESCRIPTION =
   'Team Synergy is a PokeMMO shiny hunting team. Browse our shiny dex, view shiny collections, watch our streamers, and generate encounter counter themes.';
 
@@ -80,6 +80,8 @@ export function useDocumentHead({
     setMeta('og:title', fullTitle, 'property');
     setMeta('og:description', desc, 'property');
     setMeta('og:image', image, 'property');
+    setMeta('og:image:width', '1200', 'property');
+    setMeta('og:image:height', '630', 'property');
     setMeta('og:url', finalUrl, 'property');
     setMeta('og:type', ogType, 'property');
     setMeta('og:site_name', siteName, 'property');
