@@ -140,12 +140,12 @@ export default function Home() {
             <p>Read all the useful Resources about PokeMMO</p>
           </Link>
 
-          <Link to="/events" className={styles.featureCard}>
+          <Link to="/safari-zones" className={styles.featureCard}>
             <div className={styles.featureIcon}>
-              <img src="https://img.pokemondb.net/sprites/black-white/anim/shiny/machamp.gif" alt="Machamp" />
+              <img src="https://img.pokemondb.net/sprites/black-white/anim/shiny/riolu.gif" alt="Riolu" />
             </div>
-            <h3>Events</h3>
-            <p>Join community events and competitions</p>
+            <h3>Safari Zones</h3>
+            <p>Explore detailed Safari Zone information for all regions</p>
           </Link>
 
           <Link to="/roaming-legendaries" className={styles.featureCard}>
