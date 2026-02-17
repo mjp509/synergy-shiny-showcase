@@ -104,7 +104,7 @@ export default function Resources() {
 
   // Set initial subcategory when category changes
   useEffect(() => {
-    const newSubcategories = currentCategory ? Object.keys(currentCategory) : []
+    const newSubcategories = currentCategory ? Object.keys(currentCategory).filter(key => !key.startsWith('_')) : []
     if (newSubcategories.length > 0) {
       // Only set if not already set from URL
       if (!activeSubcategory) {
