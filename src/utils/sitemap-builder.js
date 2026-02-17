@@ -19,6 +19,7 @@ const staticRoutes = [
   { path: '/counter-generator/', changefreq: 'monthly', priority: '0.6' },
   { path: '/random-pokemon-generator/', changefreq: 'monthly', priority: '0.7' },
   { path: '/events/', changefreq: 'weekly', priority: '0.6' },
+  { path: '/resources/', changefreq: 'monthly', priority: '0.6' },
   { path: '/shiny-war-2025/', changefreq: 'weekly', priority: '0.7' },
 ];
 
