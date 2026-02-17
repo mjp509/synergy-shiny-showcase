@@ -242,7 +242,8 @@ function slugify(title) {
   return title
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-') // replace non-alphanumeric with dash
-    .replace(/^-+|-+$/g, '')     // remove leading/trailing dashes
+    .replace(/-+/g, '-') // collapse multiple dashes
+    .replace(/^-+|-+$/g, ''); // remove leading/trailing dashes
 }
 
 // Extract all resource routes with metadata and breadcrumb navigation
@@ -988,10 +989,13 @@ async function prerenderRoute(templateHtml, outPath, meta = {}) {
   const description = meta.ogDescription || 'Team Synergy is a PokeMMO shiny hunting team.';
   const image = meta.ogImage || 'https://synergymmo.com/images/pokemon_gifs/tier_7/reuniclus.gif';
   // Add trailing slash to match GitHub Pages serving pattern (avoids 301 redirects)
-  // Normalize route to avoid double slashes: '/' should not become '//'
-  const normalizedRoute = meta.route === '/' ? '' : meta.route;
-  const url = `https://synergymmo.com${normalizedRoute}/`;
-  
+  const normalizedRoute =
+    meta.route === '/'
+      ? '/'
+      : (meta.route || '').replace(/\/+$/, '') + '/';
+
+  const url = `https://synergymmo.com${normalizedRoute}`;
+
   // ---- PERFORMANCE: ADD RESOURCE HINTS ----
   // Preconnect to external image CDN for faster resource loading
   if (!html.includes('rel="preconnect" href="https://img.pokemondb.net')) {
