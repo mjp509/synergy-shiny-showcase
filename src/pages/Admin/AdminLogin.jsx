@@ -21,13 +21,19 @@ export default function AdminLogin() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username: name, password }),
       })
+
+      if (!res.ok) {
+        setMessage(`Server error: ${res.status}`)
+        return
+      }
+
       const data = await res.json()
 
       if (data.authorized) {
         login(name, password)
         navigate('/admin/panel')
       } else {
-        setMessage('Invalid credentials')
+        setMessage(data.message || 'Invalid credentials')
       }
     } catch {
       setMessage('Error connecting to server')

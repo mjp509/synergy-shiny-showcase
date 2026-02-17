@@ -27,7 +27,10 @@ export default function ShinyShowcase() {
   const sentinelRef = useRef(null)
   const { data: streamers } = useQuery({
     queryKey: ['streamersList'],
-    queryFn: () => fetch(API.streamers).then(r => r.json()),
+    queryFn: () => fetch(API.streamers).then(r => {
+      if (!r.ok) throw new Error(`Failed to load streamers: ${r.status}`)
+      return r.json()
+    }),
   })
 
   const sortedPlayers = useMemo(() => {
@@ -89,10 +92,10 @@ export default function ShinyShowcase() {
 
   return (
     <div>
-      <h1 class="seo-optimized">
+      <h1 className="seo-optimized">
         Shiny Showcase - Team Synergy PokeMMO Collections
       </h1>
-      <p class="seo-intro">
+      <p className="seo-intro">
         Browse {filteredPlayers.length} Team Synergy member shiny collections. Track completion with our Pokédex, explore shiny hunting locations, and discover our community's best shinies.
       </p>
 
