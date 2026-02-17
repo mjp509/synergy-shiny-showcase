@@ -39,6 +39,7 @@ export default function useAdminDatabase(auth) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     });
+    if (!res.ok) throw new Error(`POST ${endpoint} failed: ${res.status}`);
     const text = await res.text();
     try { return JSON.parse(text); } catch { return text; }
   }, []);
@@ -71,6 +72,9 @@ export default function useAdminDatabase(auth) {
         fetch(API.streamers),
         fetch(API.adminLog),
       ]);
+      if (!dbRes.ok) throw new Error(`Failed to fetch database: ${dbRes.status}`);
+      if (!streamersRes.ok) throw new Error(`Failed to fetch streamers: ${streamersRes.status}`);
+      if (!logRes.ok) throw new Error(`Failed to fetch admin log: ${logRes.status}`);
       const db = await dbRes.json();
       const str = await streamersRes.json();
       const log = await logRes.json();
@@ -285,6 +289,7 @@ export default function useAdminDatabase(auth) {
   const loadEvents = useCallback(async () => {
     try {
       const res = await fetch(API.events);
+      if (!res.ok) throw new Error(`Failed to fetch events: ${res.status}`);
       const events = await res.json();
       setEventDB(events);
       return events;

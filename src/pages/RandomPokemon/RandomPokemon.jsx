@@ -285,23 +285,24 @@ export default function RandomPokemon() {
         copy[idx] = activeTeam;
       }
       saveBingo({ card: bingoCard, size: bingoSize, completed: copy });
+
+      // Check for bingo milestones using updated copy (not stale state)
+      const completedIndices = Object.keys(copy).map(i => parseInt(i, 10));
+      const totalLines = checkBingo(completedIndices, bingoSize);
+      const allComplete = completedIndices.length === bingoCard.length;
+
+      let milestone = 0;
+      if (allComplete && bingoMilestone < 3) milestone = 3;
+      else if (totalLines >= 2 && bingoMilestone < 2) milestone = 2;
+      else if (totalLines >= 1 && bingoMilestone < 1) milestone = 1;
+
+      if (milestone > 0) {
+        setBingoMilestone(milestone);
+        showBingoOverlay(milestone);
+      }
+
       return copy;
     });
-
-    // Optional: check for bingo milestones as before
-    const completedIndices = Object.keys(bingoCompleted).map(i => parseInt(i, 10));
-    const totalLines = checkBingo(completedIndices, bingoSize);
-    const allComplete = completedIndices.length === bingoCard.length;
-
-    let milestone = 0;
-    if (allComplete && bingoMilestone < 3) milestone = 3;
-    else if (totalLines >= 2 && bingoMilestone < 2) milestone = 2;
-    else if (totalLines >= 1 && bingoMilestone < 1) milestone = 1;
-
-    if (milestone > 0) {
-      setBingoMilestone(milestone);
-      showBingoOverlay(milestone);
-    }
   }
 
 
