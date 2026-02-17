@@ -60,9 +60,8 @@ export default function StarField() {
     }
 
     function animateStar(s) {
-      let active = true
+      let rafId = null
       function move() {
-        if (!active) return
         const dx = Math.cos(s.rad) * s.speed
         const dy = Math.sin(s.rad) * s.speed
 
@@ -82,10 +81,10 @@ export default function StarField() {
           resetStar(s)
         }
 
-        requestAnimationFrame(move)
+        rafId = requestAnimationFrame(move)
       }
-      requestAnimationFrame(move)
-      rafsRef.current.push(() => { active = false })
+      rafId = requestAnimationFrame(move)
+      rafsRef.current.push(() => { if (rafId) cancelAnimationFrame(rafId) })
     }
 
     const starCount = window.innerWidth < 600 ? 3 : window.innerWidth < 1024 ? 6 : 10

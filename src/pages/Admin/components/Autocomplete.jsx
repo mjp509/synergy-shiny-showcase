@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import styles from '../Admin.module.css'
 
 export default function Autocomplete({ id, value, onChange, getOptions, placeholder }) {
@@ -6,6 +6,9 @@ export default function Autocomplete({ id, value, onChange, getOptions, placehol
   const [show, setShow] = useState(false)
   const [focusIdx, setFocusIdx] = useState(-1)
   const ref = useRef(null)
+  const blurTimeoutRef = useRef(null)
+
+  useEffect(() => () => { if (blurTimeoutRef.current) clearTimeout(blurTimeoutRef.current) }, [])
 
   function handleInput(val) {
     onChange(val)
@@ -37,7 +40,7 @@ export default function Autocomplete({ id, value, onChange, getOptions, placehol
         onChange={e => handleInput(e.target.value)}
         onKeyDown={handleKeyDown}
         onFocus={() => suggestions.length && setShow(true)}
-        onBlur={() => setTimeout(() => setShow(false), 100)}
+        onBlur={() => { blurTimeoutRef.current = setTimeout(() => setShow(false), 100) }}
         placeholder={placeholder}
         autoComplete="off"
       />
