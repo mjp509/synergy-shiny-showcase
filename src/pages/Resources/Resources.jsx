@@ -81,6 +81,8 @@ export default function Resources() {
   const [activeCategory, setActiveCategory] = useState(actualCategory)
   const [activeSubcategory, setActiveSubcategory] = useState(actualSubcategory)
   const [activeNestedTab, setActiveNestedTab] = useState(actualNested)
+  const [expandedIndexCategories, setExpandedIndexCategories] = useState({})
+  const [showIndex, setShowIndex] = useState(false)
 
   // Extract metadata for SEO
   const categoryMeta = categoryData?._meta
@@ -255,6 +257,55 @@ export default function Resources() {
     })
   }
 
+  // Toggle index category expansion
+  const toggleIndexCategory = (categoryKey) => {
+    setExpandedIndexCategories(prev => ({
+      ...prev,
+      [categoryKey]: !prev[categoryKey]
+    }))
+  }
+
+  // Navigate to a resource section
+  const navigateToResource = (catSlug, subcatSlug = null, nestedSlug = null) => {
+    let path = `/resources/${catSlug}/`
+    if (subcatSlug) path += `${subcatSlug}/`
+    if (nestedSlug) path += `${nestedSlug}/`
+    navigate(path)
+    setShowIndex(false)
+  }
+
+  // Filter items by selected tags (if any)
+  const filterItemsByTags = (items) => {
+    if (!selectedTags.length) return items
+    return items.filter(item => {
+      if (!item.tags) return false
+      const tagsArr = item.tags.split(',').map(t => t.trim())
+      return selectedTags.every(tag => tagsArr.includes(tag))
+    })
+  }
+
+  // Tag filtering for Content Creators (must always be defined)
+  const [selectedTags, setSelectedTags] = useState([])
+  let allContentCreatorTags = []
+  if (activeCategory === 'Content Creators') {
+    const cc = resourcesData['Content Creators']
+    const tagSet = new Set()
+    // If a subcategory is selected, only show tags from that subcategory
+    const subcats = activeSubcategory && cc[activeSubcategory] && cc[activeSubcategory]._items
+      ? [activeSubcategory]
+      : ['YouTubers', 'Twitch Streamers']
+    subcats.forEach(subcat => {
+      if (cc[subcat] && cc[subcat]._items) {
+        cc[subcat]._items.forEach(item => {
+          if (item.tags) {
+            item.tags.split(',').map(t => t.trim()).filter(Boolean).forEach(t => tagSet.add(t))
+          }
+        })
+      }
+    })
+    allContentCreatorTags = Array.from(tagSet).sort()
+  }
+
   return (
     <div className={styles.container}>
       <h1>Team Synergy Resources</h1>
@@ -264,6 +315,93 @@ export default function Resources() {
 
         <h4 className={styles.intro}>If you are creddited in this and would like for your guide to be removed, please contact ohypers on discord</h4>
         <h4 className={styles.intro}>If you have a useful guide or tool that you would like to be added, please dm</h4>
+
+      {/* Index/Table of Contents */}
+      <div className={styles.indexContainer}>
+        <button 
+          className={styles.indexToggleButton}
+          onClick={() => setShowIndex(!showIndex)}
+        >
+          <span className={styles.indexToggleIcon}>{showIndex ? '▼' : '▶'}</span>
+          📑 Index
+        </button>
+        
+        {showIndex && (
+          <div className={styles.indexDropdown}>
+            {categories.map(category => {
+              const categoryKey = category
+              const categoryContent = resourcesData[categoryKey]
+              // Always show subcategories if any (even if _items exists)
+              const subcategoryKeys = Object.keys(categoryContent || {}).filter(key => !key.startsWith('_') && key !== '_items')
+              return (
+                <div key={categoryKey} className={styles.indexCategoryWrapper}>
+                  <div className={styles.indexCategoryHeader}>
+                    <button
+                      className={styles.indexCategoryLink}
+                      onClick={() => {
+                        setActiveCategory(categoryKey)
+                        setActiveSubcategory(null)
+                        setActiveNestedTab(null)
+                        navigate(`/resources/${toSlug(categoryKey)}/`)
+                        setShowIndex(false)
+                      }}
+                    >
+                      {categoryKey}
+                    </button>
+                  </div>
+                  {subcategoryKeys.length > 0 && (
+                    <div className={styles.indexSubcategoryList}>
+                      {subcategoryKeys.map(subcategoryKey => {
+                        const subcategoryContent = categoryContent[subcategoryKey]
+                        const nestedKeys = subcategoryContent && typeof subcategoryContent === 'object' && !Array.isArray(subcategoryContent)
+                          ? Object.keys(subcategoryContent).filter(key => !key.startsWith('_') && key !== '_items')
+                          : []
+                        return (
+                          <div key={subcategoryKey} className={styles.indexSubcategoryWrapper}>
+                            <div className={styles.indexSubcategoryHeader}>
+                              <button
+                                className={styles.indexSubcategoryLink}
+                                onClick={() => {
+                                  setActiveCategory(categoryKey)
+                                  setActiveSubcategory(subcategoryKey)
+                                  setActiveNestedTab(null)
+                                  navigate(`/resources/${toSlug(categoryKey)}/${toSlug(subcategoryKey)}/`)
+                                  setShowIndex(false)
+                                }}
+                              >
+                                {subcategoryKey}
+                              </button>
+                            </div>
+                            {nestedKeys.length > 0 && (
+                              <div className={styles.indexNestedList}>
+                                {nestedKeys.map(nestedKey => (
+                                  <button
+                                    key={nestedKey}
+                                    className={styles.indexNestedLink}
+                                    onClick={() => {
+                                      setActiveCategory(categoryKey)
+                                      setActiveSubcategory(subcategoryKey)
+                                      setActiveNestedTab(nestedKey)
+                                      navigate(`/resources/${toSlug(categoryKey)}/${toSlug(subcategoryKey)}/${toSlug(nestedKey)}/`)
+                                      setShowIndex(false)
+                                    }}
+                                  >
+                                    {nestedKey}
+                                  </button>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        )
+                      })}
+                    </div>
+                  )}
+                </div>
+              )
+            })}
+          </div>
+        )}
+      </div>
 
       {/* Main Category Tabs */}
       <div className={styles.tabsContainer}>
@@ -321,17 +459,50 @@ export default function Resources() {
         </div>
       )}
 
-      {/* Subcategory Description - Only show for Twitch Streamers */}
+            {/* Subcategory Description - Only show for Twitch Streamers */}
       {activeCategory === 'Content Creators' && activeSubcategory === 'Twitch Streamers' && subcategoryContent?._meta?.description && (
         <div className={styles.subcategoryDescription}>
           <p dangerouslySetInnerHTML={{ __html: subcategoryContent._meta.description }} />
         </div>
       )}
 
+            {/* Subcategory Description - Show for Twitch Streamers and YouTubers */}
+      {activeCategory === 'Content Creators' &&
+        (activeSubcategory === 'Twitch Streamers' || activeSubcategory === 'YouTubers') && (
+        <div className={styles.contentCreatoradd}>
+          <p>Wish to be added? DM ohypers on discord</p>
+        </div>
+      )}
+
+      {/* Tag Filter UI for Content Creators */}
+      {activeCategory === 'Content Creators' && allContentCreatorTags.length > 0 && (
+        <div className={styles.tagFilterContainer}>
+          <span className={styles.tagFilterLabel}>Filter by tag:</span>
+          {allContentCreatorTags.map(tag => (
+            <button
+              key={tag}
+              className={selectedTags.includes(tag) ? styles.tagFilterButtonActive : styles.tagFilterButton}
+              onClick={() => {
+                setSelectedTags(selectedTags.includes(tag)
+                  ? selectedTags.filter(t => t !== tag)
+                  : [...selectedTags, tag])
+              }}
+            >
+              {tag}
+            </button>
+          ))}
+          {selectedTags.length > 0 && (
+            <button className={styles.tagFilterClearButton} onClick={() => setSelectedTags([])}>
+              Clear
+            </button>
+          )}
+        </div>
+      )}
+
       {/* Items Grid */}
-      {items.length > 0 && (
+      {filterItemsByTags(items).length > 0 && (
         <div className={styles.itemsGrid}>
-          {items.map((item, idx) => (
+          {filterItemsByTags(items).map((item, idx) => (
             item && (
               <div key={idx} className={styles.resourceCard}>
                 {item.profileImage && (
@@ -369,7 +540,7 @@ export default function Resources() {
         </div>
       )}
 
-      {items.length === 0 && (
+      {filterItemsByTags(items).length === 0 && (
         <div className={styles.emptyState}>
           <p>No resources available in this section yet.</p>
         </div>

@@ -181,6 +181,7 @@ export default function Home() {
               <li><strong>Safari Zone</strong> - Added page for detailed Safari Zone Information for all 4 regions *Mitchell*</li>
               <li>Removed About Page and merged into new Home/Index screen</li>
               <li>Merged relative tabs to clear tab space</li>
+              <li><strong>Resource Page!</strong> - Added new Resource Page for PokeMMO guides and information</li>
             </ul>
           </div>
           <div className={styles.changelogEntry}>
