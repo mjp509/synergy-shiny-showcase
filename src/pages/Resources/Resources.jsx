@@ -49,17 +49,17 @@ export default function Resources() {
   const buildBreadcrumbs = () => {
     const crumbs = [
       { name: 'Home', url: '/' },
-      { name: 'Resources', url: '/resources' }
+      { name: 'Resources', url: '/resources/' }
     ]
     
     if (activeCategory) {
-      crumbs.push({ name: activeCategory, url: `/resources/${toSlug(activeCategory)}` })
+      crumbs.push({ name: activeCategory, url: `/resources/${toSlug(activeCategory)}/` })
     }
     if (activeSubcategory) {
-      crumbs.push({ name: activeSubcategory, url: `/resources/${toSlug(activeCategory)}/${toSlug(activeSubcategory)}` })
+      crumbs.push({ name: activeSubcategory, url: `/resources/${toSlug(activeCategory)}/${toSlug(activeSubcategory)}/` })
     }
     if (activeNestedTab) {
-      crumbs.push({ name: activeNestedTab, url: `/resources/${toSlug(activeCategory)}/${toSlug(activeSubcategory)}/${toSlug(activeNestedTab)}` })
+      crumbs.push({ name: activeNestedTab, url: `/resources/${toSlug(activeCategory)}/${toSlug(activeSubcategory)}/${toSlug(activeNestedTab)}/` })
     }
     
     return crumbs
@@ -67,7 +67,7 @@ export default function Resources() {
 
   // Determine which metadata to use for the page head
   const seoMeta = nestedMeta || subcategoryMeta || categoryMeta || {}
-  const currentCanonicalPath = `/resources${activeCategory ? `/${toSlug(activeCategory)}` : ''}${activeSubcategory ? `/${toSlug(activeSubcategory)}` : ''}${activeNestedTab ? `/${toSlug(activeNestedTab)}` : ''}`
+  const currentCanonicalPath = `/resources${activeCategory ? `/${toSlug(activeCategory)}` : ''}${activeSubcategory ? `/${toSlug(activeSubcategory)}` : ''}${activeNestedTab ? `/${toSlug(activeNestedTab)}` : ''}/`
 
   useDocumentHead({
     title: seoMeta.title || 'Team Synergy Resources',
@@ -83,16 +83,16 @@ export default function Resources() {
 
   // Update URL when tab changes
   useEffect(() => {
-    let newPath = '/resources'
+    let newPath = '/resources/'
     
     if (activeCategory) {
-      newPath += `/${toSlug(activeCategory)}`
+      newPath += `${toSlug(activeCategory)}/`
     }
     if (activeSubcategory) {
-      newPath += `/${toSlug(activeSubcategory)}`
+      newPath += `${toSlug(activeSubcategory)}/`
     }
     if (activeNestedTab) {
-      newPath += `/${toSlug(activeNestedTab)}`
+      newPath += `${toSlug(activeNestedTab)}/`
     }
     
     // Only navigate if necessary

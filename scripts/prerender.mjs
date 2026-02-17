@@ -255,7 +255,7 @@ function getResourceRoutes() {
     // Category level
     if (categoryData._meta) {
       resources.push({
-        route: `/resources/${slugify(categoryName)}`,
+        route: `/resources/${slugify(categoryName)}/`,
         ogTitle: categoryData._meta.title,
         ogDescription: categoryData._meta.description,
         ogImage: 'https://synergymmo.com/images/openGraph.jpg',
@@ -268,7 +268,7 @@ function getResourceRoutes() {
 
       if (subcategoryData._meta) {
         resources.push({
-          route: `/resources/${slugify(categoryName)}/${slugify(subcategoryName)}`,
+          route: `/resources/${slugify(categoryName)}/${slugify(subcategoryName)}/`,
           ogTitle: subcategoryData._meta.title,
           ogDescription: subcategoryData._meta.description,
           ogImage: 'https://synergymmo.com/images/openGraph.jpg',
@@ -281,7 +281,7 @@ function getResourceRoutes() {
 
         if (nestedData && typeof nestedData === 'object' && nestedData._meta) {
           resources.push({
-            route: `/resources/${slugify(categoryName)}/${slugify(subcategoryName)}/${slugify(nestedName)}`,
+            route: `/resources/${slugify(categoryName)}/${slugify(subcategoryName)}/${slugify(nestedName)}/`,
             ogTitle: nestedData._meta.title,
             ogDescription: nestedData._meta.description,
             ogImage: 'https://synergymmo.com/images/openGraph.jpg',

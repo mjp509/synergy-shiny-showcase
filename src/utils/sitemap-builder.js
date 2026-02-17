@@ -105,7 +105,7 @@ function getResourceRoutes(today) {
     // Category level
     if (categoryData._meta) {
       routes.push({
-        path: `/resources/${slugify(categoryName)}`,
+        path: `/resources/${slugify(categoryName)}/`,
         changefreq: 'monthly',
         priority: '0.6',
         lastmod: today,
@@ -118,7 +118,7 @@ function getResourceRoutes(today) {
 
       if (subcategoryData._meta) {
         routes.push({
-          path: `/resources/${slugify(categoryName)}/${slugify(subcategoryName)}`,
+          path: `/resources/${slugify(categoryName)}/${slugify(subcategoryName)}/`,
           changefreq: 'monthly',
           priority: '0.55',
           lastmod: today,
@@ -131,7 +131,7 @@ function getResourceRoutes(today) {
 
         if (nestedData && typeof nestedData === 'object' && nestedData._meta) {
           routes.push({
-            path: `/resources/${slugify(categoryName)}/${slugify(subcategoryName)}/${slugify(nestedName)}`,
+            path: `/resources/${slugify(categoryName)}/${slugify(subcategoryName)}/${slugify(nestedName)}/`,
             changefreq: 'monthly',
             priority: '0.5',
             lastmod: today,
