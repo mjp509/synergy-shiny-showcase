@@ -131,7 +131,7 @@ function getEncounterClass(type) {
   return styles.encounterStandard;
 }
 
-function PokemonCard({ name, encounterType, catchData }) {
+function PokemonCard({ name, encounterType, catchData, boosted }) {
   const data = catchData?.[name];
   const showStrategy = data && (data.bestStrategy === 'oneBait' || data.bestStrategy === 'oneMud');
 
@@ -153,7 +153,10 @@ function PokemonCard({ name, encounterType, catchData }) {
     if (styles.rotationalImportantCard) {
       cardClass += ' ' + styles.rotationalImportantCard;
     }
-    cardClass += ' ' + styles.rotationMon;  
+    cardClass += ' ' + styles.rotationMon;
+  }
+  if (boosted) {
+    cardClass += ' ' + styles.boostedMon;
   }
 
   return (
@@ -174,7 +177,7 @@ function PokemonCard({ name, encounterType, catchData }) {
           {data.bestOdds}%
         </span>
       )}
-      <span className={`${styles.encounterBadge} ${getEncounterClass(encounterType)}`}>{ENCOUNTER_LABELS[encounterType] || encounterType}</span>
+      <span className={`${styles.encounterBadge} ${getEncounterClass(encounterType)}`}>{ENCOUNTER_LABELS[encounterType] || encounterType}{boosted ? ' (Boosted)' : ''}</span>
 
       </Link>
     );
@@ -310,19 +313,33 @@ function RegionContent({ region }) {
     )
   }
 
-  const area = data.areas[selectedArea]
+  let area = data.areas[selectedArea];
+  let pokemonList = [];
+  if (region === 'sinnoh' && data.universalPokemon) {
+    // Always start from a fresh universalPokemon array to avoid duplication
+    const boostedNames = (area.pokemon || []).map(p => p.name);
+    pokemonList = data.universalPokemon.map(mon => {
+      const boosted = boostedNames.includes(mon.name);
+      return { ...mon, boosted };
+    });
+  } else {
+    pokemonList = Array.isArray(area.pokemon) ? [...area.pokemon] : [];
+  }
 
-  // Move rotation/rotational Pokemon to the top (case-insensitive)
+  // Move rotation/rotational Pokemon to the top (case-insensitive), then boosted
   function isRotationType(type) {
     if (!type) return false;
     const t = String(type).toLowerCase();
-    console.log(t);
-    return t === 'rotation'
+    return t === 'rotation' || t === 'rotational';
   }
-  const sortedPokemon = [...area.pokemon].sort((a, b) => {
-    const aRot = isRotationType(a.encounterType) ? 1 : 0;
-    const bRot = isRotationType(b.encounterType) ? 1 : 0;
-    return bRot - aRot;
+  function encounterSortValue(type, boosted) {
+    if (isRotationType(type)) return 0;
+    if (boosted) return 1;
+    if (String(type).toLowerCase() === 'water') return 3;
+    return 4;
+  }
+  const sortedPokemon = [...pokemonList].sort((a, b) => {
+    return encounterSortValue(a.encounterType, a.boosted) - encounterSortValue(b.encounterType, b.boosted);
   });
 
 
@@ -381,6 +398,7 @@ function RegionContent({ region }) {
             name={p.name}
             encounterType={p.encounterType}
             catchData={data.catchData}
+            boosted={p.boosted}
           />
         ))}
       </div>

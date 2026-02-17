@@ -1,3 +1,15 @@
+.boostedMon {
+  border: 2.5px solid #00e6ff !important;
+  background: linear-gradient(135deg, rgba(124,251,255,0.25) 60%, rgba(0,230,255,0.18) 100%);
+  box-shadow: 0 0 0 3px #00e6ff44, 0 4px 20px rgba(124,251,255,0.4);
+  filter: brightness(1.08) saturate(1.2);
+  z-index: 2;
+}
+.boostedMon:hover {
+  border-color: #00e6ff !important;
+  box-shadow: 0 0 0 5px #00e6ff66, 0 8px 32px rgba(124,251,255,0.7);
+  transform: translateY(-6px) scale(1.07);
+}
 /* Region Tabs */
 .regionTabs {
   display: flex;
@@ -236,6 +248,19 @@
   box-shadow: 0 4px 16px rgba(100, 60, 180, 0.2);
 }
 
+.rotationMon {
+  border: 2px solid #ffde59; /* bright yellow border to grab attention */
+  background: rgba(255, 222, 89, 0.15); /* subtle yellow glow */
+  box-shadow: 0 4px 20px rgba(255, 222, 89, 0.4); /* glowing effect */
+  transform: translateY(-4px); /* slightly lifted */
+  transition: all 0.3s ease;
+}
+
+.rotationMon:hover {
+  border-color: #ffd633; /* even brighter on hover */
+  box-shadow: 0 6px 24px rgba(255, 222, 89, 0.6);
+  transform: translateY(-6px) scale(1.05); /* pop effect on hover */
+}
 .pokemonGif {
   width: 64px;
   height: 64px;
@@ -647,19 +672,6 @@
     width: 48px;
     height: 48px;
   }
-}
-.rotationMon {
-  border: 2px solid #ffde59; /* bright yellow border to grab attention */
-  background: rgba(255, 222, 89, 0.15); /* subtle yellow glow */
-  box-shadow: 0 4px 20px rgba(255, 222, 89, 0.4); /* glowing effect */
-  transform: translateY(-4px); /* slightly lifted */
-  transition: all 0.3s ease;
-}
-
-.rotationMon:hover {
-  border-color: #ffd633; /* even brighter on hover */
-  box-shadow: 0 6px 24px rgba(255, 222, 89, 0.6);
-  transform: translateY(-6px) scale(1.05); /* pop effect on hover */
 }
 @media (max-width: 480px) {
   .pokemonGrid {

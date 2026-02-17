@@ -20,39 +20,39 @@
             "encounterType": "standard"
           },
           {
-            "name": "Ponyta",
-            "encounterType": "standard"
-          },
-          {
             "name": "Smeargle",
             "encounterType": "standard"
           },
           {
-            "name": "Stantler",
-            "encounterType": "day"
+            "name": "Rattata",
+            "encounterType": "standard"
           },
           {
-            "name": "Shinx",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Bidoof",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Sentret",
-            "encounterType": "rotation"
+            "name": "stantler",
+            "encounterType": "night"
           },
           {
             "name": "Zigzagoon",
             "encounterType": "rotation"
           },
           {
-            "name": "Furret",
+            "name": "Shinx",
             "encounterType": "rotation"
           },
           {
-            "name": "Linoone",
+            "name": "Ponyta",
+            "encounterType": "rotation"
+          },
+          {
+            "name": "Manectric",
+            "encounterType": "rotation"
+          },
+          {
+            "name": "Houndoom",
+            "encounterType": "rotation"
+          },
+          {
+            "name": "Surskit",
             "encounterType": "rotation"
           },
           {
@@ -60,11 +60,11 @@
             "encounterType": "rotation"
           },
           {
-            "name": "Hoppip",
+            "name": "Houndour",
             "encounterType": "rotation"
           },
           {
-            "name": "Spheal",
+            "name": "Zangoose",
             "encounterType": "rotation"
           }
         ]
@@ -73,292 +73,288 @@
         "name": "Meadow",
         "pokemon": [
           {
-            "name": "Hoppip",
-            "encounterType": "standard"
-          },
-          {
-            "name": "Sunkern",
-            "encounterType": "standard"
-          },
-          {
-            "name": "Illumise",
-            "encounterType": "night"
-          },
-          {
-            "name": "Volbeat",
-            "encounterType": "night"
-          },
-          {
-            "name": "Oddish",
-            "encounterType": "day"
-          },
-          {
-            "name": "Bellsprout",
-            "encounterType": "day"
-          },
-          {
-            "name": "Skiploom",
-            "encounterType": "day"
-          },
-          {
-            "name": "Marill",
-            "encounterType": "water"
-          },
-          {
-            "name": "Azurill",
-            "encounterType": "water"
-          },
-          {
-            "name": "Poliwag",
-            "encounterType": "water"
-          },
-          {
-            "name": "Budew",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Roselia",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Carnivine",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Gloom",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Jumpluff",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Riolu",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Chansey",
-            "encounterType": "rotation"
-          }
+          "name": "Jigglypuff",
+          "encounterType": "standard"
+        },
+        {
+          "name": "Poliwag",
+          "encounterType": "water"
+        },
+        {
+          "name": "Wooper",
+          "encounterType": "water"
+        },
+        {
+          "name": "Magikarp",
+          "encounterType": "water"
+        },
+        {
+          "name": "Poliwag",
+          "encounterType": "water"
+        },
+        {
+          "name": "Poliwhirl",
+          "encounterType": "water"
+        },
+        {
+          "name": "Skiploom",
+          "encounterType": "day"
+        },
+        {
+          "name": "Hoppip",
+          "encounterType": "day"
+        },
+        {
+          "name": "Sunkern",
+          "encounterType": "day"
+        },
+        {
+          "name": "Clefairy",
+          "encounterType": "night"
+        },
+        {
+          "name": "Riolu",
+          "encounterType": "rotation"
+        },
+        {
+          "name": "Nosepass",
+          "encounterType": "rotation"
+        },
+        {
+          "name": "Masquerain",
+          "encounterType": "rotation"
+        },
+        {
+          "name": "Seedot",
+          "encounterType": "rotation"
+        },
+        {
+          "name": "Nuzleaf",
+          "encounterType": "rotation"
+        },
+        {
+          "name": "Chansey",
+          "encounterType": "rotation"
+        }
         ]
       },
       {
         "name": "Savannah",
         "pokemon": [
-          {
-            "name": "Doduo",
-            "encounterType": "standard"
-          },
-          {
-            "name": "Dodrio",
-            "encounterType": "standard"
-          },
-          {
-            "name": "Fearow",
-            "encounterType": "standard"
-          },
-          {
-            "name": "Tauros",
-            "encounterType": "standard"
-          },
-          {
-            "name": "Kangaskhan",
-            "encounterType": "standard"
-          },
-          {
-            "name": "Zangoose",
-            "encounterType": "standard"
-          },
-          {
-            "name": "Spearow",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Seviper",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Vigoroth",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Breloom",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Nidoran F",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Nidorina",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Nidoran M",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Nidorino",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Linoone",
-            "encounterType": "rotation"
-          }
+         {
+          "name": "Nidoran F",
+          "encounterType": "standard"
+        },
+        {
+          "name": "Nidoran M",
+          "encounterType": "standard"
+        },
+        {
+          "name": "Nidorina",
+          "encounterType": "standard"
+        },
+        {
+          "name": "Nidorino",
+          "encounterType": "standard"
+        },
+        {
+          "name": "Tauros",
+          "encounterType": "standard"
+        },
+        {
+          "name": "Rhyhorn",
+          "encounterType": "standard"
+        },
+        {
+          "name": "Zubat",
+          "encounterType": "standard"
+        },
+        {
+          "name": "Golbat",
+          "encounterType": "standard"
+        },
+        {
+          "name": "Azurill",
+          "encounterType": "rotation"
+        },
+        {
+          "name": "Shroomish",
+          "encounterType": "rotation"
+        },
+        {
+          "name": "Houndour",
+          "encounterType": "rotation"
+        },
+        {
+          "name": "Zigzagoon",
+          "encounterType": "rotation"
+        },
+        {
+          "name": "Torkoal",
+          "encounterType": "rotation"
+        },
+        {
+          "name": "Luxio",
+          "encounterType": "rotation"
+        },
+        {
+          "name": "Cacnea",
+          "encounterType": "rotation"
+        }
         ]
       },
       {
         "name": "Peak",
         "pokemon": [
           {
-            "name": "Geodude",
-            "encounterType": "standard"
-          },
-          {
-            "name": "Graveler",
-            "encounterType": "standard"
-          },
-          {
-            "name": "Aron",
-            "encounterType": "standard"
-          },
-          {
-            "name": "Lairon",
-            "encounterType": "day"
-          },
-          {
-            "name": "Rhyhorn",
-            "encounterType": "day"
-          },
-          {
-            "name": "Rhydon",
-            "encounterType": "night"
-          },
-          {
-            "name": "Onix",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Larvitar",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Nosepass",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Metang",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Beldum",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Magmar",
-            "encounterType": "rotation"
-          }
+          "name": "Geodude",
+          "encounterType": "standard"
+        },
+        {
+          "name": "Magnemite",
+          "encounterType": "standard"
+        },
+        {
+          "name": "Magneton",
+          "encounterType": "standard"
+        },
+        {
+          "name": "Graveler",
+          "encounterType": "day"
+        },
+        {
+          "name": "Magmar",
+          "encounterType": "day"
+        },
+        {
+          "name": "Wobbuffet",
+          "encounterType": "night"
+        },
+        {
+          "name": "Aron",
+          "encounterType": "rotation"
+        },
+        {
+          "name": "Bronzor",
+          "encounterType": "rotation"
+        },
+        {
+          "name": "Vigoroth",
+          "encounterType": "rotation"
+        },
+        {
+          "name": "Linoone",
+          "encounterType": "rotation"
+        },
+        {
+          "name": "Zangoose",
+          "encounterType": "rotation"
+        },
+        {
+          "name": "Spheal",
+          "encounterType": "rotation"
+        }
         ]
       },
       {
         "name": "Rocky Beach",
         "pokemon": [
           {
-            "name": "Magmar",
-            "encounterType": "standard"
-          },
-          {
-            "name": "Slowbro",
-            "encounterType": "standard"
-          },
-          {
-            "name": "Lapras",
-            "encounterType": "water"
-          },
-          {
-            "name": "Magikarp",
-            "encounterType": "water"
-          },
-          {
-            "name": "Gyarados",
-            "encounterType": "water"
-          },
-          {
-            "name": "Goldeen",
-            "encounterType": "day"
-          },
-          {
-            "name": "Seaking",
-            "encounterType": "day"
-          },
-          {
-            "name": "Psyduck",
-            "encounterType": "day"
-          },
-          {
-            "name": "Buizel",
-            "encounterType": "day"
-          },
-          {
-            "name": "Floatzel",
-            "encounterType": "day"
-          },
-          {
-            "name": "Barboach",
-            "encounterType": "day"
-          },
-          {
-            "name": "Slowpoke",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Krabby",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Kingler",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Corphish",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Dratini",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Dragonair",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Spheal",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Sealeo",
-            "encounterType": "rotation"
-          }
+          "name": "Krabby",
+          "encounterType": "standard"
+        },
+        {
+          "name": "Slowpoke",
+          "encounterType": "standard"
+        },
+        {
+          "name": "Magikarp",
+          "encounterType": "water"
+        },
+        {
+          "name": "Poliwag",
+          "encounterType": "water"
+        },
+        {
+          "name": "Poliwhirl",
+          "encounterType": "water"
+        },
+        {
+          "name": "Dratini",
+          "encounterType": "water"
+        },
+        {
+          "name": "Lapras",
+          "encounterType": "water"
+        },
+        {
+          "name": "Goldeen",
+          "encounterType": "water"
+        },
+        {
+          "name": "Seaking",
+          "encounterType": "water"
+        },
+        {
+          "name": "Kingler",
+          "encounterType": "water"
+        },
+        {
+          "name": "Doduo",
+          "encounterType": "day"
+        },
+        {
+          "name": "Zubat",
+          "encounterType": "night"
+        },
+        {
+          "name": "Corphish",
+          "encounterType": "rotation"
+        },
+        {
+          "name": "Manectric",
+          "encounterType": "rotation"
+        },
+        {
+          "name": "Aron",
+          "encounterType": "rotation"
+        },
+        {
+          "name": "Mareep",
+          "encounterType": "rotation"
+        },
+        {
+          "name": "Electrike",
+          "encounterType": "rotation"
+        },
+        {
+          "name": "Gible",
+          "encounterType": "rotation"
+        },
+        {
+          "name": "Budew",
+          "encounterType": "rotation"
+        }
         ]
       },
       {
         "name": "Wetland",
         "pokemon": [
           {
+            "name": "Spearow",
+            "encounterType": "standard"
+          },
+          {
+            "name": "Ditto",
+            "encounterType": "standard"
+          },
+          {
             "name": "Psyduck",
-            "encounterType": "standard"
+            "encounterType": "water"
           },
           {
-            "name": "Golduck",
-            "encounterType": "standard"
-          },
-          {
-            "name": "Houndour",
-            "encounterType": "night"
-          },
-          {
-            "name": "Houndoom",
-            "encounterType": "night"
+            "name": "Wooper",
+            "encounterType": "water"
           },
           {
             "name": "Poliwag",
@@ -369,39 +365,39 @@
             "encounterType": "water"
           },
           {
-            "name": "Dratini",
-            "encounterType": "water"
-          },
-          {
             "name": "Dragonair",
             "encounterType": "water"
           },
           {
-            "name": "Marill",
-            "encounterType": "water"
-          },
-          {
-            "name": "Barboach",
-            "encounterType": "water"
-          },
-          {
-            "name": "Wooper",
-            "encounterType": "rotation"
+            "name": "Sentret",
+            "encounterType": "day"
           },
           {
             "name": "Quagsire",
-            "encounterType": "rotation"
+            "encounterType": "night"
           },
           {
             "name": "Buizel",
             "encounterType": "rotation"
           },
           {
-            "name": "Floatzel",
+            "name": "Corphish",
             "encounterType": "rotation"
           },
           {
-            "name": "Lotad",
+            "name": "Shelgon",
+            "encounterType": "rotation"
+          },
+          {
+            "name": "Pachirisu",
+            "encounterType": "rotation"
+          },
+          {
+            "name": "Surskit",
+            "encounterType": "rotation"
+          },
+          {
+            "name": "Farfetch'd",
             "encounterType": "rotation"
           },
           {
@@ -414,57 +410,138 @@
         "name": "Forest",
         "pokemon": [
           {
-            "name": "Paras",
+            "name": "Bellsprout",
             "encounterType": "standard"
           },
           {
-            "name": "Parasect",
+            "name": "Mr. Mime",
             "encounterType": "standard"
           },
           {
-            "name": "Weepinbell",
+            "name": "Pidgey",
             "encounterType": "day"
           },
           {
-            "name": "Shroomish",
+            "name": "Gastly",
             "encounterType": "night"
           },
           {
-            "name": "Seedot",
+            "name": "Haunter",
+            "encounterType": "night"
+          },
+          {
+            "name": "Misdreavus",
+            "encounterType": "night"
+          },
+          {
+            "name": "Beldum",
             "encounterType": "rotation"
           },
           {
-            "name": "Nuzleaf",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Surskit",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Masquerain",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Breloom",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Lotad",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Lombre",
+            "name": "Bidoof",
             "encounterType": "rotation"
           },
           {
             "name": "Budew",
+            "encounterType": "rotation"
+          },
+          {
+            "name": "Electabuzz",
+            "encounterType": "rotation"
+          },
+          {
+            "name": "Bronzor",
+            "encounterType": "rotation"
+          },
+          {
+            "name": "Shuppet",
             "encounterType": "rotation"
           }
         ]
       },
       {
         "name": "Swamp",
+        "pokemon": [
+          {
+            "name": "Drowzee",
+            "encounterType": "standard"
+          },
+          {
+            "name": "Hypno",
+            "encounterType": "standard"
+          },
+          {
+            "name": "Jigglypuff",
+            "encounterType": "standard"
+          },
+          {
+            "name": "Paras",
+            "encounterType": "standard"
+          },
+          {
+            "name": "Magikarp",
+            "encounterType": "water"
+          },
+          {
+            "name": "Dragonair",
+            "encounterType": "water"
+          },
+          {
+            "name": "Seaking",
+            "encounterType": "water"
+          },
+          {
+            "name": "Goldeen",
+            "encounterType": "water"
+          },
+          {
+            "name": "Sentret",
+            "encounterType": "day"
+          },
+          {
+            "name": "Murkrow",
+            "encounterType": "night"
+          },
+          {
+            "name": "Floatzel",
+            "encounterType": "rotation"
+          },
+          {
+            "name": "Bagon",
+            "encounterType": "rotation"
+          },
+          {
+            "name": "Weepinbell",
+            "encounterType": "rotation"
+          },
+          {
+            "name": "Furret",
+            "encounterType": "rotation"
+          },
+          {
+            "name": "Voltorb",
+            "encounterType": "rotation"
+          },
+          {
+            "name": "Chimecho",
+            "encounterType": "rotation"
+          },
+          {
+            "name": "Parasect",
+            "encounterType": "rotation"
+          },
+          {
+            "name": "Pachirisu",
+            "encounterType": "rotation"
+          },
+          {
+            "name": "Duskull",
+            "encounterType": "rotation"
+          }
+        ]
+      },
+      {
+        "name": "Marshland",
         "pokemon": [
           {
             "name": "Ekans",
@@ -475,63 +552,71 @@
             "encounterType": "standard"
           },
           {
+            "name": "Koffing",
+            "encounterType": "standard"
+          },
+          {
             "name": "Grimer",
             "encounterType": "standard"
           },
           {
-            "name": "Muk",
-            "encounterType": "standard"
-          },
-          {
-            "name": "Koffing",
-            "encounterType": "night"
-          },
-          {
-            "name": "Weezing",
-            "encounterType": "night"
-          },
-          {
-            "name": "Goldeen",
+            "name": "Poliwag",
             "encounterType": "water"
           },
           {
-            "name": "Seaking",
+            "name": "Wooper",
             "encounterType": "water"
           },
           {
-            "name": "Oddish",
-            "encounterType": "rotation"
+            "name": "Dratini",
+            "encounterType": "water"
+          },
+          {
+            "name": "Poliwhirl",
+            "encounterType": "water"
+          },
+          {
+            "name": "Gyarados",
+            "encounterType": "water"
+          },
+          {
+            "name": "Dragonair",
+            "encounterType": "water"
+          },
+          {
+            "name": "Fearow",
+            "encounterType": "day"
           },
           {
             "name": "Gloom",
-            "encounterType": "rotation"
+            "encounterType": "night"
           },
           {
-            "name": "Bellsprout",
-            "encounterType": "rotation"
+            "name": "Oddish",
+            "encounterType": "night"
           },
           {
             "name": "Croagunk",
             "encounterType": "rotation"
           },
           {
-            "name": "Torkoal",
+            "name": "Roselia",
             "encounterType": "rotation"
           },
           {
-            "name": "Skorupi",
+            "name": "Seviper",
+            "encounterType": "rotation"
+          },
+          {
+            "name": "Diglett",
+            "encounterType": "rotation"
+          },
+          {
+            "name": "Shuppet",
             "encounterType": "rotation"
           },
           {
             "name": "Shuckle",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Cacnea",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Cacturne",
             "encounterType": "rotation"
           },
           {
@@ -545,150 +630,16 @@
         ]
       },
       {
-        "name": "Marshland",
-        "pokemon": [
-          {
-            "name": "Nidoran F",
-            "encounterType": "standard"
-          },
-          {
-            "name": "Nidorina",
-            "encounterType": "standard"
-          },
-          {
-            "name": "Nidoran M",
-            "encounterType": "standard"
-          },
-          {
-            "name": "Nidorino",
-            "encounterType": "standard"
-          },
-          {
-            "name": "Clefairy",
-            "encounterType": "standard"
-          },
-          {
-            "name": "Jigglypuff",
-            "encounterType": "standard"
-          },
-          {
-            "name": "Murkrow",
-            "encounterType": "night"
-          },
-          {
-            "name": "Misdreavus",
-            "encounterType": "night"
-          },
-          {
-            "name": "Chansey",
-            "encounterType": "day"
-          },
-          {
-            "name": "Wobbuffet",
-            "encounterType": "day"
-          },
-          {
-            "name": "Azurill",
-            "encounterType": "water"
-          },
-          {
-            "name": "Marill",
-            "encounterType": "water"
-          },
-          {
-            "name": "Ditto",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Skorupi",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Shuckle",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Drowzee",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Hypno",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Mr. Mime",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Shuppet",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Banette",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Dusclops",
-            "encounterType": "rotation"
-          }
-        ]
-      },
-      {
         "name": "Wasteland",
         "pokemon": [
           {
-            "name": "Magnemite",
+            "name": "Kangaskhan",
             "encounterType": "standard"
           },
           {
-            "name": "Magneton",
+            "name": "Onix",
             "encounterType": "standard"
           },
-          {
-            "name": "Voltorb",
-            "encounterType": "standard"
-          },
-          {
-            "name": "Electrike",
-            "encounterType": "standard"
-          },
-          {
-            "name": "Manectric",
-            "encounterType": "standard"
-          },
-          {
-            "name": "Electabuzz",
-            "encounterType": "day"
-          },
-          {
-            "name": "Luxio",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Pachirisu",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Bronzor",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Bronzong",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Mareep",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Lickitung",
-            "encounterType": "rotation"
-          }
-        ]
-      },
-      {
-        "name": "Mountain",
-        "pokemon": [
           {
             "name": "Machop",
             "encounterType": "standard"
@@ -698,31 +649,23 @@
             "encounterType": "standard"
           },
           {
-            "name": "Onix",
+            "name": "Magnemite",
             "encounterType": "standard"
           },
           {
-            "name": "Bagon",
-            "encounterType": "standard"
-          },
-          {
-            "name": "Gible",
+            "name": "Fearow",
             "encounterType": "day"
           },
           {
-            "name": "Shelgon",
-            "encounterType": "night"
-          },
-          {
-            "name": "Cubone",
+            "name": "Solrock",
             "encounterType": "rotation"
           },
           {
-            "name": "Marowak",
+            "name": "Skorupi",
             "encounterType": "rotation"
           },
           {
-            "name": "Diglett",
+            "name": "Illumise",
             "encounterType": "rotation"
           },
           {
@@ -730,15 +673,60 @@
             "encounterType": "rotation"
           },
           {
-            "name": "Medicham",
+            "name": "Manectric",
             "encounterType": "rotation"
           },
           {
-            "name": "Lunatone",
+            "name": "Breloom",
+            "encounterType": "rotation"
+          }
+        ]
+      },
+      {
+        "name": "Mountain",
+        "pokemon": [
+          {
+          "name": "Larvitar",
+          "encounterType": "standard"
+          },
+          {
+            "name": "Rattata",
+            "encounterType": "standard"
+          },
+          {
+            "name": "Raticate",
+            "encounterType": "standard"
+          },
+          {
+            "name": "Magneton",
+            "encounterType": "standard"
+          },
+          {
+            "name": "Lickitung",
+            "encounterType": "day"
+          },
+          {
+            "name": "Zubat",
+            "encounterType": "night"
+          },
+          {
+            "name": "Golbat",
+            "encounterType": "night"
+          },
+          {
+            "name": "Duskull",
             "encounterType": "rotation"
           },
           {
-            "name": "Solrock",
+            "name": "Volbeat",
+            "encounterType": "rotation"
+          },
+          {
+            "name": "Spheal",
+            "encounterType": "rotation"
+          },
+          {
+            "name": "Spinda",
             "encounterType": "rotation"
           },
           {
@@ -746,11 +734,19 @@
             "encounterType": "rotation"
           },
           {
-            "name": "Chimecho",
+            "name": "Meditite",
             "encounterType": "rotation"
           },
           {
-            "name": "Spinda",
+            "name": "Lunatone",
+            "encounterType": "rotation"
+          },
+          {
+            "name": "Metagross",
+            "encounterType": "rotation"
+          },
+          {
+            "name": "Illumise",
             "encounterType": "rotation"
           }
         ]
@@ -759,19 +755,19 @@
         "name": "Desert",
         "pokemon": [
           {
-            "name": "Sandshrew",
-            "encounterType": "standard"
-          },
-          {
             "name": "Sandslash",
             "encounterType": "standard"
           },
           {
-            "name": "Cacnea",
+            "name": "Cubone",
             "encounterType": "standard"
           },
           {
-            "name": "Cacturne",
+            "name": "Marowak",
+            "encounterType": "standard"
+          },
+          {
+            "name": "Sandshrew",
             "encounterType": "standard"
           },
           {
@@ -783,23 +779,23 @@
             "encounterType": "rotation"
           },
           {
+            "name": "Cacnea",
+            "encounterType": "rotation"
+          },
+          {
             "name": "Trapinch",
             "encounterType": "rotation"
           },
           {
-            "name": "Vibrava",
+            "name": "Spinda",
             "encounterType": "rotation"
           },
           {
-            "name": "Cubone",
+            "name": "Lotad",
             "encounterType": "rotation"
           },
           {
-            "name": "Marowak",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Larvitar",
+            "name": "Carnivine",
             "encounterType": "rotation"
           }
         ]
@@ -2193,241 +2189,57 @@
       {
         "name": "Area 1",
         "pokemon": [
-          {
-            "name": "Bidoof",
-            "encounterType": "standard"
-          },
-          {
-            "name": "Starly",
-            "encounterType": "standard"
-          },
-          {
-            "name": "Hoothoot",
-            "encounterType": "standard"
-          },
-          {
-            "name": "Budew",
-            "encounterType": "standard"
-          },
-          {
-            "name": "Wooper",
-            "encounterType": "standard"
-          },
-          {
-            "name": "Psyduck",
-            "encounterType": "water"
-          },
-          {
-            "name": "Magikarp",
-            "encounterType": "water"
-          },
-          {
-            "name": "Carnivine",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Skorupi",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Croagunk",
-            "encounterType": "rotation"
-          }
+          { "name": "Tropius", "boosted": true }
         ]
       },
       {
         "name": "Area 2",
         "pokemon": [
-          {
-            "name": "Bibarel",
-            "encounterType": "standard"
-          },
-          {
-            "name": "Staravia",
-            "encounterType": "standard"
-          },
-          {
-            "name": "Noctowl",
-            "encounterType": "standard"
-          },
-          {
-            "name": "Roselia",
-            "encounterType": "standard"
-          },
-          {
-            "name": "Quagsire",
-            "encounterType": "standard"
-          },
-          {
-            "name": "Golduck",
-            "encounterType": "water"
-          },
-          {
-            "name": "Barboach",
-            "encounterType": "water"
-          },
-          {
-            "name": "Carnivine",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Skorupi",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Croagunk",
-            "encounterType": "rotation"
-          }
+          { "name": "Tropius", "boosted": true }
         ]
       },
       {
         "name": "Area 3",
         "pokemon": [
-          {
-            "name": "Marill",
-            "encounterType": "standard"
-          },
-          {
-            "name": "Azurill",
-            "encounterType": "standard"
-          },
-          {
-            "name": "Paras",
-            "encounterType": "standard"
-          },
-          {
-            "name": "Shroomish",
-            "encounterType": "standard"
-          },
-          {
-            "name": "Yanma",
-            "encounterType": "standard"
-          },
-          {
-            "name": "Tangela",
-            "encounterType": "standard"
-          },
-          {
-            "name": "Carnivine",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Skorupi",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Croagunk",
-            "encounterType": "rotation"
-          }
+          { "name": "Tangela", "boosted": true }
         ]
       },
       {
         "name": "Area 4",
         "pokemon": [
-          {
-            "name": "Toxicroak",
-            "encounterType": "standard"
-          },
-          {
-            "name": "Gulpin",
-            "encounterType": "standard"
-          },
-          {
-            "name": "Exeggcute",
-            "encounterType": "standard"
-          },
-          {
-            "name": "Kangaskhan",
-            "encounterType": "standard"
-          },
-          {
-            "name": "Carnivine",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Skorupi",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Croagunk",
-            "encounterType": "rotation"
-          }
+          { "name": "Tangela", "boosted": true }
         ]
       },
       {
         "name": "Area 5",
         "pokemon": [
-          {
-            "name": "Arbok",
-            "encounterType": "standard"
-          },
-          {
-            "name": "Drapion",
-            "encounterType": "standard"
-          },
-          {
-            "name": "Tropius",
-            "encounterType": "standard"
-          },
-          {
-            "name": "Kecleon",
-            "encounterType": "standard"
-          },
-          {
-            "name": "Carvanha",
-            "encounterType": "water"
-          },
-          {
-            "name": "Gyarados",
-            "encounterType": "water"
-          },
-          {
-            "name": "Carnivine",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Skorupi",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Croagunk",
-            "encounterType": "rotation"
-          }
+          { "name": "Yanma", "boosted": true }
         ]
       },
       {
         "name": "Area 6",
         "pokemon": [
-          {
-            "name": "Whiscash",
-            "encounterType": "water"
-          },
-          {
-            "name": "Tropius",
-            "encounterType": "standard"
-          },
-          {
-            "name": "Kecleon",
-            "encounterType": "standard"
-          },
-          {
-            "name": "Yanma",
-            "encounterType": "standard"
-          },
-          {
-            "name": "Carnivine",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Skorupi",
-            "encounterType": "rotation"
-          },
-          {
-            "name": "Croagunk",
-            "encounterType": "rotation"
-          }
+          { "name": "Yanma", "boosted": true }
         ]
       }
+    ],
+    "universalPokemon": [
+      { "name": "Psyduck", "encounterType": "normal" },
+      { "name": "Tangela", "encounterType": "normal" },
+      { "name": "Yanma", "encounterType": "normal" },
+      { "name": "Wooper", "encounterType": "normal" },
+      { "name": "Tropius", "encounterType": "normal" },
+      { "name": "Bidoof", "encounterType": "normal" },
+      { "name": "Bibarel", "encounterType": "normal" },
+      { "name": "Starly", "encounterType": "day" },
+      { "name": "Croagunk", "encounterType": "rotation" },
+      { "name": "Budew", "encounterType": "day" },
+      { "name": "Skorupi", "encounterType": "rotation" },
+      { "name": "Marill", "encounterType": "normal" },
+      { "name": "Sharpedo", "encounterType": "water" },
+      { "name": "Carnivine", "encounterType": "rotation" },
+      {"name": "Hoothoot", "encounterType": "night"},
+      {"name": "Noctowl", "encounterType": "night"}
     ],
     "catchData": {
       "Arbok": {
