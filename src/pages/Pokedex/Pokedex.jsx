@@ -738,6 +738,8 @@ export default function Pokedex() {
         Team Synergy PokeDex
         <Link to="/admin" className="invisible-link">!</Link>
       </h1>
+
+      <h5 className={styles.instructionText}>Click on the Pokemon for more details!</h5>
       <img src={getAssetUrl('images/pagebreak.png')} alt="Page Break" className="pagebreak" />
 
       <button 

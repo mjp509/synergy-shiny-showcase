@@ -18,6 +18,7 @@ const RandomPokemon = lazy(() => import('./pages/RandomPokemon/RandomPokemon'))
 const ShinyWar2025 = lazy(() => import('./pages/ShinyWar2025/ShinyWar2025'))
 const RoamingLegendariesCalendar = lazy(() => import('./pages/RoamingLegendaries/RoamingLegendariesCalendar'))
 const SafariZones = lazy(() => import('./pages/SafariZones/SafariZones'))
+const Resources = lazy(() => import('./pages/Resources/Resources'))
 const PokemonDetail = lazy(() => import('./pages/PokemonDetail/PokemonDetail'))
 const AdminLogin = lazy(() => import('./pages/Admin/AdminLogin'))
 const AdminPanel = lazy(() => import('./pages/Admin/AdminPanel'))
@@ -97,6 +98,7 @@ export default function App() {
             <Route path="/random-pokemon-generator" element={<RandomPokemon />} />
             <Route path="/roaming-legendaries" element={<RoamingLegendariesCalendar />} />
             <Route path="/safari-zones" element={<SafariZones />} />
+            <Route path="/resources" element={<Resources />} />
             <Route path="/shiny-war-2025" element={<ShinyWar2025 />} />
             <Route path="/admin" element={<AdminLogin />} />
             <Route path="/admin/panel" element={<AdminPanel />} />

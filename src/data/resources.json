@@ -1,0 +1,152 @@
+{
+  "Guides": {
+    "Money Making": {
+      "Gym ReRuns": [
+        {
+          "name": "Kanto Gym",
+          "description": "Efficient Kanto gym reruns for consistent money and rewards",
+          "link": "#"
+        },
+        {
+          "name": "Johto Gym",
+          "description": "Johto gym challenges with balanced difficulty and rewards",
+          "link": "#"
+        }
+      ],
+      "Trainer ReRuns": [
+        {
+          "name": "Elite Four",
+          "description": "Elite Four rematch strategy guide for maximum rewards",
+          "link": "#"
+        },
+        {
+          "name": "Champion Battles",
+          "description": "Champion rematch guide with team recommendations",
+          "link": "#"
+        }
+      ]
+    },
+    "Shiny Hunting": {
+      "Basics": [
+        {
+          "name": "Shiny Encounter Mechanics",
+          "description": "Understanding shiny encounter rates and mechanics",
+          "link": "#"
+        },
+        {
+          "name": "Popular Hunting Locations",
+          "description": "Best locations for efficient shiny hunting",
+          "link": "#"
+        }
+      ],
+      "Advanced Strategies": [
+        {
+          "name": "Nature Optimization",
+          "description": "Guide to hunting for specific natures and IVs",
+          "link": "#"
+        },
+        {
+          "name": "Legendary Shiny Hunting",
+          "description": "Strategies for hunting roaming and static legendaries",
+          "link": "#"
+        }
+      ]
+    }
+  },
+  "Tools": {
+    "Team Synergy Tools": {
+      "Generators": [
+        {
+          "name": "Counter Generator",
+          "description": "Create custom encounter counter themes for PokeMMO",
+          "link": "/counter-generator/"
+        },
+        {
+          "name": "Random Pokemon Generator",
+          "description": "Generate random shiny hunt targets and bingo boards",
+          "link": "/random-pokemon-generator/"
+        }
+      ],
+      "Databases": [
+        {
+          "name": "Interactive Pokédex",
+          "description": "Browse all Pokemon with type, location, and tier filtering",
+          "link": "/pokedex/"
+        },
+        {
+          "name": "Safari Zone Guide",
+          "description": "Complete Safari Zone data with catch rates and strategies",
+          "link": "/safari-zones/"
+        }
+      ]
+    },
+    "External Tools": {
+      "Calculators": [
+        {
+          "name": "Pokemon Damage Calculator",
+          "description": "Calculate damage output for battle planning",
+          "link": "https://pokemondb.net/tools/damage-calc"
+        },
+        {
+          "name": "IV Calculator",
+          "description": "Calculate individual values from Pokemon stats",
+          "link": "https://pokemondb.net/tools/iv-calc"
+        }
+      ],
+      "References": [
+        {
+          "name": "Bulbapedia",
+          "description": "Comprehensive Pokemon encyclopedia with detailed mechanics",
+          "link": "https://bulbapedia.bulbagarden.net"
+        },
+        {
+          "name": "Serebii.net",
+          "description": "Pokemon games and multimedia database",
+          "link": "https://serebii.net"
+        }
+      ]
+    }
+  },
+  "Community": {
+    "Team Synergy": {
+      "Main": [
+        {
+          "name": "Discord Server",
+          "description": "Join our community for events, discussions, and support",
+          "link": "https://discord.gg/2BEUq6fWAj"
+        },
+        {
+          "name": "Shiny Showcase",
+          "description": "Browse member collections and shiny hunting achievements",
+          "link": "/shiny-showcase/"
+        },
+        {
+          "name": "Trophy Board",
+          "description": "View achievements and milestones earned by community members",
+          "link": "/trophy-board/"
+        }
+      ],
+      "Events": [
+        {
+          "name": "Upcoming Events",
+          "description": "View and register for Team Synergy competitions",
+          "link": "/events/"
+        },
+        {
+          "name": "Shiny Wars 2025",
+          "description": "Official shiny catching championship results",
+          "link": "/shiny-war-2025/"
+        }
+      ]
+    },
+    "Streamers": {
+      "Watch Live": [
+        {
+          "name": "Team Synergy Twitch Streamers",
+          "description": "Watch team members stream PokeMMO live gameplay",
+          "link": "/streamers/"
+        }
+      ]
+    }
+  }
+}

@@ -1854,3 +1854,7 @@
     font-size: 0.6rem;
   }
 }
+
+.instructionText {
+  text-align: center;
+}
