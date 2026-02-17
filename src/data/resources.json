@@ -119,7 +119,7 @@
   "Events": {
     "_meta": {
       "title": "PokeMMO Guides catered around the Official Seasonal Events",
-      "description": ""
+      "description": "Comprehensive guides surrounding PokeMMO Official Events"
     },
     "_items": [
       {
@@ -156,8 +156,8 @@
   },
   "Raids": {
     "_meta": {
-      "title": "",
-      "description": ""
+      "title": "PokeMMO Raid Guides & Event Raids | Team Synergy",
+      "description": "Comprehensive guides for PokeMMO raids, including permanent and event raids, strategies, and community resources."
     },
     "_items": [
       {
@@ -200,14 +200,14 @@
   },
   "Content Creators": {
     "_meta": {
-      "title": "",
-      "description": ""
+      "title": "PokeMMO Content Creators | YouTubers & Streamers | Team Synergy",
+      "description": "Discover top PokeMMO content creators, including YouTubers and Twitch streamers, for guides, gameplay, news, and entertainment."
     },
     "_items": [],
     "YouTubers": {
       "_meta": {
-        "title": "",
-        "description": ""
+        "title": "PokeMMO YouTubers | Guides, Gameplay & News | Team Synergy",
+        "description": "A curated list of the best PokeMMO YouTubers providing guides, gameplay, news, and community content."
       },
       "_items": [
         {
@@ -256,8 +256,8 @@
     },
     "Twitch Streamers": {
       "_meta": {
-        "title": "",
-        "description": "Consider checking out the <a href='/streamers/'>Team Synergy Streamers</a>"
+        "title": "PokeMMO Twitch Streamers | Live Gameplay & Community | Team Synergy",
+        "description": "Watch top PokeMMO Twitch streamers for live gameplay, shiny hunting, guides, and community events. Consider checking out the <a href='/streamers/'>Team Synergy Streamers</a>"
       },
       "_items": [
         {
