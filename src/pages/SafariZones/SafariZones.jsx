@@ -437,7 +437,8 @@ export default function SafariZones() {
             <button
               key={r}
               className={`${styles.regionTab} ${activeRegion === r ? styles.regionTabActive : ''} ${isDisabled ? styles.regionTabDisabled : ''}`}
-              onClick={() => !isDisabled ? setActiveRegion(r) : null}
+              onClick={() => setActiveRegion(r)}
+              disabled={isDisabled}
             >
               {REGION_LABELS[r]}
               {isDisabled && ' (Soon)'}

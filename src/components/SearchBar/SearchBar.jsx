@@ -56,12 +56,17 @@ export default function SearchBar({
         />
       </div>
       {isOpen && filteredSuggestions.length > 0 && (
-        <ul className={styles.suggestionsList}>
+        <ul className={styles.suggestionsList} role="listbox">
           {filteredSuggestions.map((suggestion, idx) => (
-            <li 
+            <li
               key={idx}
               className={styles.suggestionItem}
               onClick={() => handleSuggestionClick(suggestion)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') handleSuggestionClick(suggestion)
+              }}
+              role="option"
+              tabIndex={0}
             >
               {suggestion}
             </li>
