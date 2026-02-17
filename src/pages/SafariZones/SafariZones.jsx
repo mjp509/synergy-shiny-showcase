@@ -1,13 +1,100 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useDocumentHead } from '../../hooks/useDocumentHead'
 import { getAssetUrl } from '../../utils/assets'
-import { getLocalPokemonGif, onGifError, normalizePokemonName } from '../../utils/pokemon'
+import { getLocalPokemonGif, onGifError, getRemoteFallbackUrl, normalizePokemonName } from '../../utils/pokemon'
 import safariData from '../../data/safari_zones.json'
 import styles from './SafariZones.module.css'
 
 const REGIONS = ['kanto', 'johto', 'hoenn', 'sinnoh']
 const REGION_LABELS = { kanto: 'Kanto', johto: 'Johto', hoenn: 'Hoenn', sinnoh: 'Sinnoh' }
+
+const ROTATION_COLORS = {
+  Carnivine: styles.rotationCarnivine,
+  Skorupi: styles.rotationSkorupi,
+  Croagunk: styles.rotationCroagunk,
+}
+
+// --- In-game time calculator ---
+// PokeMMO: 1 in-game day = 6 real hours, so 1 real minute = 4 in-game minutes
+// At UTC 00:00, in-game time = 04:00 (morning start)
+// Morning: 04:00–11:00, Day: 11:00–21:00, Night: 21:00–04:00
+const IN_GAME_DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+const DAY_OFFSET = 5 // calibration: maps raw epoch-based day index to correct in-game day
+
+function getInGameState() {
+  const now = Date.now()
+  const utcMinutes = now / 60000
+
+  // In-game time of day: 1 real minute = 4 in-game minutes, no epoch offset
+  const utcMidnight = Math.floor(utcMinutes / 1440) * 1440
+  const minsSinceMidnight = utcMinutes - utcMidnight
+  const inGameTotalMins = (minsSinceMidnight * 4) % 1440
+  const hours = Math.floor(inGameTotalMins / 60)
+  const mins = Math.floor(inGameTotalMins % 60)
+
+  // Time period
+  let period = 'Night'
+  if (hours >= 4 && hours < 11) period = 'Morning'
+  else if (hours >= 11 && hours < 21) period = 'Day'
+
+  // Minutes until next period change
+  let nextBoundary
+  if (hours >= 4 && hours < 11) nextBoundary = 11 * 60
+  else if (hours >= 11 && hours < 21) nextBoundary = 21 * 60
+  else nextBoundary = hours >= 21 ? 28 * 60 : 4 * 60 // 28*60 = 4:00 next day
+  const inGameMinsLeft = nextBoundary - inGameTotalMins
+  const realMinsLeft = Math.ceil(inGameMinsLeft / 4)
+
+  // In-game day of week
+  const inGameDay = Math.floor(utcMinutes / 360)
+  const dayIndex = (inGameDay + DAY_OFFSET) % 7
+
+  return {
+    hours, mins, period,
+    day: IN_GAME_DAYS[dayIndex],
+    realMinsLeft,
+  }
+}
+
+// Sinnoh rotation lookup: given in-game day, return which area has which pokemon
+const SINNOH_ROTATION = {
+  Wednesday: { 1: 'Carnivine', 2: 'Croagunk', 3: 'Croagunk', 4: 'Croagunk', 5: 'Skorupi', 6: 'Skorupi' },
+  Thursday:  { 1: 'Skorupi',   2: 'Carnivine', 3: 'Croagunk', 4: 'Croagunk', 5: 'Croagunk', 6: 'Skorupi' },
+  Friday:    { 1: 'Skorupi',   2: 'Skorupi',   3: 'Carnivine', 4: 'Croagunk', 5: 'Croagunk', 6: 'Croagunk' },
+  Saturday:  { 1: 'Croagunk',  2: 'Skorupi',   3: 'Skorupi',   4: 'Carnivine', 5: 'Croagunk', 6: 'Croagunk' },
+  Sunday:    { 1: 'Croagunk',  2: 'Croagunk',  3: 'Skorupi',   4: 'Skorupi',   5: 'Carnivine', 6: 'Croagunk' },
+  Monday:    { 1: 'Croagunk',  2: 'Croagunk',  3: 'Croagunk',  4: 'Skorupi',   5: 'Skorupi',   6: 'Carnivine' },
+  Tuesday:   { 1: 'Croagunk',  2: 'Croagunk',  3: 'Croagunk',  4: 'Croagunk',  5: 'Carnivine', 6: 'Croagunk' },
+}
+
+function InGameClock({ region }) {
+  const [state, setState] = useState(getInGameState)
+
+  useEffect(() => {
+    const interval = setInterval(() => setState(getInGameState()), 1000)
+    return () => clearInterval(interval)
+  }, [])
+
+  const timeStr = `${String(state.hours).padStart(2, '0')}:${String(state.mins).padStart(2, '0')}`
+  const realMins = state.realMinsLeft
+  const countdownStr = realMins >= 60
+    ? `${Math.floor(realMins / 60)}h ${realMins % 60}m`
+    : `${realMins}m`
+
+  return (
+    <div className={styles.clockContainer}>
+      <div className={styles.clockMain}>
+        <div className={styles.clockTime}>{timeStr}</div>
+        <div className={styles.clockDetails}>
+          <span className={styles.clockDay}>{state.day}</span>
+          <span className={`${styles.clockPeriod} ${styles[`period${state.period}`]}`}>{state.period}</span>
+          <span className={styles.clockCountdown}>{countdownStr} until next period</span>
+        </div>
+      </div>
+    </div>
+  )
+}
 
 function getOddsClass(odds) {
   if (odds >= 50) return styles.oddsHigh
@@ -135,53 +222,37 @@ function CatchDataTable({ catchData }) {
   )
 }
 
-const ROTATION_COLORS = {
-  Carnivine: styles.rotationCarnivine,
-  Skorupi: styles.rotationSkorupi,
-  Croagunk: styles.rotationCroagunk,
-}
-
-function RotationSchedule({ schedule }) {
-  // Build a lookup: day -> area -> pokemon
-  const grid = schedule.days.map(d => {
-    const row = {}
-    for (const [pokemon, areas] of Object.entries(d.areas)) {
-      for (const area of areas) {
-        row[area] = pokemon
-      }
-    }
-    return { day: d.day, row }
-  })
+function RotationSchedule({ schedule, currentDay }) {
+  const todayData = schedule.days.find(d => d.day === currentDay)
 
   return (
     <div className={styles.rotationSection}>
-      <h3>Daily Rotation Schedule</h3>
-      <p className={styles.rotationNote}>Carnivine, Skorupi, and Croagunk rotate across the 6 areas on a 7-day in-game cycle. One in-game day ≈ 6 real hours.</p>
-      <div className={styles.tableWrapper}>
-        <table className={styles.rotationTable}>
-          <thead>
-            <tr>
-              <th>Day</th>
-              {[1,2,3,4,5,6].map(a => <th key={a}>Area {a}</th>)}
-            </tr>
-          </thead>
-          <tbody>
-            {grid.map(({ day, row }) => (
-              <tr key={day}>
-                <td className={styles.rotationDay}>{day}</td>
-                {[1,2,3,4,5,6].map(a => {
-                  const mon = row[a] || '—'
-                  return (
-                    <td key={a} className={ROTATION_COLORS[mon] || ''}>
-                      {mon}
-                    </td>
-                  )
-                })}
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <h3>Today's Rotation</h3>
+      <div className={styles.rotationCards}>
+        {schedule.pokemon.map(name => {
+          const areas = todayData?.areas[name] || []
+          return (
+            <div key={name} className={`${styles.rotationCard} ${ROTATION_COLORS[name] || ''}`}>
+              <img
+                src={getRemoteFallbackUrl(name, true)}
+                alt={`Shiny ${name}`}
+                className={styles.rotationGif}
+              />
+              <span className={styles.rotationPokeName}>{name}</span>
+              {areas.length > 0 ? (
+                <div className={styles.rotationAreas}>
+                  {areas.map(a => (
+                    <span key={a} className={styles.rotationAreaPill}>Area {a}</span>
+                  ))}
+                </div>
+              ) : (
+                <span className={styles.rotationNone}>Not available today</span>
+              )}
+            </div>
+          )
+        })}
       </div>
+      <p className={styles.rotationNote}>Rotates every in-game day (~6 real hours). Schedule repeats weekly.</p>
     </div>
   )
 }
@@ -206,6 +277,8 @@ function RegionContent({ region }) {
       <p className={styles.regionGame}>{data.game}</p>
       <p className={styles.regionDescription}>{data.description}</p>
 
+      <InGameClock region={region} />
+
       <div className={styles.areaSelector}>
         {data.areas.map((a, i) => (
           <button
@@ -223,7 +296,7 @@ function RegionContent({ region }) {
         <p><strong>Shiny Hunting:</strong> Lure boosts encounter rate by 10→15%. Abilities like Illuminate, Swarm, and Arena Trap also increase encounters.</p>
       </div>
 
-      {data.rotationSchedule && <RotationSchedule schedule={data.rotationSchedule} />}
+      {data.rotationSchedule && <RotationSchedule schedule={data.rotationSchedule} currentDay={getInGameState().day} />}
 
       <div className={styles.pokemonGrid}>
         {area.pokemon.map(p => (
