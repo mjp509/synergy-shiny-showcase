@@ -109,6 +109,7 @@ const ENCOUNTER_LABELS = {
   rotation: 'Rotation',
   water: 'Water',
   grass: 'Grass',
+  lure: 'Lure',
 }
 
 const STRATEGY_LABELS = {
@@ -128,6 +129,7 @@ function getEncounterClass(type) {
   if (t === 'night') return styles.encounterNight;
   if (t === 'rotation') return styles.encounterRotationalImportant;
   if (t === 'water') return styles.encounterWater;
+  if (t === 'lure') return styles.encounterLure;
   return styles.encounterStandard;
 }
 

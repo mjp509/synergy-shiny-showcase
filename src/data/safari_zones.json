@@ -29,7 +29,7 @@
           },
           {
             "name": "stantler",
-            "encounterType": "night"
+            "encounterType": "day"
           },
           {
             "name": "Zigzagoon",
@@ -82,6 +82,10 @@
         },
         {
           "name": "Magikarp",
+          "encounterType": "water"
+        },
+        {
+          "name": "Marill", 
           "encounterType": "water"
         },
         {
@@ -163,11 +167,11 @@
         },
         {
           "name": "Zubat",
-          "encounterType": "standard"
+          "encounterType": "night"
         },
         {
           "name": "Golbat",
-          "encounterType": "standard"
+          "encounterType": "night"
         },
         {
           "name": "Azurill",
@@ -276,8 +280,8 @@
           "encounterType": "water"
         },
         {
-          "name": "Dratini",
-          "encounterType": "water"
+          "name": "Dragonair",
+          "encounterType": "Lure"
         },
         {
           "name": "Lapras",
@@ -738,7 +742,7 @@
             "encounterType": "rotation"
           },
           {
-            "name": "Metagross",
+            "name": "Metang",
             "encounterType": "rotation"
           },
           {

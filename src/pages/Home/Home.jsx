@@ -109,37 +109,49 @@ export default function Home() {
 
         <div className={styles.featuresGrid}>
           <Link to="/shiny-showcase" className={styles.featureCard}>
-            <div className={styles.featureIcon}>✨</div>
+            <div className={styles.featureIcon}>
+              <img src="https://img.pokemondb.net/sprites/black-white/anim/shiny/reuniclus.gif" alt="Reuniclus" />
+            </div>
             <h3>Shiny Showcase</h3>
             <p>Browse 140+ members' shiny collections and track rankings</p>
           </Link>
 
           <Link to="/pokedex" className={styles.featureCard}>
-            <div className={styles.featureIcon}>📖</div>
+            <div className={styles.featureIcon}>
+              <img src="https://img.pokemondb.net/sprites/black-white/anim/shiny/pikachu.gif" alt="Pikachu" />
+            </div>
             <h3>PokéDex</h3>
             <p>Explore shiny hunting locations, alphas, and detailed Pokémon data</p>
           </Link>
 
           <Link to="/streamers" className={styles.featureCard}>
-            <div className={styles.featureIcon}>🎮</div>
+            <div className={styles.featureIcon}>
+              <img src="https://img.pokemondb.net/sprites/black-white/anim/shiny/rotom.gif" alt="Rotom" />
+            </div>
             <h3>Streamers</h3>
             <p>Watch live Twitch streams from Team Synergy members</p>
           </Link>
 
           <Link to="/resources" className={styles.featureCard}>
-            <div className={styles.featureIcon}>📚</div>
+            <div className={styles.featureIcon}>
+              <img src="https://img.pokemondb.net/sprites/black-white/anim/shiny/porygon.gif" alt="Porygon" />
+            </div>
             <h3>Resources</h3>
             <p>Read all the useful Resources about PokeMMO</p>
           </Link>
 
           <Link to="/events" className={styles.featureCard}>
-            <div className={styles.featureIcon}>🎯</div>
+            <div className={styles.featureIcon}>
+              <img src="https://img.pokemondb.net/sprites/black-white/anim/shiny/machamp.gif" alt="Machamp" />
+            </div>
             <h3>Events</h3>
             <p>Join community events and competitions</p>
           </Link>
 
           <Link to="/roaming-legendaries" className={styles.featureCard}>
-            <div className={styles.featureIcon}>🌍</div>
+            <div className={styles.featureIcon}>
+              <img src="https://img.pokemondb.net/sprites/black-white/anim/shiny/suicune.gif" alt="Suicune" />
+            </div>
             <h3>Roaming Legendaries</h3>
             <p>Track roaming legendary schedules</p>
           </Link>

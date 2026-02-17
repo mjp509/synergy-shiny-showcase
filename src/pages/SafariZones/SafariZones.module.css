@@ -378,6 +378,12 @@
   border: 1px solid rgba(60, 180, 220, 0.3);
 }
 
+.encounterLure {
+  background: rgba(255, 96, 170, 0.233);
+  color: #53ff62;
+  border: 1px solid rgba(255, 96, 170, 0.3);
+}
+
 /* Catch Data Table */
 .tableSection {
   margin-top: 16px;
