@@ -79,6 +79,7 @@
 .rareShinyCard:hover {
   transform: translateY(-4px);
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+  z-index: 10;
 }
 
 /* Tier label on top of card */
