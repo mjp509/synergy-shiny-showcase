@@ -197,14 +197,25 @@ export default function ShinyForm({ initialData, onSubmit, submitLabel = 'Add', 
         />
       )}
 
-      <label>Encounter:</label>
-      <Autocomplete
-        id="shinyEncounter"
-        value={form.Encounter}
-        onChange={val => dispatch({ type: 'SET_FIELD', field: 'Encounter', value: val })}
-        getOptions={() => encounterOptions}
-        placeholder={encounterOptions.length ? 'Select encounter method...' : 'e.g. Grass, Super Rod'}
-      />
+      <label htmlFor="shinyEncounter">Encounter:</label>
+      {encounterOptions.length > 0 ? (
+        <select
+          id="shinyEncounter"
+          value={form.Encounter}
+          onChange={e => dispatch({ type: 'SET_FIELD', field: 'Encounter', value: e.target.value })}
+        >
+          <option value="">Select an encounter</option>
+          {encounterOptions.map(enc => <option key={enc} value={enc}>{enc}</option>)}
+        </select>
+      ) : (
+        <input
+          id="shinyEncounter"
+          type="text"
+          value={form.Encounter}
+          onChange={e => dispatch({ type: 'SET_FIELD', field: 'Encounter', value: e.target.value })}
+          placeholder="e.g. Grass, Super Rod"
+        />
+      )}
 
       {YES_NO_FIELDS.map(({ key, label }) => (
         <div key={key}>
