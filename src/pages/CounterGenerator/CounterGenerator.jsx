@@ -116,14 +116,13 @@ export default function CounterGenerator() {
         if (!r.ok) throw new Error(`Failed to load ${path}: ${r.status}`)
         return r.text()
       })
-      const [counterThemeBottom, themeXMLContent, infoXML] = await Promise.all([
+      const [counterThemeBottom, infoXML] = await Promise.all([
         fetchXml('/xml/counterThemeBottom.xml'),
-        fetchXml('/xml/themeContent.xml'),
         fetchXml('/xml/info.xml'),
       ])
 
       const zip = new JSZip()
-      const base = 'data/themes/default'
+      const base = 'data'
       const animFolder = zip.folder(`${base}/anim`)
 
       frames.forEach(frame => animFolder.file(frame.name, frame.blob))
@@ -165,11 +164,12 @@ export default function CounterGenerator() {
       xml += counterThemeBottom
 
       zip.file(`${base}/custom-counter.xml`, xml)
-      zip.file(`${base}/theme.xml`, themeXMLContent)
+      // Removed theme.xml from ZIP generation as it is not needed
 
       const zipNameValue = document.getElementById('zipName').value.trim() || 'custom-counter'
       const themeName = zipNameValue.replace(/\.zip$/i, '')
-      const infoXMLReplaced = infoXML.replace('${themeName}', themeName)
+      // Replace all occurrences of ${themeName} in info.xml
+      const infoXMLReplaced = infoXML.replace(/\$\{themeName\}/g, themeName)
       zip.file('info.xml', infoXMLReplaced)
 
       const outputZipName = zipNameValue.endsWith('.zip') ? zipNameValue : zipNameValue + '.zip'
