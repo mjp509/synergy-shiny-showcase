@@ -467,7 +467,7 @@ export default function Resources() {
             {/* Subcategory Description - Only show for Twitch Streamers */}
       {activeCategory === 'Content Creators' && activeSubcategory === 'Twitch Streamers' && subcategoryContent?._meta?.description && (
         <div className={styles.subcategoryDescription}>
-          <p dangerouslySetInnerHTML={{ __html: subcategoryContent._meta.description }} />
+          <p>{subcategoryContent._meta.description}</p>
         </div>
       )}
 

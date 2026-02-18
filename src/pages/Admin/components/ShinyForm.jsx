@@ -1,5 +1,23 @@
-import { useReducer, useEffect } from 'react'
+import { useReducer, useEffect, useMemo } from 'react'
 import Autocomplete from './Autocomplete'
+import pokemonData from '../../../data/pokemmo_data/pokemon-data.json'
+
+// Build lookup map at module level for fast name resolution
+const POKEMON_KEY_MAP = {}
+Object.keys(pokemonData).forEach(key => {
+  POKEMON_KEY_MAP[key] = key                     // exact: "bulbasaur"
+  POKEMON_KEY_MAP[key.replace(/-/g, ' ')] = key  // spaces: "mr mime"
+  POKEMON_KEY_MAP[key.replace(/-/g, '')] = key   // joined: "mrmime"
+})
+
+function lookupEncounters(name) {
+  if (!name) return []
+  const n = name.toLowerCase().trim()
+  const key = POKEMON_KEY_MAP[n]
+    || POKEMON_KEY_MAP[n.replace(/\s+/g, '-')]
+    || POKEMON_KEY_MAP[n.replace(/[^a-z0-9]/g, '')]
+  return key ? (pokemonData[key]?.location_area_encounters || []) : []
+}
 
 const MONTHS = [
   'January', 'February', 'March', 'April', 'May', 'June',
@@ -11,6 +29,8 @@ const YEARS = [
   '2020', '2021', '2022', '2023', '2024', '2025', '2026',
   '2027', '2028', '2029', '2030',
 ]
+
+const ENCOUNTER_TYPES = ['Single', '5x Horde', '3x Horde', 'Fishing']
 
 const YES_NO_FIELDS = [
   { key: 'Egg', label: 'Egg' },
@@ -35,6 +55,9 @@ function getDefaultState() {
     Pokemon: '',
     Month: currentMonth,
     Year: currentYear,
+    'Encounter Type': '',
+    Location: '',
+    Encounter: '',
     Egg: 'No',
     Favourite: 'No',
     'Secret Shiny': 'No',
@@ -77,10 +100,44 @@ export default function ShinyForm({ initialData, onSubmit, submitLabel = 'Add', 
     if (initialData) dispatch({ type: 'LOAD', data: initialData })
   }, [initialData])
 
+  // Derive location options from the selected Pokemon's encounter data
+  const encounters = useMemo(() => lookupEncounters(form.Pokemon), [form.Pokemon])
+
+  const locationOptions = useMemo(() => {
+    const seen = new Set()
+    encounters.forEach(e => {
+      if (e.location && e.region_name) seen.add(`${e.location} (${e.region_name})`)
+    })
+    return Array.from(seen).sort()
+  }, [encounters])
+
+  // Derive encounter method options from the selected Location
+  const encounterOptions = useMemo(() => {
+    if (!form.Location) return []
+    const seen = new Set()
+    encounters.forEach(e => {
+      if (e.location && e.region_name) {
+        const loc = `${e.location} (${e.region_name})`
+        if (loc === form.Location && e.type) seen.add(e.type)
+      }
+    })
+    return Array.from(seen).sort()
+  }, [encounters, form.Location])
+
+  function handlePokemonChange(val) {
+    dispatch({ type: 'SET_FIELD', field: 'Pokemon', value: val })
+    dispatch({ type: 'SET_FIELD', field: 'Location', value: '' })
+    dispatch({ type: 'SET_FIELD', field: 'Encounter', value: '' })
+  }
+
+  function handleLocationChange(val) {
+    dispatch({ type: 'SET_FIELD', field: 'Location', value: val })
+    dispatch({ type: 'SET_FIELD', field: 'Encounter', value: '' })
+  }
+
   function handleSubmit() {
     if (!form.Pokemon.trim()) return
-    const data = { ...form }
-    onSubmit(data)
+    onSubmit({ ...form })
   }
 
   function handleReset() {
@@ -93,7 +150,7 @@ export default function ShinyForm({ initialData, onSubmit, submitLabel = 'Add', 
       <Autocomplete
         id="shinyFormPokemon"
         value={form.Pokemon}
-        onChange={val => dispatch({ type: 'SET_FIELD', field: 'Pokemon', value: val })}
+        onChange={handlePokemonChange}
         getOptions={() => allPokemonNames}
         placeholder="mew"
       />
@@ -109,6 +166,34 @@ export default function ShinyForm({ initialData, onSubmit, submitLabel = 'Add', 
         <option value="">--</option>
         {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
       </select>
+
+      <label htmlFor="shinyEncounterType">Encounter Type:</label>
+      <select
+        id="shinyEncounterType"
+        value={form['Encounter Type']}
+        onChange={e => dispatch({ type: 'SET_FIELD', field: 'Encounter Type', value: e.target.value })}
+      >
+        <option value="">--</option>
+        {ENCOUNTER_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+      </select>
+
+      <label>Location:</label>
+      <Autocomplete
+        id="shinyLocation"
+        value={form.Location}
+        onChange={handleLocationChange}
+        getOptions={() => locationOptions}
+        placeholder={locationOptions.length ? 'Search location...' : 'Enter location'}
+      />
+
+      <label>Encounter:</label>
+      <Autocomplete
+        id="shinyEncounter"
+        value={form.Encounter}
+        onChange={val => dispatch({ type: 'SET_FIELD', field: 'Encounter', value: val })}
+        getOptions={() => encounterOptions}
+        placeholder={encounterOptions.length ? 'Select encounter method...' : 'e.g. Grass, Super Rod'}
+      />
 
       {YES_NO_FIELDS.map(({ key, label }) => (
         <div key={key}>

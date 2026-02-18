@@ -137,7 +137,7 @@ export default function ZoomableChart({ children }) {
       el.removeEventListener('touchmove', handleTouchMove)
       el.removeEventListener('touchend', handleTouchEnd)
     }
-  }, [handleWheel, handleMouseDown, handleMouseMove, handleMouseUp, handleTouchStart, handleTouchMove, handleTouchEnd])
+  }, [])
 
   return (
     <div className={styles.zoomableContainer} ref={containerRef}>

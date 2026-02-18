@@ -59,13 +59,13 @@ function getInGameState() {
 
 // Sinnoh rotation lookup: given in-game day, return which area has which pokemon
 const SINNOH_ROTATION = {
-  Wednesday: { 1: 'Carnivine', 2: 'Croagunk', 3: 'Croagunk', 4: 'Croagunk', 5: 'Skorupi', 6: 'Skorupi' },
-  Thursday:  { 1: 'Skorupi',   2: 'Carnivine', 3: 'Croagunk', 4: 'Croagunk', 5: 'Croagunk', 6: 'Skorupi' },
-  Friday:    { 1: 'Skorupi',   2: 'Skorupi',   3: 'Carnivine', 4: 'Croagunk', 5: 'Croagunk', 6: 'Croagunk' },
-  Saturday:  { 1: 'Croagunk',  2: 'Skorupi',   3: 'Skorupi',   4: 'Carnivine', 5: 'Croagunk', 6: 'Croagunk' },
-  Sunday:    { 1: 'Croagunk',  2: 'Croagunk',  3: 'Skorupi',   4: 'Skorupi',   5: 'Carnivine', 6: 'Croagunk' },
-  Monday:    { 1: 'Croagunk',  2: 'Croagunk',  3: 'Croagunk',  4: 'Skorupi',   5: 'Skorupi',   6: 'Carnivine' },
-  Tuesday:   { 1: 'Croagunk',  2: 'Croagunk',  3: 'Croagunk',  4: 'Croagunk',  5: 'Carnivine', 6: 'Croagunk' },
+  Wednesday: { 1: 'Carnivine', 2: 'Croagunk', 3: 'Croagunk', 4: 'Skorupi', 5: 'Skorupi', 6: 'Croagunk' },
+  Thursday:  { 1: 'Croagunk',  2: 'Carnivine', 3: 'Croagunk', 4: 'Croagunk', 5: 'Skorupi',   6: 'Skorupi' },
+  Friday:    { 1: 'Skorupi',   2: 'Croagunk',  3: 'Carnivine', 4: 'Croagunk', 5: 'Croagunk', 6: 'Skorupi' },
+  Saturday:  { 1: 'Skorupi',   2: 'Skorupi',   3: 'Croagunk',  4: 'Carnivine', 5: 'Croagunk', 6: 'Croagunk' },
+  Sunday:    { 1: 'Skorupi',   2: 'Skorupi',   3: 'Croagunk',  4: 'Carnivine', 5: 'Croagunk', 6: 'Croagunk' },
+  Monday:    { 1: 'Croagunk',  2: 'Skorupi',   3: 'Skorupi',   4: 'Croagunk',  5: 'Carnivine', 6: 'Croagunk' },
+  Tuesday:   { 1: 'Croagunk',  2: 'Croagunk',  3: 'Skorupi',   4: 'Skorupi',   5: 'Croagunk',  6: 'Carnivine' },
 }
 
 function InGameClock({ region }) {
@@ -127,7 +127,7 @@ function getEncounterClass(type) {
   const t = String(type).toLowerCase();
   if (t === 'day') return styles.encounterDay;
   if (t === 'night') return styles.encounterNight;
-  if (t === 'rotation') return styles.encounterRotationalImportant;
+  if (t === 'rotation') return styles.encounterRotation;
   if (t === 'water') return styles.encounterWater;
   if (t === 'lure') return styles.encounterLure;
   return styles.encounterStandard;
@@ -320,10 +320,21 @@ function RegionContent({ region }) {
   if (region === 'sinnoh' && data.universalPokemon) {
     // Always start from a fresh universalPokemon array to avoid duplication
     const boostedNames = (area.pokemon || []).map(p => p.name);
-    pokemonList = data.universalPokemon.map(mon => {
-      const boosted = boostedNames.includes(mon.name);
-      return { ...mon, boosted };
-    });
+    const currentDay = getInGameState().day;
+    const areaNumber = selectedArea + 1;
+    const activeRotationMon = SINNOH_ROTATION[currentDay]?.[areaNumber];
+    pokemonList = data.universalPokemon
+      .filter(mon => {
+        // Only show the rotation pokemon that's active in this area today
+        if (isRotationType(mon.encounterType)) {
+          return mon.name === activeRotationMon;
+        }
+        return true;
+      })
+      .map(mon => {
+        const boosted = boostedNames.includes(mon.name);
+        return { ...mon, boosted };
+      });
   } else {
     pokemonList = Array.isArray(area.pokemon) ? [...area.pokemon] : [];
   }
@@ -437,7 +448,8 @@ export default function SafariZones() {
             <button
               key={r}
               className={`${styles.regionTab} ${activeRegion === r ? styles.regionTabActive : ''} ${isDisabled ? styles.regionTabDisabled : ''}`}
-              onClick={() => !isDisabled ? setActiveRegion(r) : null}
+              onClick={() => setActiveRegion(r)}
+              disabled={isDisabled}
             >
               {REGION_LABELS[r]}
               {isDisabled && ' (Soon)'}

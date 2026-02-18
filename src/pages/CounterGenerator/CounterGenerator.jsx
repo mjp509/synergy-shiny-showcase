@@ -112,10 +112,14 @@ export default function CounterGenerator() {
 
       setStatus(`Extracted ${frames.length} frames. Loading XML templates...`)
 
+      const fetchXml = (path) => fetch(path).then(r => {
+        if (!r.ok) throw new Error(`Failed to load ${path}: ${r.status}`)
+        return r.text()
+      })
       const [counterThemeBottom, themeXMLContent, infoXML] = await Promise.all([
-        fetch('/xml/counterThemeBottom.xml').then(r => r.text()),
-        fetch('/xml/themeContent.xml').then(r => r.text()),
-        fetch('/xml/info.xml').then(r => r.text()),
+        fetchXml('/xml/counterThemeBottom.xml'),
+        fetchXml('/xml/themeContent.xml'),
+        fetchXml('/xml/info.xml'),
       ])
 
       const zip = new JSZip()
