@@ -703,7 +703,7 @@
           },
           {
             "name": "Lickitung",
-            "encounterType": "day"
+            "encounterType": "standard"
           },
           {
             "name": "Zubat",

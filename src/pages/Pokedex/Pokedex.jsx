@@ -1548,12 +1548,12 @@ export default function Pokedex() {
                           
                           <div 
                             className={styles.pokemonContainer}
-                            onClick={() => navigate(`/pokemon/${getBasePokemonName(pokemon).toLowerCase()}`)}
+                            onClick={() => navigate(`/pokemon/${getBasePokemonName(pokemon).toLowerCase()}/`)}
                             role="button"
                             tabIndex={0}
                             onKeyDown={(e) => {
                               if (e.key === 'Enter' || e.key === ' ') {
-                                navigate(`/pokemon/${getBasePokemonName(pokemon).toLowerCase()}`)
+                                navigate(`/pokemon/${getBasePokemonName(pokemon).toLowerCase()}/`)
                               }
                             }}
                             style={{ cursor: 'pointer' }}
@@ -1802,12 +1802,12 @@ export default function Pokedex() {
                     <div 
                       key={`${gen}-${pokemon}-${idx}`} 
                       className={styles.pokemonContainer}
-                      onClick={() => navigate(`/pokemon/${getBasePokemonName(pokemon).toLowerCase()}`)}
+                      onClick={() => navigate(`/pokemon/${getBasePokemonName(pokemon).toLowerCase()}/`)}
                       role="button"
                       tabIndex={0}
                       onKeyDown={(e) => {
                         if (e.key === 'Enter' || e.key === ' ') {
-                          navigate(`/pokemon/${getBasePokemonName(pokemon).toLowerCase()}`)
+                          navigate(`/pokemon/${getBasePokemonName(pokemon).toLowerCase()}/`)
                         }
                       }}
                       style={{ cursor: 'pointer' }}
