@@ -948,7 +948,7 @@ useDocumentHead({
     
     return (
       <div className={styles.container}>
-        <BackButton to={location.state?.fromPokemon ? '/pokedex' : '/pokedex'} />
+        <BackButton to={location.state?.fromPokemon ? '/pokedex/' : '/pokedex/'} />
         <div className={styles.errorMessage}>
           <h2>⚠️ Unable to Load Pokémon</h2>
           <p className={styles.errorDescription}>
@@ -959,11 +959,11 @@ useDocumentHead({
             <ul>
               <li>Check that the Pokémon name is spelled correctly</li>
               <li>Use lowercase names with hyphens (e.g., "mr-mime", "type-null")</li>
-              <li>Try searching on our <button onClick={() => navigate('/pokedex')} className={styles.linkButton} style={{ background: 'none', border: 'none', color: '#667eea', cursor: 'pointer', textDecoration: 'underline' }}>Pokédex page</button></li>
+              <li>Try searching on our <button onClick={() => navigate('/pokedex/')} className={styles.linkButton} style={{ background: 'none', border: 'none', color: '#667eea', cursor: 'pointer', textDecoration: 'underline' }}>Pokédex page</button></li>
               <li>If the issue persists, try again in a few moments (API might be busy)</li>
             </ul>
           </div>
-          <button onClick={() => navigate('/pokedex')} className={styles.linkButton}>
+          <button onClick={() => navigate('/pokedex/')} className={styles.linkButton}>
             Back to Pokédex
           </button>
         </div>
