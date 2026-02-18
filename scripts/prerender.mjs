@@ -813,13 +813,15 @@ function generateSocialMediaSchema(title, description, image, url) {
     // Add required Author field for SEO
     "author": {
       "@type": "Person",
-      "name": "Team Synergy Staff"
+      "name": "Team Synergy Staff",
+      "url": "https://synergymmo.com/player/Hyper/"
     },
     "sharedContent": {
       "@type": "CreativeWork",
       "name": title,
       "description": description,
-      "image": image
+      "image": image,
+      "url": url
     },
     "publisher": {
       "@type": "Organization",
