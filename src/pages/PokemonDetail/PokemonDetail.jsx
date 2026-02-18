@@ -9,6 +9,7 @@ import { usePokemonForms } from '../../hooks/usePokemonForms'
 import BackButton from '../../components/BackButton/BackButton'
 import styles from './PokemonDetail.module.css'
 import abilitiesData from '../../data/pokemmo_data/abilities-data.json'
+import safariData from '../../data/safari_zones.json'
 
 const TYPE_COLORS = {
   normal: '#A8A878',
@@ -860,6 +861,31 @@ export default function PokemonDetail() {
     }
     return 'https://synergymmo.com/images/openGraph.jpg'
   }, [spritesByGeneration])
+
+  const safariLocations = useMemo(() => {
+    if (!pokemonName) return []
+    const results = []
+    const REGION_LABELS = { kanto: 'Kanto', johto: 'Johto', hoenn: 'Hoenn', sinnoh: 'Sinnoh' }
+    const lookupName = pokemonName.toLowerCase()
+    Object.entries(safariData).forEach(([region, data]) => {
+      if (!data) return
+      const regionLabel = REGION_LABELS[region] || region
+      if (data.universalPokemon) {
+        const match = data.universalPokemon.find(p => p.name.toLowerCase() === lookupName)
+        if (match) {
+          results.push({ region: regionLabel, area: 'All Areas', encounterType: match.encounterType })
+        }
+      } else if (data.areas) {
+        data.areas.forEach(area => {
+          const match = (area.pokemon || []).find(p => p.name.toLowerCase() === lookupName)
+          if (match) {
+            results.push({ region: regionLabel, area: area.name, encounterType: match.encounterType })
+          }
+        })
+      }
+    })
+    return results
+  }, [pokemonName])
 
 // Capitalize first letter helper
 const capitalize = (str) =>
@@ -1743,7 +1769,7 @@ useDocumentHead({
       </section>
 
       {/* Locations */}
-      {pokemon?.locations && pokemon.locations.length > 0 && (() => {
+      {((pokemon?.locations && pokemon.locations.length > 0) || safariLocations.length > 0) && (() => {
         // Define rarity order
         const rarityOrder = {
           'Horde': 0,
@@ -1783,7 +1809,7 @@ useDocumentHead({
         }
         
         // Sort locations by rarity
-        const sortedLocations = [...pokemon.locations].sort((a, b) => {
+        const sortedLocations = [...(pokemon?.locations || [])].sort((a, b) => {
           const rarityA = rarityOrder[a.rarity] ?? 999
           const rarityB = rarityOrder[b.rarity] ?? 999
           return rarityA - rarityB
@@ -1796,8 +1822,8 @@ useDocumentHead({
               {sortedLocations.map((location, index) => {
                 const encounterIcon = getEncounterIcon(location.rarity, location.type)
                 return (
-                  <button 
-                    key={index} 
+                  <button
+                    key={index}
                     className={styles.locationCard}
                     onClick={() => navigate('/pokedex/', { state: { locationSearch: `${location.location} - ${location.region_name}` } })}
                     title={`Search for Pokémon at ${location.location}`}
@@ -1828,6 +1854,29 @@ useDocumentHead({
                   </button>
                 )
               })}
+              {safariLocations.map((safariLoc, index) => (
+                <button
+                  key={`safari-${index}`}
+                  className={`${styles.locationCard} ${styles.safariLocationCard}`}
+                  onClick={() => navigate('/safari-zones/')}
+                  title={`${safariLoc.region} Safari Zone`}
+                >
+                  <div className={styles.locationHeader}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <h3 className={styles.locationName}>Safari Zone</h3>
+                    </div>
+                    <span className={`${styles.locationRegion} ${styles.safariRegionBadge}`}>{safariLoc.region}</span>
+                  </div>
+                  <div className={styles.locationDetails}>
+                    <span className={styles.locationDetail}>
+                      <strong>Area:</strong> {safariLoc.area}
+                    </span>
+                    <span className={styles.locationDetail}>
+                      <strong>Encounter:</strong> {safariLoc.encounterType.charAt(0).toUpperCase() + safariLoc.encounterType.slice(1)}
+                    </span>
+                  </div>
+                </button>
+              ))}
             </div>
           </section>
         )
