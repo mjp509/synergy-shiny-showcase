@@ -24,7 +24,8 @@
 }
 
 .card {
-  background: #222;
+  background: rgba(20, 10, 35, 0.75);
+  border: 1px solid rgba(155, 89, 182, 0.25);
   border-radius: 12px;
   padding: 12px;
   width: 280px;
@@ -38,7 +39,8 @@
 
 .card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 0 12px rgba(255,255,255,0.2);
+  border-color: rgba(155, 89, 182, 0.5);
+  box-shadow: 0 0 12px rgba(155, 89, 182, 0.3);
 }
 
 .live {
@@ -67,8 +69,8 @@
   border-radius: 50% !important;
   margin-bottom: 10px;
   object-fit: cover;
-  border: 2px solid #555;
-  background: #333;
+  border: 2px solid rgba(155, 89, 182, 0.4);
+  background: rgba(20, 10, 35, 0.75);
 }
 
 .playerName {
