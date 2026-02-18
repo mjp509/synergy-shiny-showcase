@@ -122,6 +122,7 @@
 .panel input[type="text"],
 .panel input[type="number"],
 .panel input[type="password"],
+.panel input[type="date"],
 .panel select {
   width: 100%;
   padding: 8px 10px;
@@ -131,6 +132,30 @@
   color: #f0f0f0;
   font-size: 1rem;
   box-sizing: border-box;
+}
+
+.panel input[type="date"] {
+  color-scheme: dark;
+  cursor: pointer;
+}
+
+.panel input[type="date"]::-webkit-calendar-picker-indicator {
+  background-color: #9b59b6;
+  border-radius: 4px;
+  padding: 3px;
+  cursor: pointer;
+  opacity: 0.85;
+  transition: opacity 0.2s ease;
+}
+
+.panel input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+
+.panel input[type="date"]:focus {
+  outline: none;
+  border-color: #9b59b6;
+  box-shadow: 0 0 8px rgba(155, 89, 182, 0.6);
 }
 
 .panel input::placeholder {

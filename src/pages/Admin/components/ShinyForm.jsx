@@ -56,6 +56,7 @@ const YES_NO_FIELDS = [
 const now = new Date()
 const currentMonth = MONTHS[now.getMonth()]
 const currentYear = String(now.getFullYear())
+const todayISO = now.toISOString().split('T')[0]
 
 function getDefaultState() {
   return {
@@ -65,7 +66,7 @@ function getDefaultState() {
     'Encounter Type': '',
     Location: '',
     'Encounter Count': '',
-    date_caught: '',
+    date_caught: todayISO,
     nature: '',
     ivs: '',
     nickname: '',
@@ -132,6 +133,15 @@ export default function ShinyForm({ initialData, onSubmit, submitLabel = 'Add', 
     dispatch({ type: 'SET_FIELD', field: 'Location', value: val })
   }
 
+  function handleDateCaughtChange(val) {
+    dispatch({ type: 'SET_FIELD', field: 'date_caught', value: val })
+    if (val) {
+      const [year, month] = val.split('-')
+      dispatch({ type: 'SET_FIELD', field: 'Month', value: MONTHS[parseInt(month, 10) - 1] })
+      dispatch({ type: 'SET_FIELD', field: 'Year', value: year })
+    }
+  }
+
   function handleSubmit() {
     if (!form.Pokemon.trim()) return
     onSubmit({ ...form })
@@ -151,18 +161,6 @@ export default function ShinyForm({ initialData, onSubmit, submitLabel = 'Add', 
         getOptions={() => allPokemonNames}
         placeholder="mew"
       />
-
-      <label htmlFor="shinyMonth">Month:</label>
-      <select id="shinyMonth" value={form.Month} onChange={e => dispatch({ type: 'SET_FIELD', field: 'Month', value: e.target.value })}>
-        <option value="">--</option>
-        {MONTHS.map(m => <option key={m} value={m}>{m}</option>)}
-      </select>
-
-      <label htmlFor="shinyYear">Year:</label>
-      <select id="shinyYear" value={form.Year} onChange={e => dispatch({ type: 'SET_FIELD', field: 'Year', value: e.target.value })}>
-        <option value="">--</option>
-        {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
-      </select>
 
       <label htmlFor="shinyEncounterType">Encounter Type:</label>
       <select
@@ -209,7 +207,7 @@ export default function ShinyForm({ initialData, onSubmit, submitLabel = 'Add', 
         id="shinyDateCaught"
         type="date"
         value={form.date_caught}
-        onChange={e => dispatch({ type: 'SET_FIELD', field: 'date_caught', value: e.target.value })}
+        onChange={e => handleDateCaughtChange(e.target.value)}
       />
 
       <label htmlFor="shinyNature">Nature:</label>
