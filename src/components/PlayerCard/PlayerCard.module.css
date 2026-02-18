@@ -13,6 +13,10 @@
   z-index: 1;
 }
 
+.card:has(:hover) {
+  z-index: 10;
+}
+
 .nameContainer {
   display: inline-flex;
   align-items: center;
