@@ -9,6 +9,7 @@ export default function EditPlayerTab({
   playerNames, getPlayerShinies, allPokemonNames,
   onEditShiny, onDeleteShiny, onDeletePlayer, isMutating, onReorderShinies,
 }) {
+  const [searchInput, setSearchInput] = useState('')
   const [selectedPlayer, setSelectedPlayer] = useState('')
   const [editingId, setEditingId] = useState(null)
   const [editingData, setEditingData] = useState(null)
@@ -50,6 +51,7 @@ export default function EditPlayerTab({
   async function handleConfirmDeletePlayer() {
     const result = await onDeletePlayer(selectedPlayer)
     if (result?.success) {
+      setSearchInput('')
       setSelectedPlayer('')
       setConfirmDeletePlayer(false)
     }
@@ -66,8 +68,16 @@ export default function EditPlayerTab({
       <label>Select Player:</label>
       <Autocomplete
         id="editPlayerSelect"
-        value={selectedPlayer}
+        value={searchInput}
         onChange={val => {
+          setSearchInput(val)
+          if (selectedPlayer) {
+            setSelectedPlayer('')
+            setEditingId(null)
+            setEditingData(null)
+          }
+        }}
+        onSelect={val => {
           setSelectedPlayer(val)
           setEditingId(null)
           setEditingData(null)
@@ -76,15 +86,11 @@ export default function EditPlayerTab({
         placeholder="Search player..."
       />
 
-      {!selectedPlayer.trim() && (
-        <p className={styles.hintText}>Select a player to view and edit their shinies.</p>
+      {!selectedPlayer && (
+        <p className={styles.hintText}>Search and select a player to view and edit their shinies.</p>
       )}
 
-      {selectedPlayer.trim() && !getPlayerShinies(selectedPlayer) && (
-        <p className={styles.hintText}>Player "{selectedPlayer}" not found.</p>
-      )}
-
-      {selectedPlayer.trim() && getPlayerShinies(selectedPlayer) && (
+      {selectedPlayer && (
         <>
           {editingId ? (
             <div className={styles.editSection}>

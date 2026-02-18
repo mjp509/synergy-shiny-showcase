@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import styles from '../Admin.module.css'
 
-export default function Autocomplete({ id, value, onChange, getOptions, placeholder }) {
+export default function Autocomplete({ id, value, onChange, onSelect, getOptions, placeholder }) {
   const [suggestions, setSuggestions] = useState([])
   const [show, setShow] = useState(false)
   const [focusIdx, setFocusIdx] = useState(-1)
@@ -20,13 +20,18 @@ export default function Autocomplete({ id, value, onChange, getOptions, placehol
     setFocusIdx(-1)
   }
 
+  function handleSelect(val) {
+    onChange(val)
+    if (onSelect) onSelect(val)
+    setShow(false)
+  }
+
   function handleKeyDown(e) {
     if (e.key === 'ArrowDown') { setFocusIdx(i => Math.min(i + 1, suggestions.length - 1)) }
     else if (e.key === 'ArrowUp') { setFocusIdx(i => Math.max(i - 1, 0)) }
     else if (e.key === 'Tab' && focusIdx >= 0) {
       e.preventDefault()
-      onChange(suggestions[focusIdx])
-      setShow(false)
+      handleSelect(suggestions[focusIdx])
     }
   }
 
@@ -50,7 +55,7 @@ export default function Autocomplete({ id, value, onChange, getOptions, placehol
             <div
               key={s}
               className={`${styles.suggestion} ${i === focusIdx ? styles.suggestionActive : ''}`}
-              onMouseDown={() => { onChange(s); setShow(false) }}
+              onMouseDown={() => handleSelect(s)}
             >
               {s}
             </div>
