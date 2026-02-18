@@ -539,6 +539,7 @@
 .pokemonContainer:hover {
   transform: scale(1.2);
   border-color: #4a90e2;
+  z-index: 10;
 }
 
 .pokemonContainer:focus-within {
