@@ -2,8 +2,6 @@
   max-width: 1400px;
   margin: 0 auto;
   padding: 40px 20px;
-  background: linear-gradient(180deg, #0a0e27 0%, #1a1a3e 50%, #0a0e27 100%);
-  min-height: 100vh;
 }
 
 .header {
@@ -18,19 +16,21 @@
 }
 
 .title {
-  color: #FFD700;
-  font-size: 48px;
+  font-size: 2.5rem;
   font-weight: bold;
+  color: #fff;
+  letter-spacing: 1px;
+  text-shadow:
+    0 0 5px rgba(255,255,255,0.4),
+    0 0 10px rgba(74,144,226,0.3),
+    0 0 15px rgba(74,144,226,0.2);
   margin: 0 0 16px 0;
-  text-shadow: 0 0 10px rgba(255, 95, 109, 0.87);
-  letter-spacing: 0.5px;
 }
 
 .subtitle {
-  color: #FFEB99;
+  color: #ccc;
   font-size: 18px;
   margin: 0;
-  text-shadow: 0 0 5px rgba(218, 165, 32, 0.5);
 }
 
 .calendarGrid {
@@ -42,59 +42,36 @@
 }
 
 .monthCard {
-  background: linear-gradient(135deg, #0a0e27 0%, #1a1a3e 100%);
-  border: 2px solid #DAA520;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   padding: 24px;
   transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-.monthCard::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg, rgba(218, 165, 32, 0.1) 0%, transparent 100%);
-  pointer-events: none;
 }
 
 .monthCard:hover {
-  border-color: #FFD700;
-  transform: translateY(-4px);
-  box-shadow: 0 0 25px rgba(255, 215, 0, 0.6),
-              0 12px 40px rgba(0, 0, 0, 0.3);
+  border-color: rgba(155, 89, 182, 0.5);
+  box-shadow: 0 4px 20px rgba(155, 89, 182, 0.15);
 }
 
 .monthCard.currentMonth {
-  border: 4px solid #FF00FF;
-  background: linear-gradient(135deg, rgba(255, 0, 255, 0.15) 0%, #0a0e27 100%);
-  box-shadow: 0 0 35px rgba(255, 0, 255, 0.8),
-              0 0 50px rgba(255, 215, 0, 0.5),
-              inset 0 0 25px rgba(255, 0, 255, 0.2);
+  border: 2px solid #9b59b6;
+  box-shadow: 0 0 20px rgba(155, 89, 182, 0.3);
 }
 
 .monthTitle {
-  color: #FFD700;
+  color: #fff;
   font-size: 24px;
   font-weight: bold;
   margin: 0 0 20px 0;
   text-transform: uppercase;
   letter-spacing: 1px;
-  text-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
-  position: relative;
-  z-index: 1;
 }
 
 .legendariesContainer {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  position: relative;
-  z-index: 1;
 }
 
 .legendaryEntry {
@@ -102,8 +79,8 @@
   align-items: center;
   gap: 16px;
   padding: 12px;
-  background: rgba(218, 165, 32, 0.08);
-  border: 1px solid rgba(218, 165, 32, 0.3);
+  background: rgba(155, 89, 182, 0.06);
+  border: 1px solid rgba(155, 89, 182, 0.2);
   border-radius: 8px;
   text-decoration: none;
   transition: all 0.2s ease;
@@ -111,10 +88,10 @@
 }
 
 .legendaryEntry:hover {
-  background: rgba(218, 165, 32, 0.15);
-  border-color: #FFD700;
+  background: rgba(155, 89, 182, 0.15);
+  border-color: rgba(155, 89, 182, 0.5);
   transform: translateX(4px);
-  box-shadow: 0 4px 12px rgba(218, 165, 32, 0.4);
+  box-shadow: 0 4px 12px rgba(155, 89, 182, 0.2);
 }
 
 .legendaryGif {
@@ -150,29 +127,26 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 12px 28px;
-  background: linear-gradient(90deg, rgba(218, 165, 32, 0.12) 0%, rgba(218, 165, 32, 0.06) 100%);
-  color: #ffffff;
+  padding: 10px 18px;
+  background: linear-gradient(135deg, #5e3370, #9b59b6);
+  color: #fff;
   text-decoration: none;
-  border: 2px solid #DAA520;
-  border-radius: 8px;
+  border: none;
+  border-radius: 10px;
   font-weight: bold;
-  font-size: 16px;
+  font-size: 0.95rem;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 0 15px rgba(218, 165, 32, 0.3);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 0 10px rgba(155, 89, 182, 0.6);
 }
 
 .backLink:hover {
-  background: linear-gradient(90deg, rgba(218, 165, 32, 0.18) 0%, rgba(218, 165, 32, 0.1) 100%);
-  border-color: #FFD700;
-  transform: translateY(-2px);
-  box-shadow: 0 0 25px rgba(255, 215, 0, 0.6);
+  transform: scale(1.05);
+  box-shadow: 0 0 18px rgba(155, 89, 182, 0.9);
 }
 
 .backLink:active {
-  transform: translateY(0);
-  box-shadow: 0 0 15px rgba(218, 165, 32, 0.3);
+  transform: scale(0.97);
 }
 
 @media (max-width: 1200px) {
@@ -188,7 +162,7 @@
   }
 
   .title {
-    font-size: 32px;
+    font-size: 2rem;
     margin-bottom: 12px;
   }
 
@@ -240,7 +214,7 @@
   }
 
   .title {
-    font-size: 24px;
+    font-size: 1.6rem;
   }
 
   .subtitle {
