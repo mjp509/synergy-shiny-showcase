@@ -12,23 +12,28 @@ import styles from './PlayerPage.module.css'
 import { getLocalPokemonGif } from '../../utils/pokemon'
 
 export default function PlayerPage() {
+    // Redirect to correct case-sensitive URL if needed
   const { playerName } = useParams()
   const location = useLocation()
-
   const { data, isLoading } = useDatabase()
   const { data: trophiesData } = useTrophies()
   const { data: streamersData } = useStreamers()
 
-  // --- Find player data safely ---
   const { realKey, playerData } = useMemo(() => {
     if (!data || !playerName) return { realKey: null, playerData: null }
-
     const key = Object.keys(data).find(
       k => k.toLowerCase() === playerName.toLowerCase()
     )
-
     return { realKey: key || null, playerData: key ? data[key] : null }
   }, [data, playerName])
+
+  if (realKey && playerName && realKey !== playerName) {
+    window.location.replace(`/player/${realKey}`);
+    return null;
+  }
+
+
+
 
   // --- Page-specific body class ---
   useEffect(() => {
