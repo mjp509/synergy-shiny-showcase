@@ -38,6 +38,7 @@ lerna-debug.log*
 # Claude Code
 .claude
 .claude/
+CLAUDE.md
 
 # Temp files
 nul
