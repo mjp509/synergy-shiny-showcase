@@ -17,51 +17,11 @@ export default function Pokedex() {
     { name: 'PokeMMO Pokédex', url: '/pokedex' }
   ];
 
-  const faqSchema = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "What is the best PokeMMO Pokédex tracker?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Our PokeMMO Pokédex tracker is the most comprehensive resource for PokeMMO players. It includes all 731 Pokémon with PokeMMO-specific encounter locations, tier rarities, Catch Calculator and shiny hunting strategies."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Where do I find PokeMMO Pokémon encounter locations?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Our PokeMMO Pokédex shows exact encounter locations, regions, and methods (grass, fishing, headbutt, rock smash) for every Pokémon. Filter by location name to find specific areas in PokeMMO."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "How do PokeMMO tier rarities affect shiny hunting?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "PokeMMO organizes Pokémon into tiers 0-7 based on rarity and hunt difficulty. Higher tiers require more encounters. Use our tier filter to find easier hunts or challenge yourself with tier 7 legendaries."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Can I track my PokeMMO living dex progress?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes! Our PokeMMO tracker helps you monitor your living dex completion. Search and filter 731 Pokémon, track which ones you've caught, and plan your next shiny hunt strategy."
-        }
-      }
-    ]
-  };
-
   useDocumentHead({
     title: 'PokeMMO Pokédex Tracker - 731 Pokémon Encounter Locations & Tiers',
     description: 'The ultimate PokeMMO Pokédex tracker for shiny hunters. Find all 731 Pokémon with PokeMMO encounter locations, tier rarities, abilities, and shiny hunting strategies. Track living dex progress.',
     canonicalPath: '/pokedex',
-    breadcrumbs: breadcrumbs,
-    structuredData: faqSchema
+    breadcrumbs: breadcrumbs
   })
   const navigate = useNavigate()
   const location = useLocation()
