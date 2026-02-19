@@ -1061,9 +1061,13 @@ useDocumentHead({
   const wildLevelValue = Number.parseInt(wildLevel, 10)
   const hasWildLevel = Number.isFinite(wildLevelValue) && wildLevelValue > 0
 
+  const fromPage = location.state?.from
+  const backTo = fromPage === 'shotm' ? '/shotm/' : fromPage === 'LnyCatchCalc' ? '/LnyCatchCalc/' : fromPage === 'shiny-war-2025/' ? '/shiny-war-2025/' : fromPage === 'pokemon/' ? -1 : '/pokedex/'
+  const backLabel = fromPage === 'shotm' ? '\u2190 Back to SHOTM' : fromPage === 'LnyCatchCalc' ? '\u2190 Back to LNY Catch Calculator' : fromPage === 'shiny-war-2025' ? '\u2190 Back to Shiny Wars 2025' : fromPage === 'pokemon' ? '\u2190 Back to Pokémon' : '\u2190 Back to Showcase'
+
   return (
     <article className={styles.container}>
-      <BackButton to={location.state?.fromPokemon ? '/pokedex' : '/pokedex'} />
+      <BackButton to={backTo} label={backLabel} />
 
       <header className={styles.header}>
         <button

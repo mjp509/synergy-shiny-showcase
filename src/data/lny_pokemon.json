@@ -1,0 +1,22 @@
+[
+  { "name": "Riolu", "catchRate": 75 },
+  { "name": "Vigoroth", "catchRate": 120 },
+  { "name": "Stantler", "catchRate": 45 },
+  { "name": "Espeon", "catchRate": 45 },
+  { "name": "Meditite", "catchRate": 180 },
+  { "name": "Minccino", "catchRate": 255 },
+  { "name": "Electrike", "catchRate": 120 },
+  { "name": "Rhyhorn", "catchRate": 120 },
+  { "name": "Munna", "catchRate": 190 },
+  { "name": "Cottonee", "catchRate": 190 },
+  { "name": "Ponyta", "catchRate": 190 },
+  { "name": "Spoink", "catchRate": 255 },
+  { "name": "Tauros", "catchRate": 45 },
+  { "name": "Mankey", "catchRate": 190 },
+  { "name": "Numel", "catchRate": 255 },
+  { "name": "Dragonair", "catchRate": 45 },
+  { "name": "Monferno", "catchRate": 45 },
+  { "name": "Swinub", "catchRate": 255 },
+  { "name": "Onix", "catchRate": 45 },
+  { "name": "Electabuzz", "catchRate": 45 }
+]

@@ -21,6 +21,7 @@ const NAV_ITEMS = [
   {
     label: 'Tools',
     submenu: [
+      { to: '/LnyCatchCalc/', label: 'LNY Pokemon Catch Calculators' },
       { to: '/counter-generator/', label: 'Counter Generator' },
       { to: '/random-pokemon-generator/', label: 'Random Pokemon Generator' },
     ]

@@ -15,6 +15,7 @@ const EventsDetail = lazy(() => import('./pages/EventsPage/EventsDetail'))
 const TrophyPage = lazy(() => import('./pages/TrophyPage/TrophyPage'))
 const CounterGenerator = lazy(() => import('./pages/CounterGenerator/CounterGenerator'))
 const RandomPokemon = lazy(() => import('./pages/RandomPokemon/RandomPokemon'))
+const LnyCatchCalc = lazy(() => import('./pages/LnyCatchCalc/LnyCatchCalc'))
 const ShinyWar2025 = lazy(() => import('./pages/ShinyWar2025/ShinyWar2025'))
 const RoamingLegendariesCalendar = lazy(() => import('./pages/RoamingLegendaries/RoamingLegendariesCalendar'))
 const SafariZones = lazy(() => import('./pages/SafariZones/SafariZones'))
@@ -94,6 +95,7 @@ export default function App() {
             <Route path="/events" element={<EventsPage />} />
             <Route path="/event/:slug" element={<EventsDetail />} />
             <Route path="/trophy/:trophySlug" element={<TrophyPage />} />
+            <Route path="/LnyCatchCalc" element={<LnyCatchCalc />} />
             <Route path="/counter-generator" element={<CounterGenerator />} />
             <Route path="/random-pokemon-generator" element={<RandomPokemon />} />
             <Route path="/roaming-legendaries" element={<RoamingLegendariesCalendar />} />

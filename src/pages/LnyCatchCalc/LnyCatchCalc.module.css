@@ -1,0 +1,96 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 0;
+}
+
+.title {
+  color: #fff;
+  font-size: 36px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  margin-bottom: 32px;
+  text-shadow: 0 2px 12px #0008;
+}
+
+.flexWrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2.5rem;
+  justify-content: center;
+  max-width: 1200px;
+}
+
+.card {
+  min-width: 240px;
+  max-width: 260px;
+  background: #232946;
+  border-radius: 18px;
+  padding: 20px;
+  box-shadow: 0 4px 24px #0004;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 0.2s;
+  border: 2px solid #3b82f6;
+}
+
+  .pokemonGif {
+    width: 110px;
+    height: 110px;
+    object-fit: contain;
+    position: relative;
+    overflow: hidden;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(20, 10, 35, 0.75);
+    border: 2px solid rgba(155, 89, 182, 0.3);
+    box-sizing: border-box;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 12px #0003;
+    transition: transform 0.2s, border-color 0.2s;
+}
+
+.pokemonName {
+  font-weight: 700;
+  font-size: 20px;
+  margin-bottom: 6px;
+  color: #fff;
+  text-shadow: 0 1px 4px #0006;
+}
+
+.catchRate {
+  font-size: 15px;
+  margin-bottom: 10px;
+  color: #a5b4fc;
+}
+
+.ballInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+
+.best {
+  color: #4ade80;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.second {
+  color: #60a5fa;
+  font-weight: 500;
+  font-size: 15px;
+}
+
+.ballDetails {
+  font-size: 12px;
+  color: #aaa;
+  margin-left: 8px;
+}

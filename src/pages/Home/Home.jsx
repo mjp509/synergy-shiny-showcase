@@ -4,56 +4,20 @@ import { useDocumentHead } from '../../hooks/useDocumentHead'
 import RoamingLegendaries from '../../components/RoamingLegendaries/RoamingLegendaries'
 import { getAssetUrl } from '../../utils/assets'
 import styles from './Home.module.css'
+import { useInGameClock } from '../../hooks/useInGameclock'
+// --- In-game time calculator as a hook ---
+const IN_GAME_DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+const DAY_OFFSET = 5;
 
-// --- In-game time calculator ---
-const IN_GAME_DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
-const DAY_OFFSET = 5
+function InGameClockDisplay() {
+  const state = useInGameClock(DAY_OFFSET, IN_GAME_DAYS);
 
-function getInGameState() {
-  const now = Date.now()
-  const utcMinutes = now / 60000
-
-  const utcMidnight = Math.floor(utcMinutes / 1440) * 1440
-  const minsSinceMidnight = utcMinutes - utcMidnight
-  const inGameTotalMins = (minsSinceMidnight * 4) % 1440
-  const hours = Math.floor(inGameTotalMins / 60)
-  const mins = Math.floor(inGameTotalMins % 60)
-
-  let period = 'Night'
-  if (hours >= 4 && hours < 11) period = 'Morning'
-  else if (hours >= 11 && hours < 21) period = 'Day'
-
-  let nextBoundary
-  if (hours >= 4 && hours < 11) nextBoundary = 11 * 60
-  else if (hours >= 11 && hours < 21) nextBoundary = 21 * 60
-  else nextBoundary = hours >= 21 ? 28 * 60 : 4 * 60
-  const inGameMinsLeft = nextBoundary - inGameTotalMins
-  const realMinsLeft = Math.ceil(inGameMinsLeft / 4)
-
-  const inGameDay = Math.floor(utcMinutes / 360)
-  const dayIndex = (inGameDay + DAY_OFFSET) % 7
-
-  return {
-    hours, mins, period,
-    day: IN_GAME_DAYS[dayIndex],
-    realMinsLeft,
-  }
-}
-
-function InGameClock() {
-  const [state, setState] = useState(getInGameState)
-
-  useEffect(() => {
-    const interval = setInterval(() => setState(getInGameState()), 1000)
-    return () => clearInterval(interval)
-  }, [])
-
-  const timeStr = `${String(state.hours).padStart(2, '0')}:${String(state.mins).padStart(2, '0')}`
-  const realMins = state.realMinsLeft
+  const timeStr = `${String(state.hours).padStart(2,'0')}:${String(state.mins).padStart(2,'0')}`;
+  const realMins = state.realMinsLeft;
   const countdownStr = realMins >= 60
     ? `${Math.floor(realMins / 60)}h ${realMins % 60}m`
-    : `${realMins}m`
-
+    : `${realMins}m`;
+  
   return (
     <div className={styles.clockContainer}>
       <div className={styles.clockMain}>
@@ -65,7 +29,7 @@ function InGameClock() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 export default function Home() {
@@ -90,7 +54,7 @@ export default function Home() {
 
       <RoamingLegendaries />
 
-      <InGameClock />
+      <InGameClockDisplay />
 
       <img src={getAssetUrl('images/pagebreak.png')} alt="Page Break" className="pagebreak" />
 

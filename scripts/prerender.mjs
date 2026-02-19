@@ -29,6 +29,7 @@ const PAGE_KEYWORDS = {
   '/streamers': 'PokeMMO streamers, PokeMMO Twitch streamers, PokeMMO YouTube, gaming livestream, content creators, streamer directory',
   '/shiny-war-2025': 'Shiny Wars 2025, PokeMMO competition, Shiny Wars standings, leaderboard results, shiny catching championship, competition rankings, team synergy shiny war results',
   '/resources': 'PokeMMO resources, PokeMMO guides, hunting tools, community links, shiny hunting guides, PokeMMO calculators, Team Synergy resources',
+  '/LnyCatchCalc': 'LNY Catch Calculator, PokeMMO Lunar New Year, shiny odds calculator, event catch rates, PokeMMO event tools, Team Synergy calculator, Lunar New Year shiny hunting, PokeMMO LNY event',
 };
 
 const DYNAMIC_KEYWORDS = {
@@ -49,6 +50,13 @@ const PAGE_FAQS = {
     { question: 'Where can I watch Team Synergy streamers?', answer: 'Check our Streamers page for live PokeMMO streams from team members on Twitch and YouTube.' },
     { question: 'What is shiny hunting?', answer: 'Shiny hunting is the practice of catching shiny Pokémon - rare variants with different colors. Team Synergy specializes in shiny collection and offers tools to help.' },
     { question: 'How can I track my Pokemon progress?', answer: 'Use our interactive Pokédex to filter by type, tier, and location. Track which Pokemon you need and find shiny hunting locations.' },
+  ],
+  '/LnyCatchCalc': [
+    { question: 'What is the LNY Catch Calculator?', answer: 'The LNY Catch Calculator is a tool for estimating your odds of catching Pokémon during the PokeMMO Lunar New Year event.' },
+    { question: 'How do I use the LNY Catch Calculator?', answer: 'Enter your event attempts and the tool will calculate your shiny odds and expected catch rates for the Lunar New Year event.' },
+    { question: 'Does the calculator work for all LNY Pokémon?', answer: 'Yes, it supports all special event Pokémon available during the Lunar New Year event in PokeMMO.' },
+    { question: 'Is the LNY Catch Calculator accurate?', answer: 'The calculator uses the latest event mechanics and odds to provide accurate estimates for your shiny hunting during LNY.' },
+    { question: 'Can I use this tool for other events?', answer: 'This calculator is specifically designed for the Lunar New Year event, but Team Synergy offers other calculators for different events.' },
   ],
   '/shiny-showcase': [
     { question: 'What is the Shiny Showcase?', answer: 'The Shiny Showcase displays the shiny collections of all Team Synergy members, ranked by total shiny count.' },
@@ -170,6 +178,7 @@ const STATIC_ROUTES = [
   '/shiny-war-2025',
   '/safari-zones',
   '/resources',
+  '/LnyCatchCalc',
 ];
 
 
@@ -961,6 +970,7 @@ function getKeywordsForRoute(route) {
   if (PAGE_KEYWORDS[route]) {
     return PAGE_KEYWORDS[route];
   }
+
   
   // Check for dynamic route patterns and extract the name
   if (route?.includes('/pokemon/')) {
@@ -987,7 +997,8 @@ function getKeywordsForRoute(route) {
   // Fallback to generic keywords if route not found
   return 'PokeMMO, Pokemon, gaming, shiny hunting, community';
 }
-// ---- END GET KEYWORDS ----
+
+
 
 // ---------------- PRERENDER ----------------
 async function prerenderRoute(templateHtml, outPath, meta = {}) {
@@ -1089,6 +1100,7 @@ async function prerenderRoute(templateHtml, outPath, meta = {}) {
       '/shiny-showcase': `<h1 class="seo-semantic-hidden">Shiny Showcase - Team Synergy Collections</h1><section class="seo-semantic-hidden"><p>Browse 140+ Team Synergy member shiny collections ranked by count. Discover top hunters, view statistics, and explore the best Pokemon catches in our comprehensive collection database.</p></section>`,
       '/shotm': `<h1 class="seo-semantic-hidden">Shiny of the Month - Team Synergy</h1><section class="seo-semantic-hidden"><p>SHOTM stands for Shiny of the Month - a monthly feature highlighting exceptional shiny catches by Team Synergy members in PokeMMO. The SHOTM recognition program celebrates outstanding shiny hunting achievements and rare Pokemon catches. Each month, Team Synergy members compete for recognition based on the tier value and rarity of their shiny catches. The SHOTM selection system awards points based on Pokemon rarity, nature quality, and hunting difficulty. Winners receive community recognition, featured showcases, and special team acknowledgment. The Shiny of the Month tradition strengthens community engagement and motivates hunters to pursue rare targets. Team Synergy members view SHOTM as a prestigious award recognizing exceptional dedication to shiny hunting. The monthly recognition encourages sharing of hunt stories, strategies, and achievement updates. SHOTM winners become community role models inspiring other hunters to pursue ambitious shiny targets. The program tracks historical winners and maintains achievement records celebrating past accomplishments. Participate in monthly competitions to earn SHOTM recognition and community prestige within Team Synergy.</p></section>`,
       '/pokedex': `<h1 class="seo-semantic-hidden">PokeMMO Pokédex - Shiny Pokemon Database</h1><section class="seo-semantic-hidden"><p>The Team Synergy Pokédex is a comprehensive PokeMMO database featuring all Generation 1-5 Pokemon with detailed shiny variants and hunting information. Our Pokemon guide includes catch locations, rarity tiers, abilities, base stats, and type matchups for every Pokemon in PokeMMO. Use our advanced Pokédex tracker to filter shiny Pokemon by type, tier, generation, and location. Our shiny hunting guides provide exact spawn rates and encounter locations for each Pokemon. The Pokédex displays both normal and shiny forms of every Pokemon, helping hunters identify their targets. Team Synergy's Pokemon database includes rare find indicators and difficulty ratings for shiny hunting. Our guides explain Pokemon evolution, breeding mechanics, and nature-based advantages in PokeMMO. Discover the best shiny Pokemon to hunt based on difficulty and rarity. Use our Pokédex to plan your shiny hunting strategy and track which rare Pokemon you still need. The database includes expert tips for catching hard-to-find Pokemon and maximizing shiny encounter rates. Filter by tier to find beginner-friendly shiny hunts or challenge yourself with legendary tier Pokemon.</p></section>`,
+      '/LnyCatchCalc': `<h1 class="seo-semantic-hidden">LNY Catch Calculator - PokeMMO Lunar New Year Event</h1><section class="seo-semantic-hidden"><p>The Team Synergy LNY Catch Calculator is a specialized tool for estimating shiny odds and catch rates during the PokeMMO Lunar New Year event. Use this calculator to optimize your hunting strategy, understand event-specific mechanics, and maximize your chances of catching rare shiny Pokemon. The tool provides detailed probability calculations, catch rate breakdowns, and tips for efficient event participation. Whether you are a competitive shiny hunter or a casual player, the LNY Catch Calculator helps you plan your hunts, track your progress, and achieve the best results during the limited-time Lunar New Year festivities. Join Team Synergy to access expert guides, event strategies, and community support for all your PokeMMO shiny hunting goals.</p></section>`,
       '/roaming-legendaries': `<h1 class="seo-semantic-hidden">Roaming Legendaries Calendar - PokeMMO Legendary Pokemon</h1><section class="seo-semantic-hidden"><p>The Team Synergy Roaming Legendaries Calendar tracks monthly spawns of rare legendary Pokemon in PokeMMO including Zapdos, Moltres, Articuno, Entei, Suicune, and Raikou. Our guide provides shiny hunting strategies specifically designed for roaming legendary Pokemon. Learn when and where each legendary spawns to plan your shiny hunting expeditions. The calendar shows availability for all roaming legendaries across monthly rotations, helping you schedule hunts efficiently. Our shiny hunting guides explain the unique challenges of catching roaming legends and advanced strategies for success. Team Synergy tracks legendary Pokemon locations and provides tips for efficient encounters. The roaming legendaries calendar is essential for shiny hunters seeking rare legendary shiny Pokemon. Our guides cover catch rates, recommended Pokemon teams, and optimal battle strategies for each legendary. Discover the best months to hunt specific legendary shiny Pokemon based on spawn schedules. Use our Pokédex data combined with the legendary calendar to plan year-round shiny hunting adventures. The roaming legendaries guide includes detailed location maps and encounter frequency data for all legendary Pokemon.</p></section>`,
       '/random-pokemon-generator': `<h1 class="seo-semantic-hidden">Random Pokemon Generator - Shiny Hunt Challenge</h1><section class="seo-semantic-hidden"><p>The Team Synergy Random Pokemon Generator is a shiny hunting tool that generates random Pokemon targets to break monotony and discover new shiny hunts. Our generator helps shiny hunters find exciting new challenges by randomly selecting Pokemon from specific tiers. Use our tool to create shiny bingo boards in 3x3, 4x4, or 5x5 grids for fun group shiny hunting challenges. The random Pokemon generator supports difficulty filtering to match your shiny hunting skill level. Our guide explains how to use randomization to discover lesser-known shiny Pokemon worth hunting. Team Synergy's generator includes nature randomization and IV weighting options for advanced shiny hunters. Create encounter challenges and compete with friends using our random Pokemon bingo system. The generator helps break the routine of planned hunts by introducing exciting randomness to shiny hunting. Use tier filters to challenge yourself or select beginner-friendly shiny hunts. Our tool includes completion tracking for bingo boards and statistics on your shiny hunting progress. The random Pokemon feature helps hunters expand their shiny collections by encouraging exploration of less popular Pokemon.</p></section>`,
       '/counter-generator': `<h1 class="seo-semantic-hidden">PokeMMO Counter Theme Generator - Encounter Counter Tool</h1><section class="seo-semantic-hidden"><p>The Team Synergy Counter Generator is a powerful tool for creating custom PokeMMO encounter counter themes to track shiny hunting progress. Design custom counter overlays displaying animated shiny Pokemon GIFs to monitor encounter counts during intense shiny hunts. Our guide explains how to customize counter sizing, positioning, and styling for optimal gameplay visibility. The counter theme generator simplifies creating professional-looking encounter counters without technical knowledge. Use our tool to import shiny Pokemon GIFs and arrange them as desired for your custom counter layout. Team Synergy's counter generator exports ready-to-use packages compatible with PokeMMO modding systems. Our guide includes best practices for counter design that maintains gameplay immersion while displaying critical information. The encounter counter tool helps shiny hunters track multiple Pokemon simultaneously during group hunting sessions. Customize colors, fonts, and backgrounds to match your PokeMMO interface preferences. The generator provides templates and presets for common shiny hunts and legendary encounters. Share your custom counter themes with the Team Synergy community and discover designs created by expert hunters.</p></section>`,
@@ -1371,6 +1383,12 @@ async function prerender() {
 
   // Static route OG overrides with CRAWLER LINKS
   const STATIC_META = {
+    '/LnyCatchCalc': {
+      route: '/LnyCatchCalc',
+      ogTitle: 'LNY Catch Calculator | Team Synergy - PokeMMO',
+      ogDescription: 'Estimate your shiny odds and catch rates for the PokeMMO Lunar New Year event with Team Synergy\'s LNY Catch Calculator.',
+      ogImage: 'https://synergymmo.com/images/openGraph.jpg'
+    },
     '/': {
       route: '/',
       ogTitle: 'Team Synergy - PokeMMO Shiny Hunting Community Hub',
