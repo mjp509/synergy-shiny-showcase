@@ -1,3 +1,19 @@
+.searchBar {
+  padding: 0.5rem 1rem;
+  font-size: 1.1rem;
+  border-radius: 8px;
+  border: 2px solid #3b82f6;
+  width: min(350px, 90vw);
+  outline: none;
+  background: #181c2f;
+  color: #fff;
+  box-shadow: 0 2px 8px #0002;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.searchBar:focus {
+  border-color: #818cf8;
+  box-shadow: 0 0 0 2px #818cf855;
+}
 .container {
   min-height: 100vh;
   display: flex;
@@ -36,6 +52,18 @@
   align-items: center;
   transition: transform 0.2s;
   border: 2px solid #3b82f6;
+  cursor: pointer;
+}
+
+.card:hover {
+  box-shadow:
+    0 0 16px 4px #818cf8cc,
+    0 0 32px 8px #3b82f688,
+    0 8px 32px #3b82f644,
+    0 2px 12px #0006;
+  transform: translateY(-4px) scale(1.025);
+  border-color: #a5b4fc;
+  background: linear-gradient(120deg, #232946 80%, #3b82f633 100%);
 }
 
   .pokemonGif {
