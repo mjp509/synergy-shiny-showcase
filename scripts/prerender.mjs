@@ -29,7 +29,7 @@ const PAGE_KEYWORDS = {
   '/streamers': 'PokeMMO streamers, PokeMMO Twitch streamers, PokeMMO YouTube, gaming livestream, content creators, streamer directory',
   '/shiny-war-2025': 'Shiny Wars 2025, PokeMMO competition, Shiny Wars standings, leaderboard results, shiny catching championship, competition rankings, team synergy shiny war results',
   '/resources': 'PokeMMO resources, PokeMMO guides, hunting tools, community links, shiny hunting guides, PokeMMO calculators, Team Synergy resources',
-  '/LnyCatchCalc': 'LNY Catch Calculator, PokeMMO Lunar New Year, shiny odds calculator, event catch rates, PokeMMO event tools, Team Synergy calculator, Lunar New Year shiny hunting, PokeMMO LNY event',
+  '/LnyCatchCalc': 'LNY Catch Calculator, PokeMMO Lunar New Year,  event catch rates, PokeMMO event tools, PokeMMO Catch calculator, Lunar New Year shiny hunting, PokeMMO LNY event',
 };
 
 const DYNAMIC_KEYWORDS = {
@@ -1386,7 +1386,7 @@ async function prerender() {
     '/LnyCatchCalc': {
       route: '/LnyCatchCalc',
       ogTitle: 'LNY Catch Calculator | Team Synergy - PokeMMO',
-      ogDescription: 'Estimate your shiny odds and catch rates for the PokeMMO Lunar New Year event with Team Synergy\'s LNY Catch Calculator.',
+      ogDescription: 'A Quick and Easy tool to help Calculate the catch rates for the PokeMMO Lunar New Year event. Find the Best PokeBalls to use on the swarm mons to save time and money',
       ogImage: 'https://synergymmo.com/images/openGraph.jpg'
     },
     '/': {
