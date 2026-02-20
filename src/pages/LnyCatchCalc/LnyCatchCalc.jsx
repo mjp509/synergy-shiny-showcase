@@ -12,7 +12,8 @@ import { extractLevelUpMoves } from "../../utils/extractLevelUpMoves";
 import { getLevelUpMoveset } from "../../utils/levelup-moves";
 
 const LnyCatchCalc = () => {
-const { getTopBalls } = useCatchCalcs();
+  const [useLevelBall, setUseLevelBall] = useState(false);
+  const { getTopBalls } = useCatchCalcs();
   useDocumentHead({
     title: "LNY Catch Calculator",
     description:
@@ -40,6 +41,22 @@ const { getTopBalls } = useCatchCalcs();
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>LNY Pokémon Catch Calculator</h1>
+      <div style={{ margin: '1rem 0 0.5rem 0' }}>
+        <p style={{ marginBottom: 8 }}>
+          Level balls are an effective, but expensive way to Catch Difficult Pokemon, and require a level 30 Pokemon to be the most effective. If you wish to use Level Balls, Tick the Checkbox
+        </p>
+        <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+          <label style={{ display: 'flex', alignItems: 'center', fontWeight: 500, color: '#a5b4fc', fontSize: '1.05rem', cursor: 'pointer' }}>
+            <input
+              type="checkbox"
+              checked={useLevelBall}
+              onChange={e => setUseLevelBall(e.target.checked)}
+              style={{ marginRight: 8 }}
+            />
+            Use Level Balls
+          </label>
+        </div>
+      </div>
       <div className={styles.tooltipNote2} style={{ marginTop: '0.5rem', borderTop: '1px solid rgba(102, 126, 234, 0.2)', paddingTop: '0.5rem' }}>
         <strong>Best Method:</strong> Selected by balancing catch chance, turns needed (0-2), and ball cost. Prefers cheaper balls when effectiveness is similar.
       </div>
@@ -136,10 +153,11 @@ const { getTopBalls } = useCatchCalcs();
 
             //console.log('[LNYCatchCalc] types for', poke.name, ':', types);
             const [best, second] = getTopBalls(
-            catchRate ?? 0,
-            30,
-            types
-          );
+              catchRate ?? 0,
+              30,
+              types,
+              useLevelBall
+            );
 
 
             // Moveset calculation (no hooks, pure functions only)

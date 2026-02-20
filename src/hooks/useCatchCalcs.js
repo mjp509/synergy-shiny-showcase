@@ -52,6 +52,7 @@ const ballCosts = {
   "Dusk Ball": 2.5,
   "Net Ball": 2.25,
   "Nest Ball": 2.25,
+  "Level Ball": 4.0,
 };
 
 const methods = [
@@ -89,11 +90,13 @@ const methods = [
   { ball: "Nest Ball", ballRate: 1.0, hp: 1, turns: 1, statusMod: 1.0 },
   { ball: "Nest Ball", ballRate: 1.0, hp: 100, turns: 1, statusMod: 2.0 },
   { ball: "Nest Ball", ballRate: 1.0, hp: 1, turns: 2, statusMod: 2.0 },
+
+  { ball: "Level Ball", ballRate: 4.0, hp: 100, turns: 0, statusMod: 1.0 },
+  { ball: "Level Ball", ballRate: 4.0, hp: 1, turns: 1, statusMod: 1.0 },
+  { ball: "Level Ball", ballRate: 4.0, hp: 100, turns: 1, statusMod: 2.0 },
+  { ball: "Level Ball", ballRate: 4.0, hp: 1, turns: 2, statusMod: 2.0 },
 ];
 
-/* =========================
-   Multipliers (PURE)
-========================= */
 
 function getNestBallMultiplier(level = 30) {
   if (level <= 1) return 3.0;
@@ -130,10 +133,13 @@ function calculateCatchChance(catchRate, ballRate, hpPercent, statusModifier = 1
    PURE Top Ball Calculator
 ========================= */
 
-function getTopBallsInternal(catchRate, level = 30, isNight = false, types = []) {
-  const usableMethods = isNight
+function getTopBallsInternal(catchRate, level = 30, isNight = false, types = [], useLevelBall = true) {
+  let usableMethods = isNight
     ? methods
     : methods.filter(m => m.ball !== "Dusk Ball");
+  if (!useLevelBall) {
+    usableMethods = usableMethods.filter(m => m.ball !== "Level Ball");
+  }
 
   const scored = usableMethods.map(method => {
     let ballRate = method.ballRate;
@@ -183,12 +189,11 @@ function getTopBallsInternal(catchRate, level = 30, isNight = false, types = [])
 
 export default function useCatchCalcs() {
   const { period } = useInGameClock();
-
   const isNight = period === "Night";
 
   const stableGetTopBalls = useCallback(
-    (catchRate, level = 30, types = []) =>
-      getTopBallsInternal(catchRate, level, isNight, types),
+    (catchRate, level = 30, types = [], useLevelBall = true) =>
+      getTopBallsInternal(catchRate, level, isNight, types, useLevelBall),
     [isNight]
   );
 
