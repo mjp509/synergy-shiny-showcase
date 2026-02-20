@@ -1029,7 +1029,7 @@ async function prerenderRoute(templateHtml, outPath, meta = {}) {
   
   // Add mobile web app meta tags for iOS
   if (!html.includes('meta name="apple-mobile-web-app-capable')) {
-    html = html.replace(/<\/head>/, `  <meta name="apple-mobile-web-app-capable" content="yes">\n  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">\n  <meta name="apple-mobile-web-app-title" content="Team Synergy">\n</head>`);
+    html = html.replace(/<\/head>/, `  <meta name="mobile-web-app-capable" content="yes">\n  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">\n  <meta name="apple-mobile-web-app-title" content="Team Synergy">\n</head>`);
   }
   
   // Ensure proper viewport for responsive design (check if not already present)
