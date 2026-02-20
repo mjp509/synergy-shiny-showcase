@@ -40,9 +40,18 @@ const LnyCatchCalc = () => {
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>LNY Pokémon Catch Calculator</h1>
-      <div style={{ margin: '1rem 0 0.5rem 0' }}>
-        <p style={{ marginBottom: 8 }}>
+      <h1 className={styles.title} >LNY Pokémon Catch Calculator</h1>
+      <div style={{ margin: '1rem 0 0.5rem 0', textAlign: 'center', background: 'rgba(73, 73, 73, 0.66)', borderRadius: '12px', padding: '1.1em 1em 1em 1em' }}>
+        <p style={{ marginBottom: 12, fontWeight: 600, color: '#fff', textAlign: 'center' }}>
+          Apricorn Ball Guide to LNY Swarms<br/>
+          <span style={{ color: '#fbbf24' }}>Fast Balls:</span> Tauros, Fearow, Espeon<br/>
+          <span style={{ color: '#fbbf24' }}>Friend Ball:</span> Buneary, Pikachu Riolu<br/>
+          <span style={{ color: '#fbbf24' }}>Moon Ball:</span> Nidorans, Muuna<br/>
+          <span style={{ color: '#fff', fontWeight: 400, fontSize: '0.98em' }}> 94.11% catch rate at 100% HP asleep<br/>
+          100% full hp asleep<br/>
+           Friend Balls are cheaper for Riolu then Ultras and also you should be able to immediately evolve them into Lucario if that's your thing.</span>
+        </p>
+        <p style={{ marginBottom: 8, textAlign: 'center' }}>
           Level balls are an effective, but expensive way to Catch Difficult Pokemon, and require a level 30 Pokemon to be the most effective. If you wish to use Level Balls, Tick the Checkbox
         </p>
         <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
@@ -56,6 +65,9 @@ const LnyCatchCalc = () => {
             Use Level Balls
           </label>
         </div>
+        <p style={{ marginTop: 12, textAlign: 'center', color: '#fff', fontSize: '0.95em' }}>
+          Thanks to Alisae for this information!
+        </p>
       </div>
       <div className={styles.tooltipNote2} style={{ marginTop: '0.5rem', borderTop: '1px solid rgba(102, 126, 234, 0.2)', paddingTop: '0.5rem' }}>
         <strong>Best Method:</strong> Selected by balancing catch chance, turns needed (0-2), and ball cost. Prefers cheaper balls when effectiveness is similar.
