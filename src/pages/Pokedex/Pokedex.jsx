@@ -28,31 +28,34 @@ export default function Pokedex() {
   const [searchParams, setSearchParams] = useSearchParams()
   const { data, isLoading } = useDatabase()
   const { tierPokemon, tierLookup } = useTierData()
-  const [mode, setMode] = useState('shiny')
-  const [hideComplete, setHideComplete] = useState(false)
-  const [search, setSearch] = useState('')
-  const [selectedRarities, setSelectedRarities] = useState([])
-  const [selectedTiers, setSelectedTiers] = useState([])
-  const [selectedEggGroups, setSelectedEggGroups] = useState([])
-  const [eggGroupMatchMode, setEggGroupMatchMode] = useState('any') // 'any' or 'both'
-  const [selectedTypes, setSelectedTypes] = useState([])
-  const [filterAlpha, setFilterAlpha] = useState(false)
-  const [movesToFilterBy, setMovesToFilterBy] = useState(['', '', '', ''])
-  const [abilitySearch, setAbilitySearch] = useState('')
+  const [mode, setMode] = useState(() => searchParams.get('mode') || 'shiny')
+  const [hideComplete, setHideComplete] = useState(() => searchParams.get('hideComplete') === '1')
+  const [search, setSearch] = useState(() => searchParams.get('q') || '')
+  const [selectedRarities, setSelectedRarities] = useState(() => searchParams.getAll('rarity'))
+  const [selectedTiers, setSelectedTiers] = useState(() => searchParams.getAll('tier'))
+  const [selectedEggGroups, setSelectedEggGroups] = useState(() => searchParams.getAll('egg'))
+  const [eggGroupMatchMode, setEggGroupMatchMode] = useState(() => searchParams.get('eggMode') || 'any') // 'any' or 'both'
+  const [selectedTypes, setSelectedTypes] = useState(() => searchParams.getAll('type'))
+  const [filterAlpha, setFilterAlpha] = useState(() => searchParams.get('alpha') === '1')
+  const [movesToFilterBy, setMovesToFilterBy] = useState(() => {
+    const moves = searchParams.getAll('move')
+    return [...moves, '', '', '', ''].slice(0, 4)
+  })
+  const [abilitySearch, setAbilitySearch] = useState(() => searchParams.get('ability') || '')
   const [locationSearch, setLocationSearch] = useState(() => searchParams.get('location') || '')
   const [locationSearchInput, setLocationSearchInput] = useState(() => searchParams.get('location') || '')
-  const [statMinimums, setStatMinimums] = useState({
-    hp: '',
-    attack: '',
-    defense: '',
-    spAtk: '',
-    spDef: '',
-    speed: ''
-  })
+  const [statMinimums, setStatMinimums] = useState(() => ({
+    hp: searchParams.get('hp') || '',
+    attack: searchParams.get('atk') || '',
+    defense: searchParams.get('def') || '',
+    spAtk: searchParams.get('spa') || '',
+    spDef: searchParams.get('spd') || '',
+    speed: searchParams.get('spe') || ''
+  }))
   const [statSearchMode, setStatSearchMode] = useState('form') // 'form' or 'typing'
   const [statSearchInput, setStatSearchInput] = useState('')
   const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false)
-  const [synergyDataToggle, setSynergyDataToggle] = useState(false)
+  const [synergyDataToggle, setSynergyDataToggle] = useState(() => searchParams.get('synergy') === '1')
   const [hoverInfo, setHoverInfo] = useState(null)
   const [hoverPos, setHoverPos] = useState({ x: 0, y: 0 })
   const [locationSuggestions, setLocationSuggestions] = useState([])
@@ -522,18 +525,30 @@ export default function Pokedex() {
     }
   }, [location.state?.locationSearch])
 
-  // Sync locationSearch state → URL query param for shareable links
+  // Sync all filter state → URL query params for shareable links
   useEffect(() => {
-    setSearchParams(params => {
-      const next = new URLSearchParams(params)
-      if (locationSearch.trim()) {
-        next.set('location', locationSearch)
-      } else {
-        next.delete('location')
-      }
-      return next
-    }, { replace: true })
-  }, [locationSearch, setSearchParams])
+    const next = new URLSearchParams()
+    if (search.trim()) next.set('q', search.trim())
+    if (locationSearch.trim()) next.set('location', locationSearch)
+    if (abilitySearch.trim()) next.set('ability', abilitySearch.trim())
+    selectedRarities.forEach(r => next.append('rarity', r))
+    selectedTiers.forEach(t => next.append('tier', t))
+    selectedEggGroups.forEach(e => next.append('egg', e))
+    if (eggGroupMatchMode !== 'any') next.set('eggMode', eggGroupMatchMode)
+    selectedTypes.forEach(t => next.append('type', t))
+    if (filterAlpha) next.set('alpha', '1')
+    movesToFilterBy.filter(m => m.trim()).forEach(m => next.append('move', m.trim()))
+    if (statMinimums.hp && statMinimums.hp !== '0') next.set('hp', statMinimums.hp)
+    if (statMinimums.attack && statMinimums.attack !== '0') next.set('atk', statMinimums.attack)
+    if (statMinimums.defense && statMinimums.defense !== '0') next.set('def', statMinimums.defense)
+    if (statMinimums.spAtk && statMinimums.spAtk !== '0') next.set('spa', statMinimums.spAtk)
+    if (statMinimums.spDef && statMinimums.spDef !== '0') next.set('spd', statMinimums.spDef)
+    if (statMinimums.speed && statMinimums.speed !== '0') next.set('spe', statMinimums.speed)
+    if (mode !== 'shiny') next.set('mode', mode)
+    if (hideComplete) next.set('hideComplete', '1')
+    if (synergyDataToggle) next.set('synergy', '1')
+    setSearchParams(next, { replace: true })
+  }, [search, locationSearch, abilitySearch, selectedRarities, selectedTiers, selectedEggGroups, eggGroupMatchMode, selectedTypes, filterAlpha, movesToFilterBy, statMinimums, mode, hideComplete, synergyDataToggle, setSearchParams])
 
   // Close filter menu on resize to desktop
   useEffect(() => {
