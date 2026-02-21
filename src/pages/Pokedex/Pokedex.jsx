@@ -1,5 +1,5 @@
 import { useState, useMemo, useRef, useCallback, useEffect } from 'react'
-import { Link, useNavigate, useLocation } from 'react-router-dom'
+import { Link, useNavigate, useLocation, useSearchParams } from 'react-router-dom'
 import { useDatabase } from '../../hooks/useDatabase'
 import { useDocumentHead } from '../../hooks/useDocumentHead'
 import { useTierData } from '../../hooks/useTierData'
@@ -25,6 +25,7 @@ export default function Pokedex() {
   })
   const navigate = useNavigate()
   const location = useLocation()
+  const [searchParams, setSearchParams] = useSearchParams()
   const { data, isLoading } = useDatabase()
   const { tierPokemon, tierLookup } = useTierData()
   const [mode, setMode] = useState('shiny')
@@ -38,8 +39,8 @@ export default function Pokedex() {
   const [filterAlpha, setFilterAlpha] = useState(false)
   const [movesToFilterBy, setMovesToFilterBy] = useState(['', '', '', ''])
   const [abilitySearch, setAbilitySearch] = useState('')
-  const [locationSearch, setLocationSearch] = useState('')
-  const [locationSearchInput, setLocationSearchInput] = useState('')
+  const [locationSearch, setLocationSearch] = useState(() => searchParams.get('location') || '')
+  const [locationSearchInput, setLocationSearchInput] = useState(() => searchParams.get('location') || '')
   const [statMinimums, setStatMinimums] = useState({
     hp: '',
     attack: '',
@@ -514,12 +515,25 @@ export default function Pokedex() {
   useEffect(() => {
     // Clear hover info when navigating to Pokedex to prevent stale tooltips
     setHoverInfo(null)
-    
+
     if (location.state?.locationSearch) {
       setLocationSearchInput(location.state.locationSearch)
       setLocationSearch(location.state.locationSearch)
     }
   }, [location.state?.locationSearch])
+
+  // Sync locationSearch state → URL query param for shareable links
+  useEffect(() => {
+    setSearchParams(params => {
+      const next = new URLSearchParams(params)
+      if (locationSearch.trim()) {
+        next.set('location', locationSearch)
+      } else {
+        next.delete('location')
+      }
+      return next
+    }, { replace: true })
+  }, [locationSearch, setSearchParams])
 
   // Close filter menu on resize to desktop
   useEffect(() => {

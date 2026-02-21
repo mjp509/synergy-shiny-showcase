@@ -1829,7 +1829,7 @@ useDocumentHead({
                   <button
                     key={index}
                     className={styles.locationCard}
-                    onClick={() => navigate('/pokedex/', { state: { locationSearch: `${location.location} - ${location.region_name}` } })}
+                    onClick={() => navigate(`/pokedex/?location=${encodeURIComponent(`${location.location} - ${location.region_name}`)}`)}
                     title={`Search for Pokémon at ${location.location}`}
                   >
                     <div className={styles.locationHeader}>
