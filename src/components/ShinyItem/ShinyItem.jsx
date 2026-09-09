@@ -22,6 +22,7 @@ const ICON_MAP = {
   Fishing: [`${BASE}images/Shiny Showcase/fishing.png`, 'fishingIcon'],
   Swarm: [`${BASE}images/Shiny Showcase/swarm.png`, 'swarmIcon'],
   Headbutt: [`${BASE}images/Shiny Showcase/headbutt.png`, 'headbuttIcon'],
+  'Altering Cave': [`${BASE}images/Shiny Showcase/alteringcave.png`, 'alteringCaveIcon'],
   Pkid: [`${BASE}images/pkid.png`, 'pkidIcon'],
   Event: [`${BASE}images/Shiny Showcase/event.png`, 'eventIcon'],
   MysteriousBall: [`${BASE}images/Shiny Showcase/mysteriousball.gif`, 'mysteriousballGif'],

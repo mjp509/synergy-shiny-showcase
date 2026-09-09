@@ -171,6 +171,12 @@
   border: 1px solid rgba(121, 85, 72, 0.4);
 }
 
+.tagAlteringCave {
+  background-color: rgba(96, 125, 139, 0.2);
+  color: #b0bec5;
+  border: 1px solid rgba(96, 125, 139, 0.45);
+}
+
 .tagEvent {
   background-color: rgba(0, 188, 212, 0.2);
   color: #26c6da;

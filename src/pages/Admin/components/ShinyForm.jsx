@@ -27,7 +27,6 @@ const YES_NO_FIELDS = [
   { key: 'Alpha', label: 'Alpha' },
   { key: 'Sold', label: 'Sold' },
   { key: 'Event', label: 'Event' },
-  { key: 'Reaction', label: 'Reaction' },
   { key: 'MysteriousBall', label: 'Mysterious Ball' },
   { key: 'Safari', label: 'Safari' },
   { key: 'Honey Tree', label: 'Honey Tree' },
@@ -35,6 +34,7 @@ const YES_NO_FIELDS = [
   { key : 'Swarm', label: 'Swarm' },
   { key: 'Fishing', label: 'Fishing' },
   { key: 'Headbutt', label: 'Headbutt' },
+  { key: 'Altering Cave', label: 'Altering Cave' },
   { key: 'Pkid', label: 'Pkid' },
   { key: 'Legendary', label: 'Legendary' },
 ]
@@ -80,6 +80,7 @@ function getDefaultState() {
     Fishing: 'No',
     Swarm: 'No',
     Headbutt: 'No',
+    'Altering Cave': 'No',
     Pkid: 'No',
     Legendary: 'No',
     'Reaction Link': '',
@@ -255,6 +256,14 @@ export default function ShinyForm({ initialData, onSubmit, submitLabel='Add', al
           </select>
         </div>
       ))}
+
+      <div>
+        <label>Reaction:</label>
+        <select value={form.Reaction} onChange={e=>dispatch({ type:'SET_FIELD', field:'Reaction', value:e.target.value })}>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </div>
 
       <label>Reaction Link:</label>
       <input type="text" value={form['Reaction Link']} onChange={e=>dispatch({ type:'SET_FIELD', field:'Reaction Link', value:e.target.value })} placeholder="Optional URL" />

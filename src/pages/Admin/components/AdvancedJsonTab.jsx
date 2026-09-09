@@ -4,7 +4,7 @@ import styles from '../Admin.module.css'
 
 const REQUIRED_SHINY_FIELDS = [
   'Pokemon', 'Secret Shiny', 'Egg', 'Alpha',
-  'Sold', 'Event', 'Reaction', 'MysteriousBall', 'Safari',
+  'Sold', 'Event', 'Reaction', 'MysteriousBall', 'Safari', 'Altering Cave',
   'Favourite', 'Honey Tree', 'Legendary', 'Reaction Link',
 ]
 

@@ -562,6 +562,12 @@
   border: 1px solid rgba(121, 85, 72, 0.4);
 }
 
+.traitAlteringCave {
+  background-color: rgba(96, 125, 139, 0.2);
+  color: #b0bec5;
+  border: 1px solid rgba(96, 125, 139, 0.45);
+}
+
 .traitPkid {
   background-color: rgba(255, 112, 67, 0.2);
   color: #ff8a65;

@@ -214,7 +214,7 @@
 }
 
 .fossilIcon,
-.fishingIcon, .swarmIcon, .headbuttIcon {
+.fishingIcon, .swarmIcon, .headbuttIcon, .alteringCaveIcon {
   position: absolute;
   top: 2px;
   right: 2px;
@@ -273,7 +273,7 @@
 }
 
 @media (max-width: 900px) {
-  .secretIcon, .eggIcon, .reactionIcon, .safariIcon, .fossilIcon, .fishingIcon, .swarmIcon, .mysteriousballGif, .honeyIcon, .pkidIcon {
+  .secretIcon, .eggIcon, .reactionIcon, .safariIcon, .fossilIcon, .fishingIcon, .swarmIcon, .alteringCaveIcon, .mysteriousballGif, .honeyIcon, .pkidIcon {
     max-width: 10px;
     max-height: 10px;
   }

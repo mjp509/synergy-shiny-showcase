@@ -19,6 +19,7 @@ const SHINY_FILTERS = [
   { label: 'Swarm', key: 'Swarm' },
   { label: 'Fishing', key: 'Fishing' },
   { label: `Headbutt`, key: 'Headbutt' },
+  { label: 'Altering Cave', key: 'Altering Cave' },
   { label: 'Pkid', key: 'Pkid' },
   { label: 'Reaction', key: 'Reaction' },
   { label: 'Mysterious Ball', key: 'MysteriousBall' },

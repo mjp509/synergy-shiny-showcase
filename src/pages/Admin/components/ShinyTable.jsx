@@ -85,6 +85,7 @@ export default function ShinyTable({ shinies, onEdit, onDelete, onReorder }) {
             if (shiny.Fishing === 'Yes') traits.push({ label: 'Fishing', cls: 'traitFishing' })
             if (shiny.Swarm === 'Yes') traits.push({ label: 'Swarm', cls: 'traitSwarm' })
             if (shiny.Headbutt === 'Yes') traits.push({ label: 'Headbutt', cls: 'traitHeadbutt' })
+            if (shiny['Altering Cave'] === 'Yes') traits.push({ label: 'Altering Cave', cls: 'traitAlteringCave' })
             if (shiny.Pkid === 'Yes') traits.push({ label: 'Pkid', cls: 'traitPkid' })
             if (shiny.Sold === 'Yes') traits.push({ label: 'Sold', cls: 'traitSold' })
             if (shiny.Event === 'Yes') traits.push({ label: 'Event', cls: 'traitEvent' })
