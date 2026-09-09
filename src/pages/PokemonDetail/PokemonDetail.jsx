@@ -6,6 +6,7 @@ import { useDatabase } from '../../hooks/useDatabase'
 import { usePokemonOrder } from '../../hooks/usePokemonOrder'
 import { usePokemonSprites } from '../../hooks/usePokemonSprites'
 import { usePokemonForms } from '../../hooks/usePokemonForms'
+import { getLocalPokemonGif } from '../../utils/pokemon'
 import BackButton from '../../components/BackButton/BackButton'
 import SearchBar from '../../components/SearchBar/SearchBar'
 import styles from './PokemonDetail.module.css'
@@ -915,8 +916,16 @@ export default function PokemonDetail() {
     return ownerMap
   }, [databaseData, pokemonName])
 
-  // Get animated shiny sprite for OG image (from JSON data)
+  // Get animated shiny sprite for OG image. Prefer our locally-hosted gif
+  // (fixed disposal method for Discord embeds) over remote pokemondb.net gifs.
   const animatedShinyGif = useMemo(() => {
+    if (pokemonName) {
+      const localGif = getLocalPokemonGif(spriteName || pokemonName)
+      if (localGif && localGif.startsWith('/')) {
+        return `https://synergymmo.com${localGif}`
+      }
+    }
+
     const allGenerations = Object.keys(spritesByGeneration).sort()
     if (allGenerations.length > 0) {
       const firstGen = spritesByGeneration[allGenerations[0]]
@@ -925,7 +934,7 @@ export default function PokemonDetail() {
       }
     }
     return 'https://synergymmo.com/images/openGraph.jpg'
-  }, [spritesByGeneration])
+  }, [spritesByGeneration, spriteName, pokemonName])
 
   const safariLocations = useMemo(() => {
     if (!pokemonName) return []

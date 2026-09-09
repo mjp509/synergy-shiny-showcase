@@ -1,5 +1,5 @@
 import { readFile, writeFile, mkdir } from 'fs/promises';
-import { readFileSync } from 'fs';
+import { readFileSync, existsSync } from 'fs';
 import { join } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -513,7 +513,15 @@ async function getPokemon() {
   return Object.entries(pokemonData).map(([key, pokemon]) => {
     const name = capitalize(pokemon.displayName || key);
     const sanitized = key.toLowerCase().replace(/\s/g, '-');
-    const animatedShinyGif = `https://img.pokemondb.net/sprites/black-white/anim/shiny/${sanitized}.gif`;
+    // Prefer our locally-hosted gif (fixed disposal method for Discord embeds)
+    // over the remote pokemondb.net one, which still glitches in Discord.
+    const tierForGif = tierLookup[sanitized];
+    const localGifPath = tierForGif
+      ? join(__dirname, '../public/images/pokemon_gifs', `tier_${tierForGif.replace(/\D/g, '')}`, `${sanitized}.gif`)
+      : null;
+    const animatedShinyGif = localGifPath && existsSync(localGifPath)
+      ? `https://synergymmo.com/images/pokemon_gifs/tier_${tierForGif.replace(/\D/g, '')}/${sanitized}.gif`
+      : `https://img.pokemondb.net/sprites/black-white/anim/shiny/${sanitized}.gif`;
 
     const types = formatTypes(pokemon.types);
     const tier = tierLookup[sanitized] || 'Unknown';
