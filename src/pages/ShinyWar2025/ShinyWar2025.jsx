@@ -39,7 +39,7 @@ export default function ShinyWar2025() {
     title: 'PokeMMO Shiny Wars 2025 Results - Team Synergy',
     description: 'Team Synergy Shiny Wars 2025 results: #25 placement with 1060 points and 111 shiny Pokémon caught. View tier breakdowns, all catches, rankings, and competition details.',
     canonicalPath: '/shiny-war-2025/',
-    ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_1/leafeon.gif',
+    ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_1/leafeon.gif?v=2',
     breadcrumbs: breadcrumbs
   })
 

@@ -301,7 +301,7 @@ function getLocalPokemonGif(name) {
   const sanitized = sanitize(name);
   const tier = tierLookup[sanitized];
   const folder = tier ? `tier_${tier.replace(/\D/g, '')}` : 'tier_0';
-  return `/images/pokemon_gifs/${folder}/${sanitized}.gif?v=1`;
+  return `/images/pokemon_gifs/${folder}/${sanitized}.gif?v=2`;
 }
 
 // ---------------- FETCH DYNAMIC DATA ----------------
@@ -520,7 +520,7 @@ async function getPokemon() {
       ? join(__dirname, '../public/images/pokemon_gifs', `tier_${tierForGif.replace(/\D/g, '')}`, `${sanitized}.gif`)
       : null;
     const animatedShinyGif = localGifPath && existsSync(localGifPath)
-      ? `https://synergymmo.com/images/pokemon_gifs/tier_${tierForGif.replace(/\D/g, '')}/${sanitized}.gif`
+      ? `https://synergymmo.com/images/pokemon_gifs/tier_${tierForGif.replace(/\D/g, '')}/${sanitized}.gif?v=2`
       : `https://img.pokemondb.net/sprites/black-white/anim/shiny/${sanitized}.gif`;
 
     const types = formatTypes(pokemon.types);
@@ -1100,7 +1100,7 @@ async function prerenderRoute(templateHtml, outPath, meta = {}) {
 
   const title = meta.ogTitle || 'Team Synergy - PokeMMO';
   const description = meta.ogDescription || 'Team Synergy is a PokeMMO shiny hunting team.';
-  const image = meta.ogImage || 'https://synergymmo.com/images/pokemon_gifs/tier_7/reuniclus.gif';
+  const image = meta.ogImage || 'https://synergymmo.com/images/pokemon_gifs/tier_7/reuniclus.gif?v=2';
   // Add trailing slash to match GitHub Pages serving pattern (avoids 301 redirects)
   const normalizedRoute =
     meta.route === '/'
@@ -1537,36 +1537,42 @@ async function prerender() {
       route: '/shiny-showcase',
       ogTitle: 'Shiny Showcase - Team Synergy PokeMMO Member Collections',
       ogDescription: 'Browse Team Synergy\'s 140+ member shiny collections ranked by total count. Discover the best shiny hunters, view collection statistics, and explore spectacular Pokemon catches.',
-      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_7/reuniclus.gif',
+      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_7/reuniclus.gif?v=2',
       crawlerLinks: playerLinks,
     },
     '/shotm': {
       route: '/shotm',
       ogTitle: 'Shiny of the Month - Team Synergy - PokeMMO',
       ogDescription: 'Team Synergy Shiny of the Month (SHOTM) showcases outstanding shiny catches and achievements by our community members each month.',
-      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_7/reuniclus.gif',
+      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_7/reuniclus.gif?v=2',
       crawlerLinks: [...playerLinks, ...pokemonLinks],
     },
     '/team-statistics': {
       route: '/team-statistics',
       ogTitle: 'Team Statistics - Player & SHOTM Leaderboards | Team Synergy',
       ogDescription: 'View Team Synergy player statistics, top 3 leaderboard categories, all-time SHOTM points standings, and the top 5 most common shiny Pokemon.',
-      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_0/riolu.gif',
+      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_0/riolu.gif?v=2',
       crawlerLinks: [...playerLinks, ...pokemonLinks],
     },
     '/pokedex': {
       route: '/pokedex',
       ogTitle: 'Pokédex Tracker - Shiny & Living Dex | Team Synergy - PokeMMO',
       ogDescription: 'Track Team Synergy\'s complete Pokédex in PokeMMO. Filter by tier, type, location, and abilities. Search shinies, track caught progress, find encounters, and explore all generations with advanced filtering.',
-      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_7/pikachu.gif',
+      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_7/pikachu.gif?v=2',
       crawlerLinks: [...roamingLegendariesLinks, ...pokemonLinks],
     },
     '/dex-helper': {
       route: '/dex-helper',
       ogTitle: 'Dex Helper - Missing Shiny Targets | Team Synergy - PokeMMO',
       ogDescription: 'Use Team Synergy Dex Helper to track missing base evolution shiny targets grouped by Horde, Singles, and Eggs, with bounty tags and hunt notes.',
-      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_0/ducklett.gif',
+      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_0/ducklett.gif?v=2',
       crawlerLinks: pokemonLinks,
+    },
+    '/particle-viewer': {
+      route: '/particle-viewer',
+      ogTitle: 'Particle Viewer - Team Synergy - PokeMMO',
+      ogDescription: 'Watch in-game particle effects from PokeMMO. View all available particles including shiny effects and special animations.',
+      ogImage: 'https://synergymmo.com/images/openGraph.jpg',
     },
     '/roaming-legendaries': {
       route: '/roaming-legendaries',
@@ -1578,20 +1584,20 @@ async function prerender() {
       route: '/random-pokemon-generator',
       ogTitle: 'Random Pokémon Generator & Shiny Bingo | Team Synergy - PokeMMO',
       ogDescription: 'Generate random Pokémon targets for PokeMMO hunts. Play shiny bingo with 3x3, 4x4, or 5x5 boards, filter by tier, randomize natures and IVs. Track your completion and find new hunt challenges.',
-      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_0/bulbasaur.gif',
+      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_0/bulbasaur.gif?v=2',
       crawlerLinks: pokemonLinks,
     },
     '/counter-generator': {
       route: '/counter-generator',
       ogTitle: 'PokeMMO Counter Theme Generator | Team Synergy - PokeMMO',
       ogDescription: 'Create custom encounter counter themes for PokeMMO. Upload Pokémon GIFs, resize and customize them, then download ready-to-use counter theme packages to track your shiny hunts in-game.',
-      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_0/charmander.gif',
+      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_0/charmander.gif?v=2',
     },
     '/egg-move-calculator': {
       route: '/egg-move-calculator',
       ogTitle: 'PokeMMO Egg Move Calculator | Team Synergy',
       ogDescription: 'Calculate PokeMMO egg move breeding chains from natural move learners through shared egg groups.',
-      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_0/blastoise.gif',
+      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_0/blastoise.gif?v=2',
       crawlerLinks: pokemonLinks,
     },
     '/player-card-generator': {
@@ -1629,14 +1635,14 @@ async function prerender() {
       route: '/events',
       ogTitle: 'Team Synergy Events | Team Synergy - PokeMMO',
       ogDescription: 'Discover Team Synergy\'s PokeMMO community events. Join shiny hunting competitions, seasonal tournaments, team challenges, and special gaming events. Stay connected with the latest Team Synergy activities.',
-      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_7/reuniclus.gif',
+      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_7/reuniclus.gif?v=2',
       crawlerLinks: eventLinks,
     },
     '/trophy-board': {
       route: '/trophy-board',
       ogTitle: 'Team Synergy Trophy Board | Team Synergy - PokeMMO',
       ogDescription: 'Explore trophies and achievements earned by Team Synergy members in PokeMMO. View championship awards, milestone accomplishments, and community recognition. Celebrate team success and member achievements.',
-      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_7/reuniclus.gif',
+      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_7/reuniclus.gif?v=2',
       crawlerLinks: trophyLinks,
     },
     '/streamers': {
@@ -1650,20 +1656,20 @@ async function prerender() {
       route: '/shiny-war-2025',
       ogTitle: 'Shiny Wars 2025 Results | Team Synergy - PokeMMO',
       ogDescription: 'Team Synergy placed #25 in the Official PokeMMO Shiny Wars 2025 with 1060 points and 111 shinies. View every catch with tier breakdowns and point totals.',
-      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_1/leafeon.gif',
+      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_1/leafeon.gif?v=2',
       crawlerLinks: pokemonLinks,
     },
     '/safari-zones': {
       route: '/safari-zones',
       ogTitle: 'PokeMMO Safari Zone Guide - Catch Rates, Flee Rates & Best Strategies',
       ogDescription: 'Complete PokeMMO Safari Zone guide with catch rates, flee rates, and optimal strategies for Johto and Sinnoh (Great Marsh). Find the best approach for every Safari Zone Pokemon.',
-      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_0/riolu.gif'
+      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_0/riolu.gif?v=2'
     },
     '/altering-cave-rotations': {
       route: '/altering-cave-rotations',
       ogTitle: 'Altering Cave Rotations - PokeMMO Shiny Hunting | Team Synergy',
       ogDescription: 'Track PokeMMO Altering Cave rotations with the current rotation, swap timer, repel trick filter, repel levels, and target rarity.',
-      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_0/bagon.gif'
+      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_0/bagon.gif?v=2'
     },
     '/resources': {
       route: '/resources',
@@ -1681,7 +1687,7 @@ async function prerender() {
       route: '/bounties',
       ogTitle: 'Team Synergy Bounties | Shiny Hunting Challenges - PokeMMO',
       ogDescription: 'Participate in Team Synergy monthly and permanent bounties. Complete shiny hunting challenges, earn rewards, and join the community competition. View current and past bounties for all members.',
-      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_0/riolu.gif'
+      ogImage: 'https://synergymmo.com/images/pokemon_gifs/tier_0/riolu.gif?v=2'
     },
     '/sprite-recolour': {
       route: '/sprite-recolour',

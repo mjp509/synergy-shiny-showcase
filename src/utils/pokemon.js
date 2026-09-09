@@ -1,6 +1,6 @@
 import tierPokemon from '../data/tier_pokemon.json'
 
-const VERSION = 1
+const VERSION = 2
 
 function sanitize(name) {
   return name

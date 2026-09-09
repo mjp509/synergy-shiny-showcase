@@ -689,7 +689,7 @@ export default function SpriteRecolour() {
     title: "Sprite Recolour Tool - Edit Pokemon GIF Palettes and Export them ready to use in PokeMMO",
     description: "Recolour Pokemon sprite GIFs in your browser. Search the local Pokemon GIF library, upload your own GIFs, click colours directly on the preview, and export the result as PNG or GIF.",
     canonicalPath: "/sprite-recolour/",
-    ogImage: "https://synergymmo.com/images/pokemon_gifs/tier_0/charizard.gif",
+    ogImage: "https://synergymmo.com/images/pokemon_gifs/tier_0/charizard.gif?v=2",
     imageAlt: "Animated Charizard sprite used for the Sprite Recolour Tool",
     breadcrumbs,
     structuredData,
